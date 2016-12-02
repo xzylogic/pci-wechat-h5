@@ -1,0 +1,4 @@
+{
+  "test": "api/articleType/list",
+  "edit": "api/doctortitle/edit"
+}

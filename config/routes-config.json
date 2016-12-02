@@ -1,0 +1,20 @@
+{
+  "root": "/pci-wechat",
+  "routes": [{
+    "desc": "测试",
+    "parentUrl": "/test",
+    "routePath": "/test/test.routes"
+  }, {
+    "desc": "风险评估",
+    "parentUrl": "/risk-assessment",
+    "routePath": "/risk-assessment/risk-assessment.routes"
+  }, {
+    "desc": "讲座",
+    "parentUrl": "/lecture",
+    "routePath": "/lecture/lecture.routes"
+  }, {
+    "desc": "基本信息",
+    "parentUrl": "/basic",
+    "routePath": "/basic/basic.routes"
+  }]
+}
