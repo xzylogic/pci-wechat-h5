@@ -4,12 +4,10 @@ var requestTool = require('../common/request-tool');
 
 module.exports = {
 
-  getAccount: (req, res) => {
+  getAccountBind: (req, res) => {
     // requestTool.get(res, 'test', req.query, (data) => {
     //   console.log(data);
-      res.render('test/test', {
-        name: 'Cajfkd'
-      });
+      res.render('basic/account-bind');
     // })
   },
 
