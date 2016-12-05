@@ -6,8 +6,8 @@
     "routePath": "/test/test.routes"
   }, {
     "desc": "风险评估",
-    "parentUrl": "/risk-assessment",
-    "routePath": "/risk-assessment/risk-assessment.routes"
+    "parentUrl": "/assessment",
+    "routePath": "/assessment/assessment.routes"
   }, {
     "desc": "讲座",
     "parentUrl": "/lecture",
