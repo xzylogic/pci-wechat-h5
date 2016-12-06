@@ -63,7 +63,7 @@ gulp.task('server', function() {
 
 //监听项目
 gulp.task('watch', ['compass', 'compress', 'imagemin'], function() {
-  gulp.watch(config.scssPath + "**/*.scss", ['sass']);
+  gulp.watch(config.scssPath + "**/*.scss", ['compass']);
   gulp.watch(config.jsPath + "**/*.js", ['compress']);
   gulp.watch(config.imagePath + "**/**", ['imagemin']);
 })

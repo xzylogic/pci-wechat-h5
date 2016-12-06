@@ -11,4 +11,11 @@ module.exports = {
     // })
   },
 
+  getAccountBindAdd: (req, res) => {
+    // requestTool.get(res, 'test', req.query, (data) => {
+    //   console.log(data);
+      res.render('basic/account-bind-add');
+    // })
+  },
+
 }

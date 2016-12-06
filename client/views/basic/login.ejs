@@ -4,10 +4,25 @@
 <head>
   <title>登录</title>
   <% include ../layout/layout %>
+    <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
 </head>
 
 <body>
-  <h1 class="test">Login Works!</h1>
+  <div class="container">
+    <form class="form-container">
+      <div class="input-field">
+        <input type="tel" name="tel" placeholder="请输入手机号" required>
+      </div>
+      <div>
+        <button type="submit" class="weui-btn weui-btn_primary">下一步</button>
+      </div>
+    </form>
+    <div class="hint-info">
+      <span class="hint-title">友情提示</span>
+      <span>请先注册登录，登录后可报名讲座、查看报名信息、绑定家庭成员等。</span>
+    </div>
+  </div>
+  <script src="<%=_src('/js/basic/login.min.js')%>"></script>
 </body>
 
 </html>

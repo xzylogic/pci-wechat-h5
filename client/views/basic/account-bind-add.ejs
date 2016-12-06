@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>添加新家庭成员</title>
+  <% include ../layout/layout %>
+    <link rel="stylesheet" href="<%=_src('/css/basic/account-bind.min.css')%>">
+    <script src="<%=_src('/lib/picker/picker.min.js')%>"></script>
+</head>
+
+<body>
+  <div class="account-header">
+    <img src="http://pci.xlab-tech.com/pci/picture1467613263150mmexport1467613286108.jpg">
+    <p>李四</p>
+  </div>
+  <div class="account-container">
+    <div class="account-field">
+      <label>1. 他／她的手机号</label>
+      <input type="tel" name="tel">
+    </div>
+    <div class="account-field">
+      <label>1. 您对他／她的称呼</label>
+      <div class="showPicker">
+        <span id="showPicker"></span>
+      </div>
+      <input id="title" type="text" name="title" class="display">
+    </div>
+    <div class="account-btn">
+      <button type="button" class="weui-btn weui-btn_primary">添加</button>
+    </div>
+  </div>
+  <script type="text/javascript">
+  var nameEl = document.getElementById('showPicker');
+
+  var data = [{
+    text: '爸爸',
+    value: 1
+  }, {
+    text: '妈妈',
+    value: 2
+  }, {
+    text: '爷爷',
+    value: 3
+  }, {
+    text: '奶奶',
+    value: 4
+  }, {
+    text: '外公',
+    value: 5
+  }, {
+    text: '外婆',
+    value: 6
+  }, {
+    text: '爱人',
+    value: 7
+  }, {
+    text: '其他',
+    value: 8
+  }];
+
+  var picker = new Picker({
+    data: [data],
+    selectedIndex: [0],
+    title: '您的选择'
+  });
+
+  picker.on('picker.select', function(selectedVal, selectedIndex) {
+    nameEl.innerText = data[selectedIndex[0]].text;
+    console.log(selectedVal);
+    if (data[selectedIndex].value == 8) {
+      $('#title').removeClass('display');
+    } else {
+      $('#title').addClass('display');
+    }
+
+  });
+
+  nameEl.addEventListener('click', function() {
+    picker.show();
+  });
+  </script>
+</body>
+
+</html>
