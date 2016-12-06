@@ -6,42 +6,9 @@
   <% include ../layout/layout %>
 </head>
 
-<body>
-  <h1 class="test">Risk Works!</h1>
+<body style="background-color:#ddd">
+  <p style="margin:15px;color:#888;font-size:16px">弗明汉心脏病研究（Framingham Heart Study）名十年心脏病风险评估，是根据胆固醇水平和非胆固醇因素计算个体未来十年冠心病发作几率的方法。</p>
 
-  <div class="page">
-    <div class="page__bd page__bd_spacing">
-        <a href="javascript:;" class="weui-btn weui-btn_default" id="showPicker">单列选择器</a>
-    </div>
-</div>
-<script type="text/javascript">
-    $('#showPicker').on('click', function () {
-        weui.picker([{
-            label: '飞机票',
-            value: 0
-        }, {
-            label: '火车票',
-            value: 1
-        }, {
-            label: '的士票',
-            value: 2
-        },{
-            label: '公交票 (disabled)',
-            disabled: true,
-            value: 3
-        }, {
-            label: '其他',
-            value: 4
-        }], {
-            onChange: function (result) {
-                console.log(result);
-            },
-            onConfirm: function (result) {
-                console.log(result);
-            }
-        });
-    });
-</script>
 </body>
 
 </html>
