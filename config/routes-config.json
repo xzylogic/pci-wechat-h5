@@ -14,7 +14,7 @@
     "routePath": "/lecture/lecture.routes"
   }, {
     "desc": "基本信息",
-    "parentUrl": "/basic",
+    "parentUrl": "/",
     "routePath": "/basic/basic.routes"
   }]
 }
