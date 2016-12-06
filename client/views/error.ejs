@@ -2,12 +2,25 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Error</title>
+  <% include ./layout/layout-none %>
+    <title>ERROR</title>
+    <style type="text/css">
+    .error-container {
+      color: #333;
+      padding: 15px;
+    }
+    
+    .error-title {
+      text-align: center;
+      font-size: 28px;
+    }
+    </style>
 </head>
 
 <body>
-  <h1>Error!</h1>
+  <div class="error-container">
+    <h1 class="error-title">Error!</h1>
+  </div>
 </body>
 
 </html>
