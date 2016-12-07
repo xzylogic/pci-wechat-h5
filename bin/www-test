@@ -1,7 +1,7 @@
 'use strict';
 
 global.config = {
-  server: 'http://10.1.32.44/pci-operation/',
+  server: 'http://localhost:3000/pci-wechat-test/',
   root: '/pci-wechat-test'
 }
 
