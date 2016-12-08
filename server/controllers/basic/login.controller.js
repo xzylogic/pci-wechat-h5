@@ -42,7 +42,7 @@ module.exports = {
   login: (req, res) => {
     let type = req.params.type;
     let tel = req.params.tel;
-    console.log(`Login Info: { tel: ${tel}, type: ${type}`);
+    console.log(`Login info: { tel: ${tel}, type: ${type}`);
     var postData = '';
 
     req.addListener('data', (data) => {
@@ -54,14 +54,13 @@ module.exports = {
       console.log(`POST login ${JSON.stringify(codeData)}`);
 
       requestTool.get(res, 'verify', codeData, (_data) => {
-        console.log(JSON.parse(_data).code);
         if (JSON.parse(_data).code == 0) {
           res.render('basic/login-success', {
             status: '登录',
             username: '李四'
           });
         } else {
-          console.log('Login Fail!');
+          console.log(`User ${tel} login failed!`);
           res.render('basic/login-enter', {
             postUrl: `/verify/${type}/${tel}`,
             errorMessage: '验证码错误！'
