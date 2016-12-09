@@ -26,7 +26,17 @@
       <input id="title" type="text" name="title" class="display">
     </div>
     <div class="account-btn">
-      <button type="button" class="weui-btn weui-btn_primary">添加</button>
+      <button id="button" type="button" class="weui-btn weui-btn_primary">添加</button>
+    </div>
+  </div>
+  <div id="modal" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+      <div class="weui-dialog__hd"><strong class="weui-dialog__title">提示信息</strong></div>
+      <div class="weui-dialog__bd">弹窗内容，告知当前页面信息等</div>
+      <div class="weui-dialog__ft">
+        <a id="close" href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+      </div>
     </div>
   </div>
   <script type="text/javascript">
@@ -66,7 +76,7 @@
 
   picker.on('picker.select', function(selectedVal, selectedIndex) {
     nameEl.innerText = data[selectedIndex[0]].text;
-    console.log(selectedVal);
+    console.log(data[selectedIndex].value);
     if (data[selectedIndex].value == 8) {
       $('#title').removeClass('display');
     } else {
@@ -78,6 +88,13 @@
   nameEl.addEventListener('click', function() {
     picker.show();
   });
+
+  $('#button').on('click', function() {
+    $('#modal').css('display', 'block');
+  })
+  $('#close').on('click', function() {
+    $('#modal').css('display', 'none');
+  })
   </script>
 </body>
 

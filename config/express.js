@@ -17,7 +17,7 @@ module.exports = function() {
   app.set('views', process.cwd() + resources.view);
   app.set('view engine', 'ejs');
 
-  app.use(logger('dev'));
+  app.use(logger('combined'));
 
   app.use(bodyParser.json());
 

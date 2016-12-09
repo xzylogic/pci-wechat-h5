@@ -2,12 +2,25 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>404</title>
+  <% include ./layout/layout-none %>
+    <title>404</title>
+    <style type="text/css">
+    .error-container {
+      color: #333;
+      padding: 15px;
+    }
+    
+    .error-title {
+      text-align: center;
+      font-size: 28px;
+    }
+    </style>
 </head>
 
 <body>
-  <h1>404</h1>
+  <div class="error-container">
+    <h1 class="error-title">404</h1>
+  </div>
 </body>
 
 </html>

@@ -28,6 +28,12 @@ body {
   }
   button {
     color: #35B2F2;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 }
 
@@ -57,9 +63,37 @@ input:focus {
   outline: none;
 }
 
+.Validform_checktip {
+  display: block;
+  padding-left: 5px;
+  line-height: 2.5;
+  font-size: 14px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.Validform_wrong {
+  color: #DA322E !important;
+}
+
+.Validform_right {
+  display: none !important;
+  color: #00CD66 !important;
+}
+
 .hint-info {
   font-size: 13px;
   color: #666;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   .hint-title {
     padding-left: 20px;
     font-size: 14px;
@@ -74,6 +108,12 @@ input:focus {
   left: 0px;
   bottom: 30px;
   right: 0px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   p {
     text-align: center;
     font-size: 14px;
@@ -92,8 +132,20 @@ input:focus {
   padding-left: 5px;
   font-size: 14px;
   color: #666;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .weui-btn_primary {
   background-color: #35B2F2 !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
