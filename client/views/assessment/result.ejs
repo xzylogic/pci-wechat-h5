@@ -4,10 +4,27 @@
 <head>
   <title>风险评估结果</title>
   <% include ../layout/layout %>
+  <link rel="stylesheet" href="<%=_src('/css/assessment/assessment.min.css')%>">
 </head>
 
 <body style="background-color:#">
-  <h1 class="test">Result Works!</h1>
+  <div class="result">
+    <p class="result-title">风险评估结果</p>
+    <p class="result-date">11月1日</p>
+    <p class="result-content">亲爱的李四,此次您的10年风险FRS评估为<span class="result-grade">>=20%</span>,风险等级<span class="result-grade">中</span></p>
+    <button class="result-btn" onclick="window.location='risk'">再测一次</button>
+  </div>
+  <script type="text/javascript">
+  var grade = document.getElementByClass('result-grade');
+    $(function(){
+      if(){
+        grade.style.color:#ff0000;
+      }if(){
+        grade.style.color:#f5a623;
+      }else if(){
+        grade.style.color:#13c26e;
+      }
+    });
+  </script>
 </body>
-
 </html>
