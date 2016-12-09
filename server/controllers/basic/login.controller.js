@@ -6,11 +6,18 @@ var requestTool = require('../common/request-tool');
 module.exports = {
 
   getView: (req, res) => {
+    let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx47391e9ef8958539&redirect_uri=http%3A%2F%2F139.224.186.36%2Fpci-wechat-test%2Flogin%2F1&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
     let type = req.params.type;
-    console.log(`Login Type: ${type}`);
-    res.render('basic/login', {
-      postUrl: '/login/' + type,
-    });
+    let code = req.query.code;
+    if(code){
+      console.log(`Login Type: ${type}`);
+      res.render('basic/login', {
+        postUrl: '/login/' + type,
+      });
+    } else {
+      res.redirect(url);
+    }
+    
   },
 
   loginVerify: (req, res) => {

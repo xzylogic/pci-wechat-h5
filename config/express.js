@@ -26,7 +26,7 @@ module.exports = function() {
     return routesTool.routesConfig.root + src;
   };
 
-  console.log(process.cwd() + resources.assets);
+  // console.log(process.cwd() + resources.assets);
   // 静态资源访问路径设置
   app.use(routesTool.routesConfig.root, express.static(process.cwd() + resources.assets));
 

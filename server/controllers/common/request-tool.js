@@ -21,6 +21,22 @@ requestTool.get = function(res, key, param, call) {
     });
 }
 
+requestTool.getUrl = function(res, url, param, call) {
+  superagent
+    .get(url)
+    .set('Content-Type', 'application/json')
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        res.render('error', {
+          "message": '请求错误'
+        });
+      } else {
+        call(sres.text);
+      }
+    });
+}
+
 requestTool.post = function(res, key, data, call) {
   superagent.post(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
