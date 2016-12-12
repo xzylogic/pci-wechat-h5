@@ -1,5 +1,6 @@
 {
   "test": "api/articleType/list",
   "edit": "api/doctortitle/edit",
-  "verify": "verify"
+  "verify": "verify",
+  "getToken": "api/micro/snsToken"
 }

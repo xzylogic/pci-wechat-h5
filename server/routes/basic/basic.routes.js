@@ -5,16 +5,16 @@ var router = express.Router();
 var LoginController = require('../../controllers/basic/login.controller');
 var AccountBindController = require('../../controllers/basic/account-bind.controller');
 
-router.route('/login/:type')
+router.route('/login')
   .get(LoginController.getView);
 
-router.route('/login/:type')
+router.route('/login')
   .post(LoginController.loginVerify);
 
-router.route('/verify/:type/:tel')
+router.route('/verify/:tel')
   .post(LoginController.login);
 
-router.route('/register/:type/:tel')
+router.route('/register/:tel')
   .post(LoginController.register);
 
 router.route('/verify')

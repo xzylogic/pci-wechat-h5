@@ -2,26 +2,39 @@
 
 var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
+var auth = require('../common/auth');
 
 module.exports = {
 
   getView: (req, res) => {
-    let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx47391e9ef8958539&redirect_uri=http%3A%2F%2F139.224.186.36%2Fpci-wechat-test%2Flogin%2F1&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
-    let type = req.params.type;
-    let code = req.query.code;
-    if(code){
-      console.log(`Login Type: ${type}`);
+
+    let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+    let code = req.query.code || ''; // 微信返回code
+
+    if (openId) {
+      console.log(openId);
       res.render('basic/login', {
-        postUrl: '/login/' + type,
+        postUrl: '/login/',
       });
+
+    } else if (code) {
+      console.log(`Login Code: ${code}`);
+      auth.getToken(res, code, (data) => {
+        console.log(data);
+        auth.setCookies(res, 'pci_secret', data.openid);
+        res.render('basic/login', {
+          postUrl: '/login/',
+        });
+      })
+
     } else {
-      res.redirect(url);
+      let url = requestTool.setAuthUrl('/login', 'login'); // 重定向url
+      res.send(url);
+      // res.redirect(url);
     }
-    
   },
 
   loginVerify: (req, res) => {
-    let type = req.params.type;
     let postData = '';
 
     req.addListener('data', (data) => {
@@ -34,12 +47,12 @@ module.exports = {
 
       if (type == 1) {
         res.render('basic/login-enter', {
-          postUrl: `/verify/${type}/${verifyData.tel}`,
+          postUrl: `/verify/${verifyData.tel}`,
           errorMessage: ''
         });
       } else if (type == 2) {
         res.render('basic/login-register', {
-          postUrl: `/register/${type}/${verifyData.tel}`,
+          postUrl: `/register/${verifyData.tel}`,
         });
       }
 
@@ -47,9 +60,8 @@ module.exports = {
   },
 
   login: (req, res) => {
-    let type = req.params.type;
     let tel = req.params.tel;
-    console.log(`Login info: { tel: ${tel}, type: ${type}`);
+    console.log(`Login info: { tel: ${tel} }`);
     var postData = '';
 
     req.addListener('data', (data) => {
@@ -69,7 +81,7 @@ module.exports = {
         } else {
           console.log(`User ${tel} login failed!`);
           res.render('basic/login-enter', {
-            postUrl: `/verify/${type}/${tel}`,
+            postUrl: `/verify/${tel}`,
             errorMessage: '验证码错误！'
           });
         }

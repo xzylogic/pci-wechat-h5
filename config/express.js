@@ -3,6 +3,7 @@
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var routesTool = require('./routes-tool');
 
 module.exports = function() {
@@ -20,6 +21,8 @@ module.exports = function() {
   app.use(logger('combined'));
 
   app.use(bodyParser.json());
+
+  app.use(cookieParser('pcihahah'));
 
   //设置全局函数
   app.locals['_src'] = function(src) {
