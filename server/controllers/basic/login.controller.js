@@ -15,20 +15,16 @@ module.exports = {
     if (openId) {
       console.log(openId);
       res.clearCookie('pci_secret');
-      res.render('basic/login', {
-        postUrl: '/login/',
-      });
+      res.render('basic/login');
 
     } else if (code) {
       console.log(`Login Code: ${code}`);
 
       auth.getToken(res, code, (data) => {
         console.log(data);
-        auth.setCookies(res, 'pci_secret', data.data.openid);
+        auth.setCookies(res, 'pci_secret', data.openid);
 
-        res.render('basic/login', {
-          postUrl: '/login/',
-        });
+        res.render('basic/login');
 
       })
 

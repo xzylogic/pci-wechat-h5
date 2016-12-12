@@ -14,6 +14,8 @@ var requestTool = {};
  * @return {[type]}       []
  */
 requestTool.get = function(res, key, param, call) {
+  console.log(BASE_URL + api[key]);
+  console.log(param);
   superagent
     .get(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
@@ -21,7 +23,7 @@ requestTool.get = function(res, key, param, call) {
     .end(function(err, sres) {
       if (err) {
         res.render('error', {
-          "message": '请求错误'
+          "message": err
         });
       } else {
         call(sres.text);
