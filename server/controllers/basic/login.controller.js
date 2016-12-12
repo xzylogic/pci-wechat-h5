@@ -29,8 +29,8 @@ module.exports = {
 
     } else {
       let url = requestTool.setAuthUrl('/login', 'login'); // 重定向url
-      res.send(url);
-      // res.redirect(url);
+      // res.send(url);
+      res.redirect(url);
     }
   },
 
