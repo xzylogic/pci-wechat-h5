@@ -22,7 +22,7 @@ module.exports = {
 
       auth.getToken(res, code, (data) => {
         console.log(data);
-        auth.setCookies(res, 'pci_secret', data.openid);
+        auth.setCookies(res, 'pci_secret', JSON.parse(data).openid);
 
         res.render('basic/login');
 
