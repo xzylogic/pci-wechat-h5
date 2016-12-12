@@ -43,8 +43,8 @@ requestTool.getwithhandle = function(res, key, param, call) {
           "message": '请求错误'
         });
       } else {
-        if (sres.text.code === 0) {
-          call(sres.text.data);
+        if (JSON.parse(sres.text).code === 0) {
+          call(JSON.parse(sres.text).data);
         } else {
           res.render('error', {
             "message": '请求错误'
@@ -66,7 +66,7 @@ requestTool.getwithhandlecopy = function(res, url, param, call) {
         });
       } else {
         // if (sres.text.code === 0) {
-          call(sres.text);
+        call(sres.text);
         // } else {
         //   res.render('error', {
         //     "message": '请求错误'
