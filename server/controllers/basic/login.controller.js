@@ -8,27 +8,33 @@ module.exports = {
 
   getView: (req, res) => {
 
+    console.log(req.signedCookies);
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let code = req.query.code || ''; // 微信返回code
 
     if (openId) {
       console.log(openId);
+      res.clearCookie('pci_secret');
       res.render('basic/login', {
         postUrl: '/login/',
       });
 
     } else if (code) {
       console.log(`Login Code: ${code}`);
+
       auth.getToken(res, code, (data) => {
         console.log(data);
-        auth.setCookies(res, 'pci_secret', data.openid);
+        auth.setCookies(res, 'pci_secret', data.data.openid);
+
         res.render('basic/login', {
           postUrl: '/login/',
         });
+
       })
 
     } else {
       let url = requestTool.setAuthUrl('/login', 'login'); // 重定向url
+      console.log(url);
       // res.send(url);
       res.redirect(url);
     }
