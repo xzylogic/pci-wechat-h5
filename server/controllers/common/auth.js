@@ -24,7 +24,9 @@ auth.setCookies = (res, key, value) => {
  */
 auth.getToken = (res, code, call) => {
   console.log(`https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx47391e9ef8958539&secret=fd128e6b0af853ec6d137eb6fc1efe29&code=${code}&grant_type=authorization_code`);
-  requestTool.getwithhandlecopy(res, 'https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx47391e9ef8958539&secret=fd128e6b0af853ec6d137eb6fc1efe29&code=${code}&grant_type=authorization_code`, call)
+  let url = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx47391e9ef8958539&secret=fd128e6b0af853ec6d137eb6fc1efe29&code=${code}&grant_type=authorization_code`;
+  requestTool.getwithhandlecopy(res, url, '', call)
+  // requestTool.getwithhandlecopy(res, 'https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx47391e9ef8958539&secret=fd128e6b0af853ec6d137eb6fc1efe29&code=${code}&grant_type=authorization_code`, call)
   // requestTool.getwithhandlecopy(res, 'https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx5921baa9a4522266&secret=23ed70a87e976da7756b076166f88723&code=${code}&grant_type=authorization_code`, call)
   // requestTool.get(res, 'getToken', `code=${code}`, call)
 }
