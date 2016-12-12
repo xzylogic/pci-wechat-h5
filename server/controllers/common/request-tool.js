@@ -14,15 +14,12 @@ var requestTool = {};
  * @return {[type]}       []
  */
 requestTool.get = function(res, key, param, call) {
-  console.log(BASE_URL + api[key]);
-  console.log(param);
   superagent
     .get(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
     .query(param)
     .end(function(err, sres) {
       if (err) {
-        console.log(err);
         res.render('error', {
           "message": err
         });
@@ -50,28 +47,6 @@ requestTool.getwithhandle = function(res, key, param, call) {
             "message": '请求错误'
           });
         }
-      }
-    });
-}
-
-requestTool.getwithhandlecopy = function(res, url, param, call) {
-  superagent
-    .get(url)
-    .set('Content-Type', 'application/json')
-    .query(param)
-    .end(function(err, sres) {
-      if (err) {
-        res.render('error', {
-          "message": '请求错误'
-        });
-      } else {
-        // if (sres.text.code === 0) {
-        call(sres.text);
-        // } else {
-        //   res.render('error', {
-        //     "message": '请求错误'
-        //   });
-        // }
       }
     });
 }
@@ -106,7 +81,6 @@ requestTool.post = function(res, key, data, call) {
  */
 requestTool.setAuthUrl = function(redirectUrl, state) {
   let uri = encodeURIComponent(`${global.config.domain}${global.config.root}${redirectUrl}`);
-  console.log(uri);
   let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${global.config.appId}&redirect_uri=${uri}&response_type=code&scope=snsapi_base&state=${state}#wechat_redirect`;
   return url;
 }
