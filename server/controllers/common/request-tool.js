@@ -22,6 +22,7 @@ requestTool.get = function(res, key, param, call) {
     .query(param)
     .end(function(err, sres) {
       if (err) {
+        console.log(err);
         res.render('error', {
           "message": err
         });
