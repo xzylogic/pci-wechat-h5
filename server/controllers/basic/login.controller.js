@@ -20,13 +20,13 @@ module.exports = {
     } else if (code) {
       console.log(`Login Code: ${code}`);
 
-      // auth.getToken(res, code, (data) => {
-      //   console.log(data);
-      //   auth.setCookies(res, 'pci_secret', JSON.parse(data).openid);
+      auth.getToken(res, code, (data) => {
+        console.log(data);
+        auth.setCookies(res, 'pci_secret', data.code);
 
         res.render('basic/login');
 
-      // })
+      })
 
     } else {
       let url = requestTool.setAuthUrl('/login', 'login'); // 重定向url
