@@ -6,9 +6,7 @@ var LoginController = require('../../controllers/basic/login.controller');
 var AccountBindController = require('../../controllers/basic/account-bind.controller');
 
 router.route('/login')
-  .get(LoginController.getView);
-
-router.route('/login')
+  .get(LoginController.getView)
   .post(LoginController.loginVerify);
 
 router.route('/verify/:tel')

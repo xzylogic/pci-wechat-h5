@@ -31,28 +31,31 @@ module.exports = {
   },
 
   loginVerify: (req, res) => {
-    let postData = '';
+    let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+    let tel = req.query.tel || ''; // 微信返回code
 
-    req.addListener('data', (data) => {
-      postData += data;
-    });
+    alert(openId + tel);
 
-    req.addListener('end', () => {
-      let verifyData = querystring.parse(postData);
-      console.log(`POST login/verify ${JSON.stringify(verifyData)}`);
+    // req.addListener('data', (data) => {
+    //   postData += data;
+    // });
 
-      if (type == 1) {
-        res.render('basic/login-enter', {
-          postUrl: `/verify/${verifyData.tel}`,
-          errorMessage: ''
-        });
-      } else if (type == 2) {
-        res.render('basic/login-register', {
-          postUrl: `/register/${verifyData.tel}`,
-        });
-      }
+    // req.addListener('end', () => {
+    //   let verifyData = querystring.parse(postData);
+    //   console.log(`POST login/verify ${JSON.stringify(verifyData)}`);
 
-    });
+    //   if (type == 1) {
+    //     res.render('basic/login-enter', {
+    //       postUrl: `/verify/${verifyData.tel}`,
+    //       errorMessage: ''
+    //     });
+    //   } else if (type == 2) {
+    //     res.render('basic/login-register', {
+    //       postUrl: `/register/${verifyData.tel}`,
+    //     });
+    //   }
+
+    // });
   },
 
   login: (req, res) => {
