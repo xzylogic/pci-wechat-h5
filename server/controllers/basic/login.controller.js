@@ -31,10 +31,12 @@ module.exports = {
   },
 
   loginVerify: (req, res) => {
+
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let tel = req.query.tel || ''; // 微信返回code
 
-    alert(openId + tel);
+    console.log(openId);
+    console.log(tel);
 
     // req.addListener('data', (data) => {
     //   postData += data;
