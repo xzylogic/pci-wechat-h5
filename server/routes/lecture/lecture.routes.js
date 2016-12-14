@@ -2,10 +2,18 @@
 
 var express = require('express');
 var router = express.Router();
-var TestController = require('../../controllers/test/test.controller');
+var ApplyController = require('../../controllers/lecture/apply.controller');
 
-router.route('/')
-  .get(TestController.getTest)
-  .post(TestController.postTest);
+var InfoController = require('../../controllers/lecture/info.controller');
+
+var DetailController = require('../../controllers/lecture/detail.controller');
+
+router.route('/apply').get(ApplyController.getApply);
+
+router.route('/apply/success').get(ApplyController.getSuccess);
+
+router.route('/info').get(InfoController.getInfo);
+
+router.route('/detail').get(DetailController.getDetail);
 
 module.exports = router;
