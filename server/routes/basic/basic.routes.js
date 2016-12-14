@@ -3,19 +3,25 @@
 var express = require('express');
 var router = express.Router();
 var LoginController = require('../../controllers/basic/login.controller');
-var RegisterController = require('../../controllers/basic/register.controller');
 var AccountBindController = require('../../controllers/basic/account-bind.controller');
 
-router.route('/login').get(LoginController.getLogin);
+router.route('/login')
+  .get(LoginController.getView)
+  .post(LoginController.loginVerify);
 
-router.route('/login/enter').get(LoginController.getEnter);
+router.route('/verify/:tel')
+  .post(LoginController.login);
 
-router.route('/register').get(RegisterController.getRegister);
+router.route('/register/:tel')
+  .post(LoginController.register);
 
-router.route('/login/success').get(LoginController.getSuccess);
+router.route('/verify')
+  .get(LoginController.verify);
 
-router.route('/account-bind').get(AccountBindController.getAccountBind);
+router.route('/account-bind')
+  .get(AccountBindController.getAccountBind);
 
-router.route('/account-bind/add').get(AccountBindController.getAccountBindAdd);
+router.route('/account-bind/add')
+  .get(AccountBindController.getAccountBindAdd);
 
 module.exports = router;
