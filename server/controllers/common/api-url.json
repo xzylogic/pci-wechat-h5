@@ -1,6 +1,8 @@
 {
-  "test": "api/articleType/list",
-  "edit": "api/doctortitle/edit",
-  "verify": "verify",
-  "getToken": "api/micro/snsToken"
+  "getToken": "api/micro/snsToken",
+  "getLoginCode": "api/user/login/code",
+  "getRegisterCode": "api/user/register/code",
+  "ifRegister": "api/user/register/judge",
+  "login": "api/user/login",
+  "register": "api/user/register"
 }

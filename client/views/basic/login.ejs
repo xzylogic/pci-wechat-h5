@@ -10,13 +10,19 @@
 
 <body>
   <div class="container">
-    <form class="form-container"  action="<%=_src('/login')%>" method="post">
+    <form class="form-container" action="<%=_src('/login')%>" method="post">
       <div class="input-field">
         <input type="tel" name="tel" placeholder="请输入手机号" datatype="phone" errormsg="请输入正确的11位手机号!">
       </div>
-      <div>
-        <button type="submit" class="weui-btn weui-btn_primary">下一步</button>
-      </div>
+      <% if (errorMessage) {%>
+        <div class="space Validform_wrong">
+          <%=errorMessage%>
+        </div>
+        <div class="space"></div>
+        <%}%>
+          <div>
+            <button type="submit" class="weui-btn weui-btn_primary">下一步</button>
+          </div>
     </form>
     <div class="hint-info">
       <span class="hint-title">友情提示</span>
