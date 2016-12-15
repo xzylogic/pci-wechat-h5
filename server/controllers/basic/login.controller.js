@@ -6,12 +6,12 @@ var auth = require('../common/auth');
 
 module.exports = {
 
-  // 获取登录入口页面
-  getView: (req, res) => {
+  // 登录入口页面
+  getLogin: (req, res) => {
+    // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let code = req.query.code || ''; // 微信返回code
-
 
     if (openId) {
       // 如果cookie中有openId 则直接渲染到登录入口页面
@@ -50,6 +50,38 @@ module.exports = {
     }
   },
 
+  // 登录验证页面
+  getLoginEnter: (req, res) => {
+    let tel = req.query.tel;
+    let errorMessage = req.query.errorMessage || '';
+    res.render('basic/login-enter', {
+      postUrl: `/login/verify?tel=${tel}`,
+      errorMessage: errorMessage,
+      tel: tel
+    });
+  },
+
+  // 注册验证页面
+  getRegister: (req, res) => {
+    let tel = req.query.tel;
+    let errorMessage = req.query.errorMessage || '';
+    res.render('basic/login-register', {
+      postUrl: `/register?tel=${tel}`,
+      errorMessage: errorMessage,
+      tel: tel
+    });
+  },
+
+  // 登录成功页面
+  getLoginSuccess: (req, res) => {
+    let status = req.query.status;
+    let name = req.query.name;
+    res.render('basic/login-success', {
+      status: status,
+      username: name
+    });
+  },
+
   // 判断用户是否已注册
   // 若注册过则跳转到登录页面
   // 若未注册就跳转到注册页面
@@ -72,18 +104,20 @@ module.exports = {
         requestTool.getwithhandle('ifRegister', postData, (result) => {
           if (result) {
             // 未注册 跳转到注册页面
-            res.render('basic/login-register', {
-              postUrl: `/register?${postData}`,
-              errorMessage: '',
-              tel: tel
-            });
+            res.redirect(`${global.config.root}/register?tel=${tel}`);
+            // res.render('basic/login-register', {
+            //   postUrl: `/register?${postData}`,
+            //   errorMessage: '',
+            //   tel: tel
+            // });
           } else {
             // 注册过 跳转到登录页面
-            res.render('basic/login-enter', {
-              postUrl: `/login/verify?${postData}`,
-              errorMessage: '',
-              tel: tel
-            });
+            res.redirect(`${global.config.root}/login/enter?tel=${tel}`);
+            // res.render('basic/login-enter', {
+            //   postUrl: `/login/verify?${postData}`,
+            //   errorMessage: '',
+            //   tel: tel
+            // });
           }
         }, (err) => {
           // 错误 重新返回页面
@@ -113,18 +147,20 @@ module.exports = {
       data.openId = openId;
       requestTool.postwithhandle('login', data, (_data) => {
         if (_data) {
-          res.render('basic/login-success', {
-            status: '登录',
-            username: _data.name
-          });
+          res.redirect(`${global.config.root}/login/success?name=${_data.name}&status=登录`);
+          // res.render('basic/login-success', {
+          //   status: '登录',
+          //   username: _data.name
+          // });
         }
       }, (err) => {
         console.log(`[${new Date()}]User ${tel} login failed!`);
-        res.render('basic/login-enter', {
-          postUrl: `/login/verify?tel=${tel}`,
-          errorMessage: err,
-          tel: tel
-        });
+        res.redirect(`${global.config.root}/login/enter?tel=${tel}&errorMessage=${err}`);
+        // res.render('basic/login-enter', {
+        //   postUrl: `/login/verify?tel=${tel}`,
+        //   errorMessage: err,
+        //   tel: tel
+        // });
       })
     });
   },
@@ -147,19 +183,21 @@ module.exports = {
       data.openId = openId;
       requestTool.postwithhandle('register', data, (_data) => {
         if (_data) {
-          res.render('basic/login-success', {
-            status: '注册',
-            username: _data.name
-          });
+          res.redirect(`${global.config.root}/login/success?name=${_data.name}&status=注册`);
+          // res.render('basic/login-success', {
+          //   status: '注册',
+          //   username: _data.name
+          // });
         }
       }, (err) => {
         console.log(`[${new Date()}] User ${tel} register failed!`);
         console.log(`[${new Date()}] Error Message: ${err}`);
-        res.render('basic/login-register', {
-          postUrl: `/register?tel=${tel}`,
-          errorMessage: err,
-          tel: tel
-        });
+        res.redirect(`${global.config.root}/register?tel=${tel}&errorMessage=${err}`);
+        // res.render('basic/login-register', {
+        //   postUrl: `/register?tel=${tel}`,
+        //   errorMessage: err,
+        //   tel: tel
+        // });
       });
     });
   },
