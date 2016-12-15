@@ -1,7 +1,16 @@
 {
+<<<<<<< HEAD
   "test": "api/articleType/list",
   "edit": "api/doctortitle/edit",
   "verify": "verify",
   "getToken": "api/micro/snsToken",
   "lecture":"api/lecture"
+=======
+  "getToken": "api/micro/snsToken",
+  "getLoginCode": "api/user/login/code",
+  "getRegisterCode": "api/user/register/code",
+  "ifRegister": "api/user/register/judge",
+  "login": "api/user/login",
+  "register": "api/user/register"
+>>>>>>> 02f6364f0292a792c28c1d87002228dc630a08a9
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 global.config = {
-  server: 'http://10.10.14.71:8083/',
+  server: 'http://139.224.186.36/pci-micro/',
   root: '/pci-wechat',
   appId: 'wx47391e9ef8958539'
 }
