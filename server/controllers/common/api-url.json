@@ -2,5 +2,6 @@
   "test": "api/articleType/list",
   "edit": "api/doctortitle/edit",
   "verify": "verify",
-  "getToken": "api/micro/snsToken"
+  "getToken": "api/micro/snsToken",
+  "lecture":"api/lecture"
 }
