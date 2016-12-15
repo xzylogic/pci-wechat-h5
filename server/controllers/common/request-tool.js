@@ -8,13 +8,12 @@ var requestTool = {};
 
 /**
  * 使用superagent进行get请求
- * @param  {} res   [response]
  * @param  {} key   [api key]
  * @param  {} param [query参数]
  * @param  {} call  [callback函数]
  * @return {}       []
  */
-requestTool.get = function(res, key, param, call, error) {
+requestTool.get = function(key, param, call, error) {
   superagent
     .get(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
@@ -44,7 +43,7 @@ requestTool.getApi = function(res, key, param, call) {
 }
 
 // 直接返回接口的data数据
-requestTool.getwithhandle = function(res, key, param, call, error) {
+requestTool.getwithhandle = function(key, param, call, error) {
   superagent
     .get(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
@@ -56,16 +55,20 @@ requestTool.getwithhandle = function(res, key, param, call, error) {
         if (JSON.parse(sres.text).code === 0) {
           call(JSON.parse(sres.text).data);
         } else {
-          res.render('error', {
-            "message": '请求错误'
-          });
+          let msg = '';
+          if (JSON.parse(sres.text).msg) {
+            msg = JSON.parse(sres.text).msg;
+          } else {
+            msg = '接口返回错误';
+          }
+          error(msg);
         }
       }
     });
 }
 
 // 请求单独的url地址
-requestTool.getwithurl = function(res, url, param, call, error) {
+requestTool.getwithurl = function(url, param, call, error) {
   superagent
     .get(url)
     .set('Content-Type', 'application/json')
@@ -87,7 +90,7 @@ requestTool.getwithurl = function(res, url, param, call, error) {
  * @param  {} call [callback函数]
  * @return {}      []
  */
-requestTool.post = function(res, key, data, call, error) {
+requestTool.post = function(key, data, call, error) {
   superagent.post(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
     .send(data)
@@ -96,6 +99,29 @@ requestTool.post = function(res, key, data, call, error) {
         error(err);
       } else {
         call(sres.text);
+      }
+    });
+}
+
+requestTool.postwithhandle = function(key, data, call, error) {
+  superagent.post(BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .send(data)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        if (JSON.parse(sres.text).code === 0) {
+          call(JSON.parse(sres.text).data);
+        } else {
+          let msg = '';
+          if (JSON.parse(sres.text).msg) {
+            msg = JSON.parse(sres.text).msg;
+          } else {
+            msg = '接口返回错误';
+          }
+          error(msg);
+        }
       }
     });
 }

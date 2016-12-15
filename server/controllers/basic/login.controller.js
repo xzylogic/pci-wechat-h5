@@ -69,7 +69,7 @@ module.exports = {
         console.log(`[${new Date()}] POST /login : ${JSON.stringify(querystring.parse(postData))}`);
 
         // 请求接口判断用户是否登录过
-        requestTool.getwithhandle(res, 'ifRegister', postData, (result) => {
+        requestTool.getwithhandle('ifRegister', postData, (result) => {
           if (result) {
             res.render('basic/login-register', {
               postUrl: `/register?${postData}`,
@@ -93,6 +93,7 @@ module.exports = {
 
   },
 
+  // 获取验证码后登录操作
   login: (req, res) => {
     let tel = req.query.tel;
     console.log(`[${new Date()}] Login User: { tel: ${tel} }`);
@@ -104,21 +105,22 @@ module.exports = {
 
     req.addListener('end', () => {
       console.log(`[${new Date()}] Login VerifyCode: ${postData}`);
-      requestTool.get(res, 'login', postData, (_data) => {
+
+      requestTool.getwithhandle(res, 'login', postData, (_data) => {
         console.log(_data);
-        if (_data.code === 0) {
+        if (_data) {
           res.render('basic/login-success', {
             status: '登录',
-            username: '李四'
-          });
-        } else {
-          console.log(`[${new Date()}]User ${tel} login failed!`);
-          res.render('basic/login-enter', {
-            postUrl: `/login/verify?tel=${tel}`,
-            errorMessage: '验证码错误！',
-            tel: tel
+            username: _data.name
           });
         }
+      }, (err) => {
+        console.log(`[${new Date()}]User ${tel} login failed!`);
+        res.render('basic/login-enter', {
+          postUrl: `/login/verify?tel=${tel}`,
+          errorMessage: err,
+          tel: tel
+        });
       })
     });
 
@@ -140,22 +142,31 @@ module.exports = {
       data.tel = tel;
       data.openId = openId;
       console.log(data);
-      requestTool.post(res, 'register', data, (_data) => {
-        console.log(JSON.parse(_data));
-        if (JSON.parse(_data).code === 0) {
+      requestTool.postwithhandle('register', data, (_data) => {
+        console.log(_data);
+        if (_data) {
           res.render('basic/login-success', {
             status: '登录',
-            username: '李四'
+            username: _data.name
           });
-        } else {
+        } 
+        // else {
+        //   console.log(`[${new Date()}]User ${tel} register failed!`);
+        //   console.log(JSON.parse(_data).msg);
+        //   res.render('basic/login-register', {
+        //     postUrl: `/register?tel=${tel}`,
+        //     errorMessage: JSON.parse(_data).msg,
+        //     tel: tel
+        //   });
+        // }
+      }, (err) => {
           console.log(`[${new Date()}]User ${tel} register failed!`);
-          console.log(JSON.parse(_data).msg);
+          console.log(err);
           res.render('basic/login-register', {
             postUrl: `/register?tel=${tel}`,
-            errorMessage: JSON.parse(_data).msg,
+            errorMessage: err,
             tel: tel
           });
-        }
       })
     });
 
@@ -178,40 +189,3 @@ module.exports = {
   },
 
 }
-
-// login: (req, res) => {
-//   let tel = req.query.tel;
-//   console.log(`Login info: { tel: ${tel} }`);
-//   var postData = '';
-
-//   req.addListener('data', (data) => {
-//     postData += data;
-//   });
-
-//   req.addListener('end', () => {
-//     let codeData = querystring.parse(postData);
-//     console.log(`POST login ${JSON.stringify(codeData)}`);
-//     console.log(codeData);
-//     requestTool.getwithurl(res, `${global.config.domain}/pci-wechat-test/verifycode`, codeData, (_data) => {
-//       if (_data.code == 0) {
-//         res.render('basic/login-success', {
-//           status: '登录',
-//           username: '李四'
-//         });
-//         // res.send({ code: 0 });
-//       } else {
-//         console.log(`User ${tel} login failed!`);
-//         res.render('basic/login-enter', {
-//           postUrl: `/login/verify?tel=${tel}`,
-//           errorMessage: '验证码错误！',
-//           tel: tel
-//         });
-//         // res.send({ code: -1 });
-//       }
-//     })
-//   });
-// },
-
-// register: (req, res) => {
-
-// },
