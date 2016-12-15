@@ -5,7 +5,7 @@ var router = express.Router();
 var TestController = require('../../controllers/test/test.controller');
 
 router.route('/')
-  .get(TestController.getTest)
-  .post(TestController.postTest);
+  .get(TestController.getTest);
+  // .post(TestController.postTest);
 
 module.exports = router;

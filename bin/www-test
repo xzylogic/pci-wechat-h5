@@ -1,8 +1,10 @@
 'use strict';
 
 global.config = {
-  server: 'http://localhost:3000/pci-wechat-test/',
-  root: '/pci-wechat-test'
+  server: 'http://139.224.186.36/pci-micro/',
+  domain: 'http://139.224.186.36',
+  root: '/pci-wechat-test',
+  appId: 'wx47391e9ef8958539'
 }
 
 var app = require('../app');
@@ -85,7 +87,6 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
   console.log(`(START) [${new Date()}] Your application is runing on port: ${port} ${global.config.root}/`);
-
 }
 
 

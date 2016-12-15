@@ -15,3 +15,5 @@ Thumbs.db
 *.log
 
 .sass-cache
+
+bin/www-local

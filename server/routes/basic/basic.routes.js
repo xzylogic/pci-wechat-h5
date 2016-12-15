@@ -5,20 +5,27 @@ var router = express.Router();
 var LoginController = require('../../controllers/basic/login.controller');
 var AccountBindController = require('../../controllers/basic/account-bind.controller');
 
-router.route('/login/:type')
-  .get(LoginController.getView);
-
-router.route('/login/:type')
+router.route('/login')
+  .get(LoginController.getView)
   .post(LoginController.loginVerify);
 
-router.route('/verify/:type/:tel')
-  .post(LoginController.login);
+router.route('/login/verify').post(LoginController.login);
 
-router.route('/register/:type/:tel')
+router.route('/login/getVerifyCode')
+  .get(LoginController.getLoginVerifyCode);
+
+router.route('/register')
   .post(LoginController.register);
 
-router.route('/verify')
-  .get(LoginController.verify);
+// router.route('/register/getVerifyCode')
+//   .get(LoginController.getRegisterVerifyCode);
+
+// router.route('/loginenter')
+//   .get(LoginController.loginEnter);
+
+// 验证验证码
+// router.route('/verifycode')
+//   .get(LoginController.verify);
 
 router.route('/account-bind')
   .get(AccountBindController.getAccountBind);

@@ -1,8 +1,9 @@
 'use strict';
 
 global.config = {
-  server: 'http://10.1.32.44/pci-operation/',
-  root: '/pci-wechat'
+  server: 'http://139.224.186.36/pci-micro/',
+  root: '/pci-wechat',
+  appId: 'wx47391e9ef8958539'
 }
 
 var app = require('../app');
