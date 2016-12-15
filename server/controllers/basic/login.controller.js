@@ -2,7 +2,7 @@
 
 var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
-var auth = require('../common/auth');
+// var auth = require('../common/auth');
 
 module.exports = {
 

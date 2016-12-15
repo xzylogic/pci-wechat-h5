@@ -10,7 +10,7 @@ var DetailController = require('../../controllers/lecture/detail.controller');
 
 router.route('/apply').get(ApplyController.getApply);
 
-router.route('/apply/success').get(ApplyController.getSuccess);
+router.route('/apply/success').get(ApplyController.Success);
 
 router.route('/info').get(InfoController.getInfo);
 
