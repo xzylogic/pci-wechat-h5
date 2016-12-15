@@ -22,23 +22,30 @@ body {
   border: 1px solid #dcdcdc;
   font-size: 16px;
   background-color: #fff;
+  img {
+    background: url(../../image/icon-explain.png) no-repeat right center;
+  }
   span {
     display: block;
-    width: 20%;
+    width: 22%;
     height: 40px;
     float: right;
     background: url(../../image/icon-arrow-down.png) no-repeat right center;
     background-size: 15px;
+    margin-left: 10px;
   }
   input {
-    // display: block;
     width: 60px;
     height: 30px;
-    float: right;
+    // float: right;
     margin: 5px 0;
     border: none;
   }
 }
+#age {
+  float:right;
+}
+
 input {
   position: relative;
   display: block;
@@ -68,7 +75,7 @@ input#title {
 }
 
 .account-btn {
-  padding: 30px 0;
+  padding-top: 200px
 }
 .weui-btn_primary {
   background-color: #35B2F2 !important;
