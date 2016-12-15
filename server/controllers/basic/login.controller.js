@@ -8,7 +8,6 @@ module.exports = {
 
   // 获取登录入口页面
   getView: (req, res) => {
-    auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let code = req.query.code || ''; // 微信返回code
