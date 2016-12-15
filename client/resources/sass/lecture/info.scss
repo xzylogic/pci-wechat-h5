@@ -1,0 +1,53 @@
+body{
+	background-color: #efeff4;
+}
+.weui-search-bar {
+	padding:8px 20px;
+}
+.info-container {
+  padding: 0 15px;
+  background-color:#fff;
+}
+.right{
+	float:right;
+}
+.left{
+	float:left;
+	p{
+		font-size:16px;
+		padding-top: 3px;
+		font-family: PingFangSC-Regular;
+		color: #333333;
+		font-weight: bold;
+	}
+}
+.clear{
+	clear:both;
+}
+.ovelflow{
+	overflow:hidden;
+}
+.weui-btn_primary{
+	background-color:#35B2F2;
+	font-size:14px;
+}
+.activity{
+	color:#333;
+}
+.weui-skin_android .weui-dialog__bd {
+	text-align: center;
+	line-height:2.3;
+	border-bottom:1px solid #DDDDDD;
+}
+.weui-skin_android .weui-dialog__ft{
+	padding:0;
+}
+.weui-skin_android .weui-dialog__btn{
+	padding:1px 3.8em;
+}
+.cancel{
+	border-right: 1px solid #ddd;
+}
+.weui-dialog__btn_primary{
+	color:#35B2F2;
+}

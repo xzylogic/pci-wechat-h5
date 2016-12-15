@@ -1,4 +1,9 @@
 {
+  "test": "api/articleType/list",
+  "edit": "api/doctortitle/edit",
+  "verify": "verify",
+  "getToken": "api/micro/snsToken",
+  "lecture":"api/lecture",
   "getToken": "api/micro/snsToken",
   "getLoginCode": "api/user/login/code",
   "getRegisterCode": "api/user/register/code",

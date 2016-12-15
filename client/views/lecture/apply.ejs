@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>讲座报名</title>
+  <% include ../layout/layout %>
+  	<link rel="stylesheet" href="<%=_src('/css/lecture/lecture-apply.min.css')%>">
+    <script src="<%=_src('/lib/picker/picker.min.js')%>"></script>
+</head>
+
+<body>
+	  <div class="lecture-container">
+	    <div class="lecture">
+	      <label>1. 参与者姓名 <span class="name-asterisk">*</span></label>
+	      <input type="text" name="tel"  class="name">
+	      <p class="name_info full"></p>
+	    </div>
+	    <div class="lecture">
+	      <label>2. 年龄 <span class="age-asterisk">*</span></label>
+	      <input type="number" name="tel" class="age">
+	      <p class="age_info full"></p>
+	    </div>
+	    <div class="lecture">
+	      <label>3. 性别 <span class="sex-asterisk">*</span></label>
+	      <div class="showPicker">
+	        <span id="showPicker"  class="sex">男</span>
+	      </div>
+	    </div>
+	    <div class="lecture">
+	      <label>4. 想参加的讲座 <span class="lecture-more-asterisk">*</span></label>
+	      <div class="showPicker">
+	        <span id="showPickerlecture" class="lecture-more">哈哈</span>
+	      </div>
+	    </div>
+	    <div class="lecture-btn">
+	      <button id="button" type="button" class="weui-btn weui-btn_primary"><i class="weui-icon-waiting"></i> 报名</button>
+	    </div>
+      
+	  </div>
+  <script type="text/javascript">
+  var nameEl = document.getElementById('showPicker');
+  var namelecture = document.getElementById('showPickerlecture');
+
+  var data = [{
+    text: '男',
+    value: 1
+  }, {
+    text: '女',
+    value: 2
+  }];
+
+  var picker = new Picker({
+    data: [data],
+    selectedIndex: [0],
+    title: '您的选择'
+  });
+
+  picker.on('picker.select', function(selectedVal, selectedIndex) {
+    nameEl.innerText = data[selectedIndex[0]].text;
+  });
+
+  picker.on('picker.select', function(selectedVal, selectedIndex) {
+    namelecture.innerText = data[selectedIndex[0]].text;
+  });
+
+  nameEl.addEventListener('click', function() {
+    picker.show();
+  });
+
+  namelecture.addEventListener('click', function() {
+    picker.show();
+  });
+
+
+  $('#button').on('click', function() {
+    if($(".name").val() && $(".age").val()){
+      location.href = "apply/success";
+    }
+  })
+
+        /*方法调用*/
+        inputFn(".name");
+        inputFn(".age");
+
+
+ function inputFn(ele) {
+            $(ele).bind('keyup blur',function(){
+                var val = $(this).val();
+                if(val == ""){
+                   $(this).next('p').html("请将信息添加完全");
+                   $(this).siblings('label').children().css({'color':'red'});
+                   $("button").removeClass("submit");
+                   return;
+                 }else{
+                    $(this).next('p').html("");
+                    $(this).siblings('label').children().css({'color':'#000'});    
+                 };
+                if($(".name").val() && $(".age").val()){
+                    $("button").addClass("submit");
+                  }
+            });
+              if($(".name").val() && $(".age").val()){
+                  $("button").addClass("submit");
+                }
+            
+        }
+
+  </script>
+</body>
+
+
+</html>
