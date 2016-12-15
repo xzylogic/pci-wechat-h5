@@ -30,13 +30,13 @@ auth.getToken = (res, code, call) => {
   });
 }
 
-auth.getTokenCopy = (res, code, call) => {
-  requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx5921baa9a4522266&secret=23ed70a87e976da7756b076166f88723&code=${code}&grant_type=authorization_code`, call, (err) => {
-    res.render('error', {
-      "message": '请求错误'
-    });
-  });
-}
+// auth.getTokenCopy = (res, code, call) => {
+//   requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx5921baa9a4522266&secret=23ed70a87e976da7756b076166f88723&code=${code}&grant_type=authorization_code`, call, (err) => {
+//     res.render('error', {
+//       "message": '请求错误'
+//     });
+//   });
+// }
 
 /**
  * 判断用户是否已登录

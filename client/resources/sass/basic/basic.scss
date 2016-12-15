@@ -10,7 +10,7 @@ body {
   padding-bottom: 16px;
   .input-field {
     position: relative;
-    padding: 45px 0;
+    padding: 32px 0 45px;
   }
 }
 
@@ -21,12 +21,12 @@ body {
   border: 1px solid #DCDCDC;
   border-radius: 5px;
   background-color: #FFF;
-  overflow: hidden;
   input {
     border: none !important;
-    border-radius: 0;
+    border-radius: 5px;
   }
   button {
+    width: 130px;
     color: #35B2F2;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -35,6 +35,17 @@ body {
     -ms-user-select: none;
     user-select: none;
   }
+  button[disabled] {
+    font-size: 15px;
+  }
+}
+
+.weui-cell__bd .Validform_wrong {
+  position: absolute !important;
+}
+
+.weui-cell.input-code + .space {
+  padding-top: 32px !important;
 }
 
 button[disabled] {
@@ -65,7 +76,6 @@ input:focus {
 
 .Validform_checktip {
   display: block;
-  padding-left: 5px;
   line-height: 2.5;
   font-size: 14px;
   -webkit-touch-callout: none;
@@ -78,6 +88,8 @@ input:focus {
 
 .Validform_wrong {
   color: #DA322E !important;
+  font-size: 14px;
+  padding-left: 5px;
 }
 
 .Validform_right {
@@ -148,4 +160,16 @@ input:focus {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.red {
+  color: #DA322E;
+}
+
+.weui-btn_primary {
+  background-color: #35B2F2 !important;
+}
+
+.weui-dialog__btn_primary {
+  color: #35B2F2 !important;
 }
