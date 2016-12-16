@@ -10,19 +10,20 @@ module.exports = {
   // 登录4种status状态
   // 0 登录 1 讲座报名 2 家庭账号绑定 3 讲座报名信息
   getLogin: (req, res) => {
-    // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
+    auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let code = req.query.code || ''; // 微信返回code
     let status = req.query.status || 0; // status状态数据
 
-    auth.isLogin(res, openId, (name) => {
-      res.redirect(`${global.config.root}/login/success?name=${name}`);
-    }, () => {
+    // auth.isLogin(res, openId, (name) => {
+    //   res.redirect(`${global.config.root}/login/success?name=${name}`);
+    // }, () => {
       if (openId) {
         // 如果cookie中有openId 则直接渲染到登录入口页面
 
         res.render('basic/login', {
+          status: status,
           errorMessage: ''
         });
 
@@ -35,6 +36,7 @@ module.exports = {
           console.log(data.openid);
           auth.setCookies(res, 'pci_secret', data.openid);
           res.render('basic/login', {
+            status: status,
             errorMessage: ''
           });
         });
@@ -54,15 +56,17 @@ module.exports = {
         console.log(`[${new Date()}] Redirect Url: ${url}`);
         res.redirect(url);
       }
-    });
+    // });
   },
 
   // 登录验证页面
   getLoginEnter: (req, res) => {
     let tel = req.query.tel;
     let errorMessage = req.query.errorMessage || '';
+    let status = req.query.status; // status状态数据
+
     res.render('basic/login-enter', {
-      postUrl: `/login/verify?tel=${tel}`,
+      postUrl: `/login/verify?tel=${tel}&status=${status}`,
       errorMessage: errorMessage,
       tel: tel
     });
@@ -72,8 +76,9 @@ module.exports = {
   getRegister: (req, res) => {
     let tel = req.query.tel;
     let errorMessage = req.query.errorMessage || '';
+    let status = req.query.status; // status状态数据
     res.render('basic/login-register', {
-      postUrl: `/register?tel=${tel}`,
+      postUrl: `/register?tel=${tel}&status=${status}`,
       errorMessage: errorMessage,
       tel: tel
     });
@@ -94,10 +99,11 @@ module.exports = {
   login: (req, res) => {
 
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+    let status = req.query.status; // status状态数据
     let postData = ''; // 记录form表单提交的数据
 
     // 获取POST提交数据
-    if (openId && req.url === "/login" && req.method.toLowerCase() === 'post') {
+    if (openId && req.method.toLowerCase() === 'post') {
       req.addListener('data', (data) => {
         postData += data;
       });
@@ -110,7 +116,7 @@ module.exports = {
         requestTool.getwithhandle('ifRegister', postData, (result) => {
           if (result) {
             // 未注册 跳转到注册页面
-            res.redirect(`${global.config.root}/register?tel=${tel}`);
+            res.redirect(`${global.config.root}/register?tel=${tel}&status=${status}`);
             // res.render('basic/login-register', {
             //   postUrl: `/register?${postData}`,
             //   errorMessage: '',
@@ -118,7 +124,7 @@ module.exports = {
             // });
           } else {
             // 注册过 跳转到登录页面
-            res.redirect(`${global.config.root}/login/enter?tel=${tel}`);
+            res.redirect(`${global.config.root}/login/enter?tel=${tel}&status=${status}`);
             // res.render('basic/login-enter', {
             //   postUrl: `/login/verify?${postData}`,
             //   errorMessage: '',
@@ -128,6 +134,7 @@ module.exports = {
         }, (err) => {
           // 错误 重新返回页面
           res.render('basic/login', {
+            status: status,
             errorMessage: err
           });
         });
@@ -139,7 +146,8 @@ module.exports = {
   loginVerify: (req, res) => {
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let tel = req.query.tel;
-    console.log(`[${new Date()}] Login User: { tel: ${tel}, openId: ${openId} }`);
+    let status = req.query.status; // status状态数据
+    console.log(`[${new Date()}] Login User: { tel: ${tel}, openId: ${openId}, status: ${status} }`);
     let postData = '';
 
     req.addListener('data', (data) => {
@@ -153,7 +161,16 @@ module.exports = {
       data.openId = openId;
       requestTool.postwithhandle('login', data, (_data) => {
         if (_data) {
-          res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
+          if (status == 0 ){
+            res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
+          } else if(status == 1) {
+            res.send('讲座报名');
+          } else if(status == 2) {
+            res.send('家庭账号绑定');
+          } else if(status == 3) {
+            res.send('讲座报名信息');
+          }
+          
           // res.render('basic/login-success', {
           //   status: '登录',
           //   username: _data.name
@@ -175,7 +192,8 @@ module.exports = {
   register: (req, res) => {
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let tel = req.query.tel;
-    console.log(`[${new Date()}] Register User: { tel: ${tel}, openId: ${openId} }`);
+    let status = req.query.status; // status状态数据
+    console.log(`[${new Date()}] Register User: { tel: ${tel}, openId: ${openId}, status: ${status} }`);
     let postData = '';
 
     req.addListener('data', (data) => {
@@ -189,12 +207,22 @@ module.exports = {
       data.openId = openId;
       requestTool.postwithhandle('register', data, (_data) => {
         if (_data) {
-          res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
+          // res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           // res.render('basic/login-success', {
           //   status: '注册',
           //   username: _data.name
           // });
+          if (status == 0 ){
+            res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
+          } else if(status == 1) {
+            res.send('讲座报名');
+          } else if(status == 2) {
+            res.send('家庭账号绑定');
+          } else if(status == 3) {
+            res.send('讲座报名信息');
+          }
         }
+
       }, (err) => {
         console.log(`[${new Date()}] User ${tel} register failed!`);
         console.log(`[${new Date()}] Error Message: ${err}`);
