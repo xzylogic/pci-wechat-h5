@@ -30,6 +30,7 @@ auth.getToken = (res, code, call) => {
   });
 }
 
+// 自己测试使用
 // auth.getTokenCopy = (res, code, call) => {
 //   requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx5921baa9a4522266&secret=23ed70a87e976da7756b076166f88723&code=${code}&grant_type=authorization_code`, call, (err) => {
 //     res.render('error', {
@@ -45,13 +46,18 @@ auth.getToken = (res, code, call) => {
  * @param  {[type]} call   [description]
  * @return {[type]}        [description]
  */
-auth.isLogin = (res, openid, call) => {
-  requestTool.getwithhandle(res, 'isLogin', '', (data) => {
-    if (data === 1) {
-      res.render('basic/login');
+auth.isLogin = (res, openId, call, calllogin) => {
+  requestTool.get('login', `openId=${openId}`, (data) => {
+    var _data = JSON.parse(data);
+    if (_data.code === 0 && _data.data && _data.data.name) {
+      call(_data.data.name);
     } else {
-      call(res);
+      calllogin();
     }
+  }, (err) => {
+    res.render('error', {
+      message: '请求错误'
+    });
   });
 }
 
