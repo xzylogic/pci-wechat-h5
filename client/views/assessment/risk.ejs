@@ -9,38 +9,27 @@
 </head>
 <body>
   <p class="risk-top">弗明汉心脏病研究（Framingham Heart Study）名十年心脏病风险评估，是根据胆固醇水平和非胆固醇因素计算个体未来十年冠心病发作几率的方法。</p>
-  <div class="showPicker"><a>1 您的性别</a>
+  <div class="showPicker">1 您的性别
         <span id="showSex"></span>
   </div>
   <div class="showPicker">2 您的年龄
-        <input type="tel" name="inputAge" id="age">
+        <span id="showAge"></span>
   </div>
   <div class="showPicker">3 您是否吸烟
         <span id="showSmoke"></span>
   </div>
-  <div class="showPicker">4 您是否有一级亲属有冠心病史
-  <img src="" id="showIOSDialog2">
-        <span id="showRelative"></span>
+  <div class="showPicker">4 您的血压
+    <span id="showTreatment"></span><span id="showPressure">高压</span>
   </div>
-  <div class="showPicker">5 您的血压
-        <input type="tel" name="inputLowPressure" value="高压"><div style="float:right">mmHg</div>
-        <input type="tel" name="inputHighPressure" value="低压"><div style="float:right">mmHg</div>
+  <div class="showPicker">5 您总胆固醇水平
+        <span id="showCholesterol"></span>
   </div>
-  <div class="showPicker">6 您是否有过糖尿病
-        <span id="showDiabetes"></span>
-  </div>
-  <div class="showPicker">7 您是否有心脏病
-        <span id="showCardiopathy"></span>
-  </div>
-  <div class="showPicker">8 您是否做过搭桥手术
-        <span id="showSurgery"></span>
-  </div>
-  <div class="showPicker">9 您心脏以外动脉是否硬化
-        <span id="showArteriosclerosis"></span>
+  <div class="showPicker">6 您的高密度脂蛋白胆固醇水平(HDL)
+        <span style="width:20%" id="showGoodCholesterol"></span>
   </div>
   <input id="title" type="text" name="title" class="display">
   <div class="account-btn">
-      <button type="button" class="weui-btn weui-btn_primary">提交</button>
+      <button type="button" id="risk-btn" class="weui-btn weui-btn_primary">提交</button>
   </div>
  <div id="dialogs">
    <div class="js_dialog" id="iosDialog2" style="display: none;">
@@ -57,7 +46,7 @@
      </div>
    </div>
  </div>
-
+   
 <script type="text/javascript">
     $(function(){
         var $iosDialog2 = $('#iosDialog2')
@@ -71,12 +60,12 @@
     });
 
   var showSex = document.getElementById('showSex');
+  var showAge = document.getElementById('showAge');
   var showSmoke = document.getElementById('showSmoke');
-  var showRelative = document.getElementById('showRelative');
-  var showDiabetes = document.getElementById('showDiabetes');
-  var showCardiopathy = document.getElementById('showCardiopathy');
-  var showSurgery = document.getElementById('showSurgery');
-  var showArteriosclerosis = document.getElementById('showArteriosclerosis');
+  var showPressure = document.getElementById('showPressure');
+  var showTreatment = document.getElementById('showTreatment');
+  var showCholesterol = document.getElementById('showCholesterol');
+  var showGoodCholesterol = document.getElementById('showGoodCholesterol');
 
   var dataSex = [{
     text: '男',
@@ -86,6 +75,44 @@
     value: 2
   }]
   
+  var dataAge = [{
+    text: '≦19',
+    value: 1
+  },{
+    text: '20-34',
+    value: 2
+  },{
+    text: '35-39',
+    value: 3
+  },{
+    text: '40-44',
+    value: 4
+  },{
+    text: '45-49',
+    value: 5
+  },{
+    text: '50-54',
+    value: 6
+  },{
+    text: '55-59',
+    value: 7
+  },{
+    text: '60-64',
+    value: 8
+  },{
+    text: '65-69',
+    value: 9
+  },{
+    text: '70-74',
+    value: 10
+  },{
+    text: '75-79',
+    value: 11
+  },{
+    text: '≧80',
+    value: 12
+  }]
+  
   var dataIsSmoke = [{
     text: '是',
     value:1
@@ -93,55 +120,71 @@
     text: '否',
     value:2
   }]
-  
-  var dataIsSurgery = [{
-    text: '是',
+    
+  var dataPressure = [{
+    text: '<120',
     value:1
   },{
-    text: '否',
-    value:2
-  }]
-  
-  var dataIsDiabetes = [{
-    text: '是',
-    value:1
-  },{
-    text: '否',
-    value:2
-  }]
-  
-  var dataIsCardiopathy = [{
-    text: '是',
-    value:1
-  },{
-    text: '否',
-    value:2
-  }]
-  
-  var dataIsKnowRelative = [{
-    text: '是',
-    value:1
-  },{
-    text: '否',
+    text:'120-129',
     value:2
   },{
-    text: '不知道',
+    text:'130-139',
     value:3
+  },{
+    text:'140-159',
+    value:4
+  },{
+    text:'160+',
+    value:5
   }]
   
-  var dataIsKnowArteriosclerosis = [{
-    text: '是',
+  var dataTreatment = [{
+    text: '有治疗',
     value:1
   },{
-    text: '否',
+    text: '无治疗',
     value:2
-  },{
-    text: '不知道',
-    value:3
   }]
 
+  var dataCholesterol = [{
+    text: '<160',
+    value:1
+  },{
+    text: '160-199',
+    value:2
+  },{
+    text: '200-239',
+    value:3
+  },{
+    text: '240-279',
+    value:4
+  },{
+    text: '≧280',
+    value:5
+  }]
+
+  var dataGoodCholesterol = [{
+    text: '≧60',
+    value:1
+  },{
+    text: '50-59',
+    value:2
+  },{
+    text: '40-49',
+    value:3
+  },{
+    text: '<40',
+    value:4
+  }]
+  
   var pickerSex = new Picker({
     data: [dataSex],
+    selectedIndex: [0],
+    title: '您的选择'
+  });
+  
+  var pickerAge = new Picker({
+    data: [dataAge],
     selectedIndex: [0],
     title: '您的选择'
   });
@@ -152,39 +195,42 @@
     title: '您的选择'
   });
   
-  var pickerIsSurgery = new Picker({
-    data: [dataIsSurgery],
+  var pickerPressure = new Picker({
+    data: [dataPressure],
     selectedIndex: [0],
     title: '您的选择'
   });
   
-  var pickerIsDiabetes = new Picker({
-    data: [dataIsDiabetes],
-    selectedIndex: [0],
-    title: '您的选择'
-  });
-  
-  var pickerIsCardiopathy = new Picker({
-    data: [dataIsCardiopathy],
-    selectedIndex: [0],
-    title: '您的选择'
-  });
-  
-  var pickerIsKnowRelative = new Picker({
-    data: [dataIsKnowRelative],
-    selectedIndex: [0],
-    title: '您的选择'
-  });
-  
-  var pickerIsKnowArteriosclerosis = new Picker({
-    data: [dataIsKnowArteriosclerosis],
+    var pickerTreatment = new Picker({
+    data: [dataTreatment],
     selectedIndex: [0],
     title: '您的选择'
   });
 
+  var pickerCholesterol = new Picker({
+    data: [dataCholesterol],
+    selectedIndex: [0],
+    title: '您的选择'
+  });
+  
+  var pickerGoodCholesterol = new Picker({
+    data: [dataGoodCholesterol],
+    selectedIndex: [0],
+    title: '您的选择'
+  });
+  
   pickerSex.on('picker.select', function(selectedVal, selectedIndex) {
     showSex.innerText = dataSex[selectedIndex[0]].text;
     if (dataSex[selectedIndex].value == 2) {
+      $('#title').removeClass('display');
+    } else {
+      $('#title').addClass('display');
+    }
+  });
+  
+  pickerAge.on('picker.select', function(selectedVal, selectedIndex) {
+    showAge.innerText = dataAge[selectedIndex[0]].text;
+    if (dataAge[selectedIndex].value == 12) {
       $('#title').removeClass('display');
     } else {
       $('#title').addClass('display');
@@ -200,45 +246,36 @@
       }
    });
    
-   pickerIsDiabetes.on('picker.select', function(selectedVal, selectedIndex) {
-      showDiabetes.innerText = dataIsDiabetes[selectedIndex[0]].text;
-      if (dataIsDiabetes[selectedIndex].value == 2) {
+   pickerPressure.on('picker.select', function(selectedVal, selectedIndex) {
+      showPressure.innerText = dataPressure[selectedIndex[0]].text;
+      if (dataPressure[selectedIndex].value == 5) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
    });
    
-   pickerIsCardiopathy.on('picker.select', function(selectedVal, selectedIndex) {
-      showCardiopathy.innerText = dataIsCardiopathy[selectedIndex[0]].text;
-      if (dataIsCardiopathy[selectedIndex].value == 2) {
+     pickerTreatment.on('picker.select', function(selectedVal, selectedIndex) {
+      showTreatment.innerText = dataTreatment[selectedIndex[0]].text;
+      if (dataTreatment[selectedIndex].value == 2) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
    });
    
-   pickerIsSurgery.on('picker.select', function(selectedVal, selectedIndex) {
-      showSurgery.innerText = dataIsSurgery[selectedIndex[0]].text;
-      if (dataIsSurgery[selectedIndex].value == 2) {
+   pickerCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
+      showCholesterol.innerText = dataCholesterol[selectedIndex[0]].text;
+      if (dataCholesterol[selectedIndex].value == 5) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
    });
    
-   pickerIsKnowRelative.on('picker.select', function(selectedVal, selectedIndex) {
-      showRelative.innerText = dataIsKnowRelative[selectedIndex[0]].text;
-      if (dataIsKnowRelative[selectedIndex].value == 3) {
-        $('#title').removeClass('display');
-      } else {
-        $('#title').addClass('display');
-      }
-   });
-   
-   pickerIsKnowArteriosclerosis.on('picker.select', function(selectedVal, selectedIndex) {
-      showArteriosclerosis.innerText = dataIsKnowArteriosclerosis[selectedIndex[0]].text;
-      if (dataIsKnowArteriosclerosis[selectedIndex].value == 3) {
+    pickerGoodCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
+      showGoodCholesterol.innerText = dataGoodCholesterol[selectedIndex[0]].text;
+      if (dataGoodCholesterol[selectedIndex].value == 4) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
@@ -249,31 +286,32 @@
     pickerSex.show();
   });
   
+  showAge.addEventListener('click', function() {
+    pickerAge.show();
+  });
+  
   showSmoke.addEventListener('click', function() {
     pickerIsSmoke.show();
   });
   
-  showDiabetes.addEventListener('click', function() {
-    pickerIsDiabetes.show();
+  showPressure.addEventListener('click', function() {
+    pickerPressure.show();
   });
   
-  showCardiopathy.addEventListener('click', function() {
-    pickerIsCardiopathy.show();
+  showTreatment.addEventListener('click', function() {
+    pickerTreatment.show();
   });
   
-  showSurgery.addEventListener('click', function() {
-    pickerIsSurgery.show();
+  showCholesterol.addEventListener('click', function() {
+    pickerCholesterol.show();
   });
   
-  showRelative.addEventListener('click', function() {
-    pickerIsKnowRelative.show();
+  showGoodCholesterol.addEventListener('click', function() {
+    pickerGoodCholesterol.show();
   });
   
-  showArteriosclerosis.addEventListener('click', function() {
-    pickerIsKnowArteriosclerosis.show();
-  });
-  
-  if(showSex.innerText =="" || showSmoke.innerText =="" || showDiabetes.innerText == "" || showCardiopathy.innerText == "" || showSurgery.innerText == "" || showRelative.innerText == "" || showArteriosclerosis.innerText == ""){
+  if(showSex.innerText =="" || showAge.innerText =="" || showSmoke.innerText =="" || showPressure.innerText=="" || 
+  showTreatment.innerText =="" || showCholesterol.innerText == "" || showGoodCholesterol.innerText == ""){
     
   }
   </script>
