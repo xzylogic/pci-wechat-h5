@@ -10,7 +10,7 @@ module.exports = {
   // 登录4种status状态
   // 0 登录 1 讲座报名 2 家庭账号绑定 3 讲座报名信息
   getLogin: (req, res) => {
-    auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
+    // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let code = req.query.code || ''; // 微信返回code
