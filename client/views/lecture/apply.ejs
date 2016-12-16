@@ -6,9 +6,11 @@
   <% include ../layout/layout %>
   	<link rel="stylesheet" href="<%=_src('/css/lecture/lecture-apply.min.css')%>">
     <script src="<%=_src('/lib/picker/picker.min.js')%>"></script>
+    <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
 </head>
 
 <body>
+  <form class="form-container" action="<%=_src('/apply/success')%>" method="post">
 	  <div class="lecture-container">
 	    <div class="lecture">
 	      <label>1. 参与者姓名 <span class="name-asterisk">*</span></label>
@@ -29,18 +31,33 @@
 	    <div class="lecture">
 	      <label>4. 想参加的讲座 <span class="lecture-more-asterisk">*</span></label>
 	      <div class="showPicker">
-	        <span id="showPickerlecture" class="lecture-more">哈哈</span>
+	        <span id="showPickerlecture" class="lecture-more"></span>
 	      </div>
 	    </div>
 	    <div class="lecture-btn">
 	      <button id="button" type="button" class="weui-btn weui-btn_primary"><i class="weui-icon-waiting"></i> 报名</button>
-	    </div>
-      
+	    </div> 
+       <% if (errorMessage) {%>
+        <div class="space Validform_wrong">
+          <%=errorMessage%>
+        </div>
+        <div class="space"></div>
+        <%}%>
 	  </div>
+  </form>
+
   <script type="text/javascript">
   var nameEl = document.getElementById('showPicker');
   var namelecture = document.getElementById('showPickerlecture');
+  var lecture = [];
+  var json = '<%- JSON.stringify(json) %>';
+      json = JSON.parse(json);
+  for (var i = 0; i < json.length; i++) {
 
+    json[i].text = json[i].name;
+    json[i].value = json[i].id;
+    lecture.push(json[i]);
+  }
   var data = [{
     text: '男',
     value: 1
@@ -48,6 +65,12 @@
     text: '女',
     value: 2
   }];
+
+ var lecture = new Picker({
+    data:[lecture],
+    selectedIndex:[0],
+    title:'您的选择'
+ });
 
   var picker = new Picker({
     data: [data],
@@ -59,8 +82,8 @@
     nameEl.innerText = data[selectedIndex[0]].text;
   });
 
-  picker.on('picker.select', function(selectedVal, selectedIndex) {
-    namelecture.innerText = data[selectedIndex[0]].text;
+  lecture.on('picker.select', function(selectedVal, selectedIndex) {
+    namelecture.innerText = lecture.data[0][selectedIndex[0]].text;
   });
 
   nameEl.addEventListener('click', function() {
@@ -68,9 +91,8 @@
   });
 
   namelecture.addEventListener('click', function() {
-    picker.show();
+    lecture.show();
   });
-
 
   $('#button').on('click', function() {
     if($(".name").val() && $(".age").val()){
@@ -101,9 +123,12 @@
             });
               if($(".name").val() && $(".age").val()){
                   $("button").addClass("submit");
-                }
-            
+                } 
         }
+  $(".form-container").Validform({
+    tiptype: 3,
+    postonce: true,
+  });
 
   </script>
 </body>
