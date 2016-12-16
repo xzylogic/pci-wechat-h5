@@ -16,9 +16,9 @@ module.exports = {
     let code = req.query.code || ''; // 微信返回code
     let status = req.query.status || 0; // status状态数据
 
-    // auth.isLogin(res, openId, (name) => {
-    //   res.redirect(`${global.config.root}/login/success?name=${name}`);
-    // }, () => {
+    auth.isLogin(res, openId, (name) => {
+      res.redirect(`${global.config.root}/login/success?name=${name}`);
+    }, () => {
       if (openId) {
         // 如果cookie中有openId 则直接渲染到登录入口页面
 
@@ -56,7 +56,7 @@ module.exports = {
         console.log(`[${new Date()}] Redirect Url: ${url}`);
         res.redirect(url);
       }
-    // });
+    });
   },
 
   // 登录验证页面
