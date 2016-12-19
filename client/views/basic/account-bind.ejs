@@ -9,41 +9,21 @@
 
 <body>
   <div class="container">
-    <div class="cell">
+    <%for(let i = 0; i < content.length; i++) {%>
+      <div class="cell">
       <div class="cell-image">
-        <img src="http://pci.xlab-tech.com/pci/picture1467613263150mmexport1467613286108.jpg">
+        <img src="<%=content[i].avatarUrl%>">
       </div>
       <div class="cell-content">
-        <p>里斯</p>
+        <p><%=content[i].name%></p>
       </div>
       <div class="cell-right">
-        <span class="red">申请中</span>
+        <span></span>
       </div>
-    </div>
-    <div class="cell">
-      <div class="cell-image">
-        <img src="http://pci.xlab-tech.com/pci/picture1467613263150mmexport1467613286108.jpg">
       </div>
-      <div class="cell-content">
-        <p>里斯</p>
-      </div>
-      <div class="cell-right">
-        <span>已添加</span>
-      </div>
-    </div>
-    <div class="cell">
-      <div class="cell-image">
-        <img src="http://pci.xlab-tech.com/pci/picture1467613263150mmexport1467613286108.jpg">
-      </div>
-      <div class="cell-content">
-        <p>里斯</p>
-      </div>
-      <div class="cell-right">
-        <span>已拒绝</span>
-      </div>
-    </div>
+    <%}%>
     <div class="addition">
-      <a class="add-btn" href="<%=_src('/account-bind/add')%>"></a>
+      <a class="add-btn" href="<%=_src('/family/add')%>"></a>
       <span>添加新家庭成员</span>
     </div>
   </div>
