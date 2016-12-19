@@ -12,7 +12,8 @@ router.route('/apply').get(ApplyController.getApply);
 
 router.route('/apply/success').get(ApplyController.Success);
 
-router.route('/apply/verify').post(ApplyController.applyVerify);
+router.route('/apply/verify').post(ApplyController.applyVerify);//报名
+
 
 router.route('/info').get(InfoController.getInfo);
 

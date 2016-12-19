@@ -42,6 +42,7 @@ module.exports = {
       data.openId = "ox0ThwtVjZiQMWLCx3SwupAqG4zk"; //王兵的opedId;
       requestTool.postwithhandle('apply', data, (_data) => {
         if (_data) {
+          console.log(_data);
           res.redirect(`${global.config.root}/lecture/apply/success?img=${_data}`);
           // res.render('basic/login-success', {
           //   status: '登录',

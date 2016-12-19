@@ -40,7 +40,8 @@ module.exports = {
 	    		}
 	    	}
             res.render('lecture/info', {
-              data:_data.content
+              data:_data.content,
+              // "json":_data.content,
             });
         }
       }, (err) => {
