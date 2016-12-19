@@ -63,6 +63,15 @@ button:focus {
   outline: none;
 }
 
+button[disabled] {
+  color: rgba(255, 255, 255, 0.6) !important;
+  background-color: #ccc !important;
+}
+
+button:after {
+  border: none !important;
+}
+
 .account-header {
   height: 95px;
   padding: 30px 0 15px;

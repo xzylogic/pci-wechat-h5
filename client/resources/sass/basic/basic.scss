@@ -52,6 +52,10 @@ button[disabled] {
   color: #BBB !important;
 }
 
+button:after {
+  border: none !important;
+}
+
 input {
   position: relative;
   display: block;

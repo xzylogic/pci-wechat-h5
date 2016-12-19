@@ -11,7 +11,7 @@
 
 <body>
   <div class="account-header">
-    <img id="avatar" src="">
+    <img id="avatar" src="http://7xp6gb.com2.z0.glb.clouddn.com/pci/picture/pic2@2x.png">
     <p id="name"></p>
   </div>
   <form class="account-container"  action="<%=_src(postUrl)%>" method="post">
@@ -24,10 +24,10 @@
       <div class="showPicker">
         <span id="showPicker">爸爸</span>
       </div>
-      <input id="title" type="text" name="targetCall" value="爸爸" class="display" placeholder="请输入称呼" required>
+      <input id="title" type="text" name="targetCall" value="爸爸" class="display" placeholder="请输入称呼" oninput="titleChange()" onporpertychange="titleChange()"  required>
     </div>
     <div class="account-btn">
-      <button id="button" type="submit" class="weui-btn weui-btn_primary">添加</button>
+      <button id="button" type="submit" class="weui-btn weui-btn_primary" disabled>添加</button>
     </div>
   </form>
   <% if (errorMessage) {%>
@@ -50,102 +50,7 @@
       <p class="weui-toast__content" id="toastMessage"></p>
     </div>
   </div>
-  <script type="text/javascript">
-  $(".account-container").Validform({
-    tiptype: 3,
-    postonce: true,
-    datatype: {
-      "phone": /^1[3|4|5|7|8][0-9]\d{8}$/
-    }
-  });
-
-  function inputChange() {
-    var tel = $('#tel').val();
-    if (!isNaN(tel) && tel.length === 11) {
-      console.log(tel);
-      $.get(window.location.pathname + "/search?tel=" + tel, function(result) {
-        if (JSON.parse(result).code === 0) {
-          console.log(result);
-          $('#avatar').attr('src', JSON.parse(result).data.avatarUrl);
-          $('#name').text(JSON.parse(result).data.name);
-        } else if (JSON.parse(result).code === 1000) {
-          $('#avatar').attr('src', '');
-          $('#name').text('');
-          $('#toastMessage').text("此账号未注册”全程心管家“，请您的家人注册后进行绑定");
-          $('#toast').css('display', 'block');
-          $('#toast').css('opacity', '1');
-          setTimeout("closeToast()", 5000);
-        } else {
-          $('#avatar').attr('src', '');
-          $('#name').text('');
-          $('#toastMessage').text(JSON.parse(result).msg || '请求错误');
-          $('#toast').css('display', 'block');
-          $('#toast').css('opacity', '1');
-          setTimeout("closeToast()", 3000);
-        }
-      });
-    }
-  }
-
-  function closeToast() {
-    $('#toast').css('display', 'none');
-    $('#toast').css('opacity', '0');
-  }
-
-  var nameEl = document.getElementById('showPicker');
-
-  var data = [{
-    text: '爸爸',
-    value: 1
-  }, {
-    text: '妈妈',
-    value: 2
-  }, {
-    text: '爷爷',
-    value: 3
-  }, {
-    text: '奶奶',
-    value: 4
-  }, {
-    text: '外公',
-    value: 5
-  }, {
-    text: '外婆',
-    value: 6
-  }, {
-    text: '爱人',
-    value: 7
-  }, {
-    text: '其他',
-    value: 8
-  }];
-
-  var picker = new Picker({
-    data: [data],
-    selectedIndex: [0],
-    title: '您的选择'
-  });
-
-  picker.on('picker.select', function(selectedVal, selectedIndex) {
-    nameEl.innerText = data[selectedIndex[0]].text;
-    $('#title').val(data[selectedIndex[0]].text);
-    if (data[selectedIndex].value == 8) {
-      $('#title').val('');
-      $('#title').removeClass('display');
-    } else {
-      $('#title').addClass('display');
-    }
-    console.log($('#title').val());
-  });
-
-  nameEl.addEventListener('click', function() {
-    picker.show();
-  });
-
-  $('#closeerr').on('click', function() {
-    $('#modalerr').css('display', 'none');
-  })
-  </script>
+  <script src="<%=_src('/js/basic/account-bind-add.min.js')%>"></script>
 </body>
 
 </html>
