@@ -2,11 +2,13 @@ body{
 	background-color: #efeff4;
 }
 .weui-search-bar {
-	padding:8px 20px;
+	padding:7px 15px;
 }
 .info-container {
   padding: 0 15px;
   background-color:#fff;
+  border: 1px solid #DCDCDC;
+  margin-bottom:10px;
 }
 .right{
 	float:right;
@@ -14,7 +16,7 @@ body{
 .left{
 	float:left;
 	p{
-		font-size:16px;
+		font-size:20px;
 		padding-top: 3px;
 		font-family: PingFangSC-Regular;
 		color: #333333;
@@ -34,6 +36,14 @@ body{
 .activity{
 	color:#333;
 }
+.weui-media-box__bd{
+	font-size:14px;
+	color:#666;
+}
+.weui-media-box__title{
+	font-size:14px;
+	color:#666;
+}
 .weui-skin_android .weui-dialog__bd {
 	text-align: center;
 	line-height:2.3;
@@ -50,4 +60,45 @@ body{
 }
 .weui-dialog__btn_primary{
 	color:#35B2F2;
+}
+.weui-media-box{
+	padding: 0;
+}
+.weui-panel__hd{
+	padding:14px 0px 10px;
+}
+.weui-panel__hd:after{
+	border:0;
+}
+.weui-cell:before{
+	border:0;
+}
+.weui-panel__bd{
+	border-bottom:1px solid #DCDCDC;
+}
+.weui-cell{
+	padding:10px 0;
+}
+.cost{
+	color:#13C26E;
+}
+.long{
+	color:#DCDCDC;
+}
+.address{
+	height:22px;
+	overflow:hidden;                                    
+}
+.weui-media-box_appmsg .weui-media-box__hd{
+	width:30%;
+	height:auto;
+}
+.lecture-right{
+	width:60%;
+}
+.weui-panel:before{
+	border-top: 0;
+}
+.weui-panel:after{
+	border-bottom: 0;
 }

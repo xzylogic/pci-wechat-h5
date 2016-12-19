@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <title>登录</title>
   <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
 </head>
-
 <body>
   <div class="container">
     <form class="form-container" action="<%=_src(postUrl)%>" method="post">
@@ -76,7 +74,6 @@
       }
     });
   }
-
   function timedCount() {
     $('#getcode').attr('disabled', 'true');
     $('#getcode').text(count + '秒后重新获取');
@@ -89,15 +86,12 @@
       clearTimeout(t);
     }
   }
-
   $('#close').on('click', function() {
     $('#modal').css('display', 'none');
   });
-
   $('#closeerr').on('click', function() {
     $('#modalerr').css('display', 'none');
   });
   </script>
 </body>
-
 </html>
