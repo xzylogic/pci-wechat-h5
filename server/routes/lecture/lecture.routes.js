@@ -12,6 +12,8 @@ router.route('/apply').get(ApplyController.getApply);
 
 router.route('/apply/success').get(ApplyController.Success);
 
+router.route('/apply/verify').post(ApplyController.applyVerify);
+
 router.route('/info').get(InfoController.getInfo);
 
 router.route('/detail').get(DetailController.getDetail);

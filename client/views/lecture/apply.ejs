@@ -10,32 +10,34 @@
 </head>
 
 <body>
-  <form class="form-container" action="<%=_src('/apply/success')%>" method="post">
+  <form class="form-container" action="<%=_src(postUrl)%>" method="post" onsubmit="return checkForm()">
 	  <div class="lecture-container">
 	    <div class="lecture">
 	      <label>1. 参与者姓名 <span class="name-asterisk">*</span></label>
-	      <input type="text" name="tel"  class="name">
+	      <input type="text" name="name"  class="name">
 	      <p class="name_info full"></p>
 	    </div>
 	    <div class="lecture">
 	      <label>2. 年龄 <span class="age-asterisk">*</span></label>
-	      <input type="number" name="tel" class="age">
+	      <input type="number" name="age" class="age">
 	      <p class="age_info full"></p>
 	    </div>
 	    <div class="lecture">
 	      <label>3. 性别 <span class="sex-asterisk">*</span></label>
 	      <div class="showPicker">
-	        <span id="showPicker"  class="sex">男</span>
+	        <span id="showPicker">男</span>
+          <input type="hidden" name="sex" id="sex" value="男">
 	      </div>
 	    </div>
 	    <div class="lecture">
 	      <label>4. 想参加的讲座 <span class="lecture-more-asterisk">*</span></label>
 	      <div class="showPicker">
-	        <span id="showPickerlecture" class="lecture-more"></span>
+	        <span id="showPickerlecture" class="lecture-more"><%=name%></span>
+          <input type="hidden" name="lectureId" id="lecture" value="<%=id%>">
 	      </div>
 	    </div>
 	    <div class="lecture-btn">
-	      <button id="button" type="button" class="weui-btn weui-btn_primary"><i class="weui-icon-waiting"></i> 报名</button>
+	      <button id="button" class="weui-btn weui-btn_primary"><i class="weui-icon-waiting"></i> 报名</button>
 	    </div> 
        <% if (errorMessage) {%>
         <div class="space Validform_wrong">
@@ -49,6 +51,8 @@
   <script type="text/javascript">
   var nameEl = document.getElementById('showPicker');
   var namelecture = document.getElementById('showPickerlecture');
+  var sex = document.getElementById('sex');
+  var lectureInput = document.getElementById('lecture');
   var lecture = [];
   var json = '<%- JSON.stringify(json) %>';
       json = JSON.parse(json);
@@ -80,10 +84,12 @@
 
   picker.on('picker.select', function(selectedVal, selectedIndex) {
     nameEl.innerText = data[selectedIndex[0]].text;
+    sex.value = data[selectedIndex[0]].text;
   });
 
   lecture.on('picker.select', function(selectedVal, selectedIndex) {
     namelecture.innerText = lecture.data[0][selectedIndex[0]].text;
+    lectureInput.value = selectedIndex[0];
   });
 
   nameEl.addEventListener('click', function() {
@@ -94,11 +100,6 @@
     lecture.show();
   });
 
-  $('#button').on('click', function() {
-    if($(".name").val() && $(".age").val()){
-      location.href = "apply/success";
-    }
-  })
 
         /*方法调用*/
         inputFn(".name");
@@ -112,7 +113,6 @@
                    $(this).next('p').html("请将信息添加完全");
                    $(this).siblings('label').children().css({'color':'red'});
                    $("button").removeClass("submit");
-                   return;
                  }else{
                     $(this).next('p').html("");
                     $(this).siblings('label').children().css({'color':'#000'});    
@@ -125,10 +125,16 @@
                   $("button").addClass("submit");
                 } 
         }
-  $(".form-container").Validform({
-    tiptype: 3,
-    postonce: true,
-  });
+
+
+
+    //验证表单 的函数
+    function checkForm(){
+      if($(".name").val() && $(".age").val()){
+        return true;   
+     }
+     return false;
+    }
 
   </script>
 </body>
