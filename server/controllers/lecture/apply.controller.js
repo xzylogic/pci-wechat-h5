@@ -1,12 +1,37 @@
 'use strict';
 var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
+var auth = require('../common/auth');
 
 module.exports = {
 
+  getIsapply: (req,res) =>{
+    // 测试写死cookie数据
+    // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
+    // auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
+    // res.clearCookie('pci_secret');
+    let status = req.query.status || 0; // status状态数据
+    let url = requestTool.setAuthUrl('apply', status); // 重定向url
+
+    auth.getOpenId(req, res, url, (openId) => {
+      auth.isLogin(res, openId, (name) => {
+        // 已登录跳转报名页面
+        res.redirect(`${global.config.root}/lecture/apply/enter`);
+      }, () => {
+        // 未登录跳转登录页面
+        res.render('basic/login', {
+          status: status,
+          errorMessage: ''
+        });
+      });
+    });
+  },
+
+
+
   getApply: (req, res) => {
    requestTool.getwithhandle('lecture',"", (_data) => {
-        if (_data) {
+        if (_data && _data.length !== 0) {
           res.render('lecture/apply', {
               postUrl:`/lecture/apply/verify`,
               "json":_data,
@@ -14,6 +39,14 @@ module.exports = {
               id:_data[0].id,
               errorMessage: ''
             });
+        } else if(_data){
+          res.render('lecture/apply',{
+            postUrl:`/lecture/apply/verify`,
+            "json":_data,
+            name:"",
+            id:"",
+            errorMessage:''
+          });
         }
       }, (err) => {
         res.render('lecture/apply', {

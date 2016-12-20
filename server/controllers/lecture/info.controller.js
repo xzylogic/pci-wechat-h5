@@ -1,7 +1,7 @@
 'use strict';
 
 var requestTool = require('../common/request-tool');
-var moment = require("moment");
+var moment = require("moment");	
 
 module.exports = {
 
@@ -41,7 +41,6 @@ module.exports = {
 	    	}
             res.render('lecture/info', {
               data:_data.content,
-              // "json":_data.content,
             });
         }
       }, (err) => {
