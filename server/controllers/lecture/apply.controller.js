@@ -10,8 +10,7 @@ module.exports = {
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     // auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     // res.clearCookie('pci_secret');
-    let status = req.query.status || 0; // status状态数据
-    let url = requestTool.setAuthUrl('apply', status); // 重定向url
+    let url = requestTool.setAuthUrl('/lecture/apply'); // 重定向url
 
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(res, openId, (name) => {
@@ -19,10 +18,7 @@ module.exports = {
         res.redirect(`${global.config.root}/lecture/apply/enter`);
       }, () => {
         // 未登录跳转登录页面
-        res.render('basic/login', {
-          status: status,
-          errorMessage: ''
-        });
+        res.redirect(`${global.config.root}/login?status=1`);
       });
     });
   },
