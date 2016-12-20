@@ -72,6 +72,7 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
 
 /**
  * 判断用户是否已登录
+ * 0 登录 1 讲座报名 2 家庭账号绑定 3 讲座报名信息
  * @param  {[type]} res       [response]
  * @param  {[type]} openId    [openId]
  * @param  {[type]} call      [已登录操作]
