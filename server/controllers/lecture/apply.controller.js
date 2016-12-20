@@ -7,8 +7,8 @@ module.exports = {
 
   getIsapply: (req,res) =>{
     // 测试写死cookie数据
-    // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
-    // auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
+    //auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
+    auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     // res.clearCookie('pci_secret');
     let url = requestTool.setAuthUrl('/lecture/apply'); // 重定向url
 
@@ -26,6 +26,11 @@ module.exports = {
 
 
   getApply: (req, res) => {
+    let err = req.query.err;
+    let errorMessage = '';
+    if(err){
+      errorMessage = err;
+    };
    requestTool.getwithhandle('lecture',"", (_data) => {
         if (_data && _data.length !== 0) {
           res.render('lecture/apply', {
@@ -33,13 +38,13 @@ module.exports = {
               "json":_data,
               name:_data[0].name,
               id:_data[0].id,
-              errorMessage: ''
+              errorMessage: errorMessage
             });
         } else if(_data){
           res.render('lecture/apply',{
             postUrl:`/lecture/apply/verify`,
             "json":_data,
-            name:"",
+            name:"无讲座",
             id:"",
             errorMessage:''
           });
@@ -68,25 +73,18 @@ module.exports = {
     });
     req.addListener('end', () => {
       let data = querystring.parse(postData);
-      data.openId = "ox0ThwtVjZiQMWLCx3SwupAqG4zk"; //王兵的opedId;
+      let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+      data.openId = openId;
       requestTool.postwithhandle('apply', data, (_data) => {
         if (_data) {
-          console.log(_data);
+
           res.redirect(`${global.config.root}/lecture/apply/success?img=${_data}`);
-          // res.render('basic/login-success', {
-          //   status: '登录',
-          //   username: _data.name
-          // });
-        }else if(_data && code == 1000){
+
+        }else{
           //报名人数已满;
         }
       }, (err) => {
-       res.redirect(`${global.config.root}/lecture/apply`);
-        // res.render('basic/login-enter', {
-        //   postUrl: `/login/verify?tel=${tel}`,
-        //   errorMessage: err,
-        //   tel: tel
-        // });
+        res.redirect(`${global.config.root}/lecture/apply/enter?err=${err}`);
       })
     });
   },
