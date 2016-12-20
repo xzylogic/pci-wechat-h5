@@ -155,9 +155,9 @@ module.exports = {
           if (status == 0) {
             res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           } else if (status == 1) {
-            res.send('讲座报名');
+            res.redirect(`${global.config.root}/lecture/apply/enter`);
           } else if (status == 2) {
-            res.send('家庭账号绑定');
+            res.redirect(`${global.config.root}/family`);
           } else if (status == 3) {
             res.send('讲座报名信息');
           }
