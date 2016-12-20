@@ -93,7 +93,7 @@ var picker = new Picker({
 });
 
 picker.on('picker.select', function(selectedVal, selectedIndex) {
-  pickerEl.innerText = data[selectedIndex[0]].text;
+  pickerEl.text(data[selectedIndex[0]].text);
   $('#title').val(data[selectedIndex[0]].text);
   if (data[selectedIndex].value == 8) {
     $('#title').val('');
