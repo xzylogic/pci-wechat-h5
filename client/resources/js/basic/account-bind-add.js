@@ -33,6 +33,7 @@ function errorHandle(msg) {
 
 function inputChange() {
   target = 0;
+  canClick();
   var tel = $('#tel').val();
   if (!isNaN(tel) && tel.length === 11) {
     $.get(window.location.pathname + "/search?tel=" + tel, function(result) {
