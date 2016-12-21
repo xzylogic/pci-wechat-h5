@@ -159,9 +159,8 @@ module.exports = {
           } else if (status == 2) {
             res.redirect(`${global.config.root}/family`);
           } else if (status == 3) {
-            res.send('讲座报名信息');
+            res.redirect(`${global.config.root}/lecture/info`);
           }
-
           // res.render('basic/login-success', {
           //   status: '登录',
           //   username: _data.name
@@ -198,22 +197,21 @@ module.exports = {
       data.openId = openId;
       requestTool.postwithhandle('register', data, (_data) => {
         if (_data) {
+          if (status == 0) {
+            res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
+          } else if (status == 1) {
+            res.redirect(`${global.config.root}/lecture/apply/enter`);
+          } else if (status == 2) {
+            res.redirect(`${global.config.root}/family`);
+          } else if (status == 3) {
+            res.redirect(`${global.config.root}/lecture/info`);
+          }
           // res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           // res.render('basic/login-success', {
           //   status: '注册',
           //   username: _data.name
           // });
-          if (status == 0) {
-            res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
-          } else if (status == 1) {
-            res.send('讲座报名');
-          } else if (status == 2) {
-            res.send('家庭账号绑定');
-          } else if (status == 3) {
-            res.send('讲座报名信息');
-          }
         }
-
       }, (err) => {
         console.log(`[${new Date()}] User ${tel} register failed!`);
         console.log(`[${new Date()}] Error Message: ${err}`);

@@ -5,8 +5,8 @@
   <title>添加新家庭成员</title>
   <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/account-bind.min.css')%>">
-    <script src="<%=_src('/lib/picker/picker.min.js')%>"></script>
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
+    <script src="<%=_src('/lib/picker/picker.min.js')%>"></script>
 </head>
 
 <body>
@@ -14,17 +14,17 @@
     <img id="avatar" src="http://7xp6gb.com2.z0.glb.clouddn.com/pci/picture/pic2@2x.png">
     <p id="name"></p>
   </div>
-  <form class="account-container"  action="<%=_src(postUrl)%>" method="post">
+  <form class="account-container" action="<%=_src(postUrl)%>" method="post">
     <div class="account-field">
       <label for="tel">1. 他／她的手机号</label>
       <input id="tel" type="tel" name="targetTel" placeholder="请输入手机号" datatype="phone" errormsg="请输入正确的11位手机号!" oninput="inputChange()" onporpertychange="inputChange()" nullmsg="请输入正确的11位手机号!">
     </div>
     <div class="account-field">
       <label>1. 您对他／她的称呼</label>
-      <div class="showPicker">
-        <span id="showPicker">爸爸</span>
+      <div id="showPicker" class="showPicker">
+        <span id="pickerText"></span>
       </div>
-      <input id="title" type="text" name="targetCall" value="爸爸" class="display" placeholder="请输入称呼" oninput="titleChange()" onporpertychange="titleChange()"  required>
+      <input id="title" type="hidden" name="targetCall" placeholder="请输入称呼">
     </div>
     <div class="account-btn">
       <button id="button" type="submit" class="weui-btn weui-btn_primary" disabled>添加</button>

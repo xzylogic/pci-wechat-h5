@@ -45,7 +45,7 @@ requestTool.getApi = function(res, key, param, call) {
 
 // 直接返回接口的data数据
 requestTool.getwithhandle = function(key, param, call, error) {
-  console.log(BASE_URL + api[key]);
+  console.log(`[${new Date()}] GET URL: ${BASE_URL}${api[key]}`);
   superagent
     .get(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
@@ -54,7 +54,6 @@ requestTool.getwithhandle = function(key, param, call, error) {
       if (err) {
         error(err);
       } else {
-        console.log(sres.text);
         if (JSON.parse(sres.text).code === 0) {
           call(JSON.parse(sres.text).data);
         } else {

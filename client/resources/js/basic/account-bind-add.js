@@ -93,18 +93,20 @@ var picker = new Picker({
 });
 
 picker.on('picker.select', function(selectedVal, selectedIndex) {
-  pickerEl.text(data[selectedIndex[0]].text);
-  $('#title').val(data[selectedIndex[0]].text);
+  $('#pickerText').text(data[selectedIndex].text);
   if (data[selectedIndex].value == 8) {
     $('#title').val('');
-    $('#title').removeClass('display');
+    $('#title').attr('type', 'text');
     canClick();
   } else {
-    $('#title').addClass('display');
+    $('#title').attr('type', 'hidden');
+    $('#title').val(data[selectedIndex].text);
     canClick();
   }
 });
 
 pickerEl.on('click', function() {
-  picker.show();
+  picker.show(function() {
+    picker.refillColumn(0, data);
+  });
 });
