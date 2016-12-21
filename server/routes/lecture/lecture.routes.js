@@ -16,10 +16,12 @@ router.route('/apply/success').get(ApplyController.Success); //报名成功
 
 router.route('/apply/verify').post(ApplyController.applyVerify);//报名请求
 
-
 router.route('/info').get(InfoController.getIsinfo);//取消报名入口
 
 router.route('/info/enter').get(InfoController.getInfo);//取消报名页面
+
+router.route('/info/enter/getCancel')
+  .get(InfoController.getInfoCancel); // 取消报名
 
 router.route('/detail').get(DetailController.getDetail);
 

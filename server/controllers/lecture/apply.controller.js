@@ -6,10 +6,7 @@ var auth = require('../common/auth');
 module.exports = {
 
   getIsapply: (req,res) =>{
-    // 测试写死cookie数据
-    //auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
-    auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
-    // res.clearCookie('pci_secret');
+    //auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     let url = requestTool.setAuthUrl('/lecture/apply'); // 重定向url
 
     auth.getOpenId(req, res, url, (openId) => {
@@ -40,13 +37,13 @@ module.exports = {
               id:_data[0].id,
               errorMessage: errorMessage
             });
-        } else if(_data){
+        } else if(_data && _data.length == 0){
           res.render('lecture/apply',{
             postUrl:`/lecture/apply/verify`,
             "json":_data,
-            name:"无讲座",
+            name:"",
             id:"",
-            errorMessage:''
+            errorMessage:'没有可报名的讲座'
           });
         }
       }, (err) => {
@@ -80,8 +77,6 @@ module.exports = {
 
           res.redirect(`${global.config.root}/lecture/apply/success?img=${_data}`);
 
-        }else{
-          //报名人数已满;
         }
       }, (err) => {
         res.redirect(`${global.config.root}/lecture/apply/enter?err=${err}`);

@@ -7,7 +7,7 @@ var auth = require('../common/auth');
 module.exports = {
 
   getIsinfo: (req,res) =>{
-  	auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
+  	//auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
   	let url = requestTool.setAuthUrl('/lecture/info'); // 重定向url
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(res, openId, (name) => {
@@ -21,8 +21,8 @@ module.exports = {
   },
 
   getInfo: (req, res) => {
-  	let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-     requestTool.getwithhandle('applyList',`openId=${openId}`, (_data) => {
+  		let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+  		requestTool.getwithhandle('applyList',`openId=${openId}`, (_data) => {
         if (_data) {
 	    	for (var i = 0; i < _data.content.length; i++) {
 	    		_data.content[i].time = moment(_data.content[i].time).format('YYYY-MM-DD h:mm');
@@ -43,13 +43,13 @@ module.exports = {
 	    			_data.content[i].day = "六";
 	    		};
 	    		if(_data.content[i].status == 0){
-	    			_data.content[i].status = "报名成功";
+	    			_data.content[i].statusName = "报名成功";
 	    		}else if(_data.content[i].status == 1){
-	    			_data.content[i].status = "报名取消";
+	    			_data.content[i].statusName = "报名取消";
 	    		}else if(_data.content[i].status == 2){
-	    			_data.content[i].status = "报名签到";
+	    			_data.content[i].statusName = "报名签到";
 	    		}else if(_data.content[i].status == 3){
-	    			_data.content[i].status = "报名过期";
+	    			_data.content[i].statusName = "报名过期";
 	    		}
 	    		if(_data.content[i].charge == 0){
 	    			_data.content[i].charge = "免费";
@@ -66,7 +66,19 @@ module.exports = {
            errorMessage: err,
         });
       });
+     
   },
+
+  getInfoCancel: (req,res) =>{
+  	  let data = {};
+  	  let id = req.query.id;
+      let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+      data.openId = openId;
+      data.joinId = id;
+	    requestTool.post('applyCance', data, (data) => {
+	      res.send(data);
+	    });
+  }
 
 
 
