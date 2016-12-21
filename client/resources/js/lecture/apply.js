@@ -66,8 +66,8 @@
           if($(".name").val() && $(".age").val()){
               $("button").addClass("submit");
             };
-            var age = $(".age").val();
-          if(!(/^([0-9]|[0-9]{2}|100)$/.test(age))){
+          var age = $(".age").val();
+          if(age.length > 2 || (/[^0-9]+/g).test(age)){
             $(".age").next('p').html("请填写正确的年龄");
             $("button").removeClass("submit"); 
           }
