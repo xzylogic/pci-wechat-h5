@@ -319,7 +319,7 @@
          }
   }
    $('#riskbtn').on('click', function(){
-     if(HDL !== '' || TC !== '' || age !== '' || cure !== '' || sex !== '' || smoke !== '' || systolic !== ''){
+     if(HDL !== '' && TC !== '' && age !== '' && cure !== '' && sex !== '' && smoke !== '' && systolic !== ''){
            
          }
     });
@@ -351,15 +351,7 @@
   
   showGoodCholesterol.addEventListener('click', function() {
     pickerGoodCholesterol.show();
-  });
-  
-  
-  
-  if(showSex.innerText =="" || showAge.innerText =="" || showSmoke.innerText =="" || showPressure.innerText=="" || 
-  showTreatment.innerText =="" || showCholesterol.innerText == "" || showGoodCholesterol.innerText == ""){
-    
-  }
-  
+  }); 
   </script>
 </body>
 

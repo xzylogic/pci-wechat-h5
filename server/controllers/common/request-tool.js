@@ -8,10 +8,11 @@ var requestTool = {};
 
 /**
  * 使用superagent进行get请求
- * @param  {} key   [api key]
- * @param  {} param [query参数]
- * @param  {} call  [callback函数]
- * @return {}       []
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
  */
 requestTool.get = function(key, param, call, error) {
   superagent
@@ -44,6 +45,7 @@ requestTool.getApi = function(res, key, param, call) {
 
 // 直接返回接口的data数据
 requestTool.getwithhandle = function(key, param, call, error) {
+  console.log(BASE_URL + api[key]);
   superagent
     .get(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
@@ -52,6 +54,7 @@ requestTool.getwithhandle = function(key, param, call, error) {
       if (err) {
         error(err);
       } else {
+        console.log(sres.text);
         if (JSON.parse(sres.text).code === 0) {
           call(JSON.parse(sres.text).data);
         } else {
@@ -84,11 +87,11 @@ requestTool.getwithurl = function(url, param, call, error) {
 
 /**
  * 使用superagent进行post请求
- * @param  {} res  [response]
- * @param  {} key  [api key]
- * @param  {} data [post data]
- * @param  {} call [callback函数]
- * @return {}      []
+ * @param  {} key    [api key]
+ * @param  {} data   [post data]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
  */
 requestTool.post = function(key, data, call, error) {
   superagent.post(BASE_URL + api[key])
@@ -103,6 +106,7 @@ requestTool.post = function(key, data, call, error) {
     });
 }
 
+// 直接返回接口的data数据
 requestTool.postwithhandle = function(key, data, call, error) {
   superagent.post(BASE_URL + api[key])
     .set('Content-Type', 'application/json')

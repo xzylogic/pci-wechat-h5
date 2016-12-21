@@ -12,7 +12,7 @@
           <form class="weui-search-bar__form">
               <div class="weui-search-bar__box">
                   <i class="weui-icon-search"></i>
-                  <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+                  <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="可搜索讲座名称或讲座关键字" required/>
                   <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
               </div>
               <label class="weui-search-bar__label" id="searchText">
@@ -22,58 +22,69 @@
           </form>
           <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
     </div>
-    <div class="info-container">
-       <div class="weui-panel weui-panel_access">
-            <div class="weui-panel__hd ovelflow">
-              <div class="left"><p>报名成功</p></div>
-              <div class="right"><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="showIOSDialog1">取消报名</a></div>
-            </div>
-            <div class="weui-panel__bd clear">
-                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-                    <div class="weui-media-box__hd">
-                        <img class="weui-media-box__thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAeFBMVEUAwAD///+U5ZTc9twOww7G8MYwzDCH4YcfyR9x23Hw+/DY9dhm2WZG0kbT9NP0/PTL8sux7LFe115T1VM+zz7i+OIXxhes6qxr2mvA8MCe6J6M4oz6/frr+us5zjn2/fa67rqB4IF13XWn6ad83nxa1loqyirn+eccHxx4AAAC/klEQVRo3u2W2ZKiQBBF8wpCNSCyLwri7v//4bRIFVXoTBBB+DAReV5sG6lTXDITiGEYhmEYhmEYhmEYhmEY5v9i5fsZGRx9PyGDne8f6K9cfd+mKXe1yNG/0CcqYE86AkBMBh66f20deBc7wA/1WFiTwvSEpBMA2JJOBsSLxe/4QEEaJRrASP8EVF8Q74GbmevKg0saa0B8QbwBdjRyADYxIhqxAZ++IKYtciPXLQVG+imw+oo4Bu56rjEJ4GYsvPmKOAB+xlz7L5aevqUXuePWVhvWJ4eWiwUQ67mK51qPj4dFDMlRLBZTqF3SDvmr4BwtkECu5gHWPkmDfQh02WLxXuvbvC8ku8F57GsI5e0CmUwLz1kq3kD17R1In5816rGvQ5VMk5FEtIiWislTffuDpl/k/PzscdQsv8r9qWq4LRWX6tQYtTxvI3XyrwdyQxChXioOngH3dLgOFjk0all56XRi/wDFQrGQU3Os5t0wJu1GNtNKHdPqYaGYQuRDfbfDf26AGLYSyGS3ZAK4S8XuoAlxGSdYMKwqZKM9XJMtyqXi7HX/CiAZS6d8bSVUz5J36mEMFDTlAFQzxOT1dzLRljjB6+++ejFqka+mXIe6F59mw22OuOw1F4T6lg/9VjL1rLDoI9Xzl1MSYDNHnPQnt3D1EE7PrXjye/3pVpr1Z45hMUdcACc5NVQI0bOdS1WA0wuz73e7/5TNqBPhQXPEFGJNV2zNqWI7QKBd2Gn6AiBko02zuAOXeWIXjV0jNqdKegaE/kJQ6Bfs4aju04lMLkA2T5wBSYPKDGF3RKhFYEa6A1L1LG2yacmsaZ6YPOSAMKNsO+N5dNTfkc5Aqe26uxHpx7ZirvgCwJpWq/lmX1hA7LyabQ34tt5RiJKXSwQ+0KU0V5xg+hZrd4Bn1n4EID+WkQdgLfRNtvil9SPfwy+WQ7PFBWQz6dGWZBLkeJFXZGCfLUjCgGgqXo5TuSu3cugdcTv/HjqnBTEMwzAMwzAMwzAMwzAMw/zf/AFbXiOA6frlMAAAAABJRU5ErkJggg==" alt="">
-                    </div>
-                    <div class="weui-media-box__bd">
-                        <h4 class="weui-media-box__title">高血栓负荷处理对策</h4>
-                        <p class="weui-media-box__desc">高血栓负荷处理对策</p>
-                        <p>2016-11-2 19:30（周三）</p>
-                        <p>上海市浦东新区福山路500号城建大…</p>
-                        <p>报名人：张三</p>
-                         <p>报考号：WD1219</p>                                                                  
-                    </div>
-                </a>
-               
-            </div>
-            <div class="weui-panel__ft">
-                <a href="detail" class="weui-cell weui-cell_access weui-cell_link activity">
-                    <div class="weui-cell__bd">活动详细</div>
-                    <span class="weui-cell__ft"></span>
-                </a>    
-            </div>
-        </div>
-    </div>
-    <div id="dialogs">
-        <div class="js_dialog" id="iosDialog1" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog">
-                <!-- <div class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></div> -->
-                <div class="weui-dialog__bd">你确定取消报名么？</div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+    <% data.forEach(function(data){ %>  
+        <div class="info-container">
+           <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd ovelflow">
+                  <div class="left"><p class="apply-cancel"><%=data.status%></p></div>
+                  <div class="right"><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="showIOSDialog<%=data.joinId%>" onclick="getConfirm('<%=data.joinId%>')">取消报名</a></div>
+                </div>
+                <div class="weui-panel__bd clear">
+                    <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                        <div class="weui-media-box__hd lecture-left">
+                            <img class="weui-media-box__thumb" src="<%=data.imgUrl%>" alt="">
+                        </div>
+                        <div class="weui-media-box__bd lecture-right">
+                            <h4 class="weui-media-box__title"><%=data.name%></h4>
+                            <p><%=data.time%>
+                             （周<%=data.day %>）
+                                
+                            </p>
+                            <p class="address"><%=data.address%></p>
+                            <p>报名人：<%=data.userName%></p>
+                            <p>报考号：<%=data.joinCode%></p> 
+                            <p><span class="cost"><%=data.charge%></span><span class="long"> | </span>全程心管家</p>                                                                 
+                        </div>
+                    </a>   
+                </div>
+                <div class="weui-panel__ft">
+                    <a href="<%=data.url%>" class="weui-cell weui-cell_access weui-cell_link activity">
+                        <div class="weui-cell__bd">活动详细</div>
+                        <span class="weui-cell__ft"></span>
+                    </a>    
                 </div>
             </div>
         </div>
-    </div>
-
+        <div id="dialogs<%=data.joinId%>">
+            <div class="js_dialog" id="iosDialog<%=data.joinId%>" style="display: none;">
+                <div class="weui-mask"></div>
+                <div class="weui-dialog">
+                    <div class="weui-dialog__bd">你确定取消报名么？</div>
+                    <div class="weui-dialog__ft">
+                        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="confirm<%=data.joinId%>">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+    <% if (errorMessage) {%>
+        <div class="space Validform_wrong">
+          <%=errorMessage%>
+        </div>
+        <div class="space"></div>
+     <%}%>
+        
+    
 </body>
 <script type="text/javascript">
-    $(function(){
-        var $searchBar = $('#searchBar'),
+       var $searchBar = $('#searchBar'),
+            $searchResult = $('#searchResult'),
             $searchText = $('#searchText'),
             $searchInput = $('#searchInput'),
             $searchClear = $('#searchClear'),
             $searchCancel = $('#searchCancel');
+            $searchResult.hide();
 
         function hideSearchResult(){
             $searchInput.val('');
@@ -83,40 +94,89 @@
             $searchBar.removeClass('weui-search-bar_focusing');
             $searchText.show();
         }
-
+         //点击搜索
         $searchText.on('click', function(){
             $searchBar.addClass('weui-search-bar_focusing');
             $searchInput.focus();
         });
+        //搜索框失去光标
         $searchInput
             .on('blur', function () {
                 if(!this.value.length) cancelSearch();
             })
-            // .on('input', function(){
-            //     if(this.value.length) {
-            //         $searchResult.show();
-            //     } else {
-            //         $searchResult.hide();
-            //     }
-            // })
+        ;
+
+        //清空搜索框
         $searchClear.on('click', function(){
             hideSearchResult();
             $searchInput.focus();
         });
+        //取消搜索
         $searchCancel.on('click', function(){
             cancelSearch();
             $searchInput.blur();
         });
 
-        var  $iosDialog1 = $('#iosDialog1');
+        
 
-        $('#dialogs').on('click', '.weui-dialog__btn', function(){
-            $(this).parents('.js_dialog').fadeOut(200);
-        });
+        
 
-        $('#showIOSDialog1').on('click', function(){
-            $iosDialog1.fadeIn(200);
-        });
-    });
+        function getConfirm(id){
+           $('#iosDialog'+id).fadeIn(0);
+            console.log(id);
+            $('#dialogs'+id).on('click', '.weui-dialog__btn', function(){
+              $(this).parents('.js_dialog').fadeOut(0);
+            });
+            $("#confirm"+id).on('click',function(){
+
+                $.ajax({
+                    url:"http://139.224.186.36/pci-micro/api/lecture/join/cancel",
+                    type:"POST",
+                    contentType:"application/json;charset=UTF-8",
+                    data: JSON.stringify({joinId:id,openId:"ox0ThwtVjZiQMWLCx3SwupAqG4zk"}),
+                    success:function(msg){        
+                       $.get(window.location.pathname,function(){
+
+                       })
+                    }
+               });
+            })
+       }
+            
+
+        //取消报名
+        var $cancel = $(".apply-cancel").html();
+        if($cancel == "报名取消"){
+            $(".right").css({
+                'display':"none",
+            })
+        }
+        
+        //搜索讲座关键字
+        jQuery.expr[':'].Contains = function(a,i,m){
+            return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+        };
+          function filterList(list) { 
+          $($searchInput)
+              .change( function () {
+                var filter = $(this).val();
+                if(filter) {
+                  $matches = $(list).find('h4:Contains(' + filter + ')').parents();
+                  console.log($matches);
+                  $(list).not($matches).hide();
+                  $matches.show();
+                } else {
+                  $(list).show();
+                }
+                return false;
+              })
+            .keyup( function () {
+                $(this).change();
+            });
+          }
+          $(function () {
+            filterList($(".info-container"));
+          });
+
 </script>
 </html>

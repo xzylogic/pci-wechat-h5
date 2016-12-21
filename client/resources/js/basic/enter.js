@@ -22,6 +22,7 @@ var t;
 function getCode(tel) {
   timedCount();
   $.get(window.location.pathname + "/getVerifyCode?tel=" + tel, function(result) {
+    console.log(window.location.pathname + "/getVerifyCode?tel=" + tel);
     if (result.code === 0) {
       $('#message').text(result.data);
       $('#modal').css('display', 'block');
