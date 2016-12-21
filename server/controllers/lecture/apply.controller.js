@@ -72,6 +72,7 @@ module.exports = {
       let data = querystring.parse(postData);
       let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
       data.openId = openId;
+      console.log(data);
       requestTool.postwithhandle('apply', data, (_data) => {
         if (_data) {
 
