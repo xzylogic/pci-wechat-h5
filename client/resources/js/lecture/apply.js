@@ -66,9 +66,10 @@
           if($(".name").val() && $(".age").val()){
               $("button").addClass("submit");
             };
-          if($(".age").val().length > 2){
+            var age = $(".age").val();
+          if(!(/^([0-9]|[0-9]{2}|100)$/.test(age))){
             $(".age").next('p').html("请填写正确的年龄");
-            $("button").removeClass("submit");
+            $("button").removeClass("submit"); 
           }
       });
         if($(".name").val() && $(".age").val()){

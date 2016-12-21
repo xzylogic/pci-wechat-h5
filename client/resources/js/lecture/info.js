@@ -1,5 +1,4 @@
-$(document).ready(function() {
-	var $searchBar = $('#searchBar');
+  var $searchBar = $('#searchBar');
   var $searchText = $('#searchText');
   var $searchInput = $('#searchInput');
   var $searchClear = $('#searchClear');
@@ -91,4 +90,3 @@ $(document).ready(function() {
   $('#closeerr').on('click', function() {
     $('#modalerr').css('display', 'none');
   });
-})
