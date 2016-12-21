@@ -22,12 +22,25 @@
           </form>
           <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
     </div>
+    <div id="modal" style="display: none">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">提示信息</strong></div>
+            <div class="weui-dialog__bd" id="message">
+            </div>
+            <div class="weui-dialog__ft">
+                <a id="close" href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+            </div>
+        </div>
+    </div>
     <% data.forEach(function(data){ %>  
         <div class="info-container">
            <div class="weui-panel weui-panel_access">
                 <div class="weui-panel__hd ovelflow">
-                  <div class="left"><p><%=data.status%></p></div>
-                  <div class="right"><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="showIOSDialog<%=data.joinId%>" onclick="getConfirm('<%=data.joinId%>')">取消报名</a></div>
+                  <div class="left"><p id="apply-name<%=data.joinId%>"><%=data.statusName%></p></div>
+                    <% if (data.status == 0) {%>
+                       <div class="right right<%=data.joinId%>"><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="showIOSDialog<%=data.joinId%>" onclick="getConfirm('<%=data.joinId%>')">取消报名</a></div>
+                    <%}%>
                 </div>
                 <div class="weui-panel__bd clear">
                     <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
@@ -67,7 +80,21 @@
                 </div>
             </div>
         </div>
-    <% }) %> 
+    <% }) %>
+    <% if (errorMessage) {%>
+        <div id="modalerr">
+          <div class="weui-mask"></div>
+          <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">错误提示</strong></div>
+            <div class="weui-dialog__bd">
+              <%=errorMessage%>
+            </div>
+            <div class="weui-dialog__ft">
+              <a id="closeerr" href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+            </div>
+          </div>
+        </div>
+    <%}%>
         
     
 </body>
@@ -116,31 +143,32 @@
         
 
         function getConfirm(id){
+          var $cancel = $(".right"+id)
            $('#iosDialog'+id).fadeIn(0);
-            console.log(id);
             $('#dialogs'+id).on('click', '.weui-dialog__btn', function(){
               $(this).parents('.js_dialog').fadeOut(0);
             });
             $("#confirm"+id).on('click',function(){
-
-                $.ajax({
-                    url:"http://139.224.186.36/pci-micro/api/lecture/join/cancel",
-                    type:"POST",
-                    contentType:"application/json;charset=UTF-8",
-                    data: JSON.stringify({joinId:id,openId:"ox0ThwtVjZiQMWLCx3SwupAqG4zk"}),
-                    success:function(msg){
-                        console.log(msg);
-                        
+               $.get(window.location.pathname + "/getCancel?id=" + id, function(result) { 
+                var result = JSON.parse(result);
+                    if (result.code === 0) {
+                        $cancel.css({
+                          'display':"none",
+                       })
+                       $("#apply-name"+id).html("报名取消")
+                      $('#message').text("取消报名成功");
+                      $('#modal').css('display', 'block');
+                    } else {
+                      $('#message').text("操作失败");
+                      $('#modal').css('display', 'block');
                     }
-               });
-            })
+                  });
+            });
+
        }
             
 
-        //取消报名
-        $("#confirm").on('click',function(){
 
-        })
         //搜索讲座关键字
         jQuery.expr[':'].Contains = function(a,i,m){
             return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
@@ -167,5 +195,11 @@
             filterList($(".info-container"));
           });
 
+  $('#close').on('click', function() {
+    $('#modal').css('display', 'none');
+  });
+  $('#closeerr').on('click', function() {
+    $('#modalerr').css('display', 'none');
+  });
 </script>
 </html>
