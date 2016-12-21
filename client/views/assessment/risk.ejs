@@ -87,7 +87,7 @@
   }, {
     text: '女',
     value: 1
-  }]
+  }];
   
   var dataAge = [{
     text: '20-34',
@@ -119,7 +119,7 @@
   },{
     text: '75-79',
     value: 10
-  }]
+  }];
   
   var dataIsSmoke = [{
     text: '否',
@@ -127,7 +127,7 @@
   },{
     text: '是',
     value:1
-  }]
+  }];
     
   var dataPressure = [{
     text: '<120',
@@ -144,7 +144,7 @@
   },{
     text:'160+',
     value:4
-  }]
+  }];
   
   var dataTreatment = [{
     text: '无治疗',
@@ -152,7 +152,7 @@
   },{
     text: '有治疗',
     value:1
-  }]
+  }];
 
   var dataCholesterol = [{
     text: '<160',
@@ -169,7 +169,7 @@
   },{
     text: '≧280',
     value:4
-  }]
+  }];
 
   var dataGoodCholesterol = [{
     text: '≧60',
@@ -183,7 +183,7 @@
   },{
     text: '<40',
     value:3
-  }]
+  }];
   
   var pickerSex = new Picker({
     data: [dataSex],
@@ -317,7 +317,7 @@
     if(HDL == '' || TC == '' || age == '' || cure == '' || sex == '' || smoke == '' || systolic == ''){
            $("riskbtn").attr("disabled",true);
          }
-  }
+  });
    $('#riskbtn').on('click', function(){
      if(HDL !== '' && TC !== '' && age !== '' && cure !== '' && sex !== '' && smoke !== '' && systolic !== ''){
            

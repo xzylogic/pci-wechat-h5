@@ -28,21 +28,21 @@ module.exports = {
   },
 
   riskVerify: (req, res) => {
-      let postData = '';
-      req.addListener('data', (data) => {
-      postData += data;
-    });
-    req.addListener('end', () => {
-      let data = querystring.parse(postData);
-      let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-      data.openId = openId;
-      requestTool.postwithhandle('risk', data, (_data) => {
-        if (_data) {
-          res.redirect(`${global.config.root}/assessment/result`);
-        }
-      }, (err) => {
-        res.redirect(`${global.config.root}/assessment/result/enter?err=${err}`);
-      })
-    });
+    //   let postData = '';
+    //   req.addListener('data', (data) => {
+    //   postData += data;
+    // });
+    // req.addListener('end', () => {
+    //   let data = querystring.parse(postData);
+    //   let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+    //   data.openId = openId;
+    //   requestTool.postwithhandle('risk', data, (_data) => {
+    //     if (_data) {
+    //       res.redirect(`${global.config.root}/assessment/result`);
+    //     }
+    //   }, (err) => {
+    //     res.redirect(`${global.config.root}/assessment/result/enter?err=${err}`);
+    //   })
+    // });
   }
 }
