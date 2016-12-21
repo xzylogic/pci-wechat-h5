@@ -8,7 +8,7 @@ module.exports = {
   getIsapply: (req,res) =>{
     //auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     let url = requestTool.setAuthUrl('/lecture/apply'); // 重定向url
-
+    
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(res, openId, (name) => {
         // 已登录跳转报名页面
@@ -51,7 +51,6 @@ module.exports = {
           errorMessage: err,
         });
       });
-
   },
 
 //报名成功页面
@@ -84,15 +83,4 @@ module.exports = {
       })
     });
   },
-
-
-
-
-
-
-
-
-
-
-
 }

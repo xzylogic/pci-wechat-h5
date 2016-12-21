@@ -19,17 +19,17 @@
         <span id="showSmoke"></span>
   </div>
   <div class="showPicker">4 您的血压
-    <span id="showTreatment"></span><span id="showPressure">高压</span>
+    <span id="showTreatment"></span><span id="showPressure"><a style="color:#999">选择高压</a></span>
   </div>
-  <div class="showPicker">5 您总胆固醇水平
+  <div class="showPicker">5 总胆固醇水平
         <span id="showCholesterol"></span>
   </div>
-  <div class="showPicker">6 您的高密度脂蛋白胆固醇水平(HDL)
-        <span style="width:20%" id="showGoodCholesterol"></span>
+  <div style="display:inline-flex;border-bottom:1px solid #dcdcdc;" class="showPicker"><div style="width:70%;word-wrap:word-break">6 高密度脂蛋白胆固醇水平</div>
+        <span style="width:25%" id="showGoodCholesterol"></span>
   </div>
   <input id="title" type="text" name="title" class="display">
   <div class="account-btn">
-      <button type="button" id="risk-btn" class="weui-btn weui-btn_primary">提交</button>
+      <button type="button" id="riskbtn" class="weui-btn weui-btn_primary" >提交</button>
   </div>
  <div id="dialogs">
    <div class="js_dialog" id="iosDialog2" style="display: none;">
@@ -48,16 +48,14 @@
  </div>
    
 <script type="text/javascript">
-    $(function(){
-        var $iosDialog2 = $('#iosDialog2')
-
-        $('#dialogs').on('click', '.weui-dialog__btn', function(){
-            $(this).parents('.js_dialog').fadeOut(200);
-        });
-        $('#showIOSDialog2').on('click', function(){
-            $iosDialog2.fadeIn(200);
-        });
-    });
+  var HDL; //高密度脂蛋白
+  var TC; //总胆固醇
+  var age; //年龄
+  var cure; //是否治疗 0否 1是 
+  var openId = 1;  
+  var sex; //性别
+  var smoke; //是否吸烟 0否 1是 
+  var systolic; //血压
 
   var showSex = document.getElementById('showSex');
   var showAge = document.getElementById('showAge');
@@ -66,221 +64,266 @@
   var showTreatment = document.getElementById('showTreatment');
   var showCholesterol = document.getElementById('showCholesterol');
   var showGoodCholesterol = document.getElementById('showGoodCholesterol');
+  
+    $(function(){
+        var $iosDialog2 = $('#iosDialog2')
+        
+        var $riskbtn = $('#riskbtn')
+
+        $('#dialogs').on('click', '.weui-dialog__btn', function(){
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('#showIOSDialog2').on('click', function(){
+            $iosDialog2.fadeIn(200);
+        });
+        
+    });
+
+  
 
   var dataSex = [{
     text: '男',
-    value: 1
+    value: 0
   }, {
     text: '女',
-    value: 2
+    value: 1
   }]
   
   var dataAge = [{
-    text: '≦19',
+    text: '20-34',
     value: 1
   },{
-    text: '20-34',
+    text: '35-39',
     value: 2
   },{
-    text: '35-39',
+    text: '40-44',
     value: 3
   },{
-    text: '40-44',
+    text: '45-49',
     value: 4
   },{
-    text: '45-49',
+    text: '50-54',
     value: 5
   },{
-    text: '50-54',
+    text: '55-59',
     value: 6
   },{
-    text: '55-59',
+    text: '60-64',
     value: 7
   },{
-    text: '60-64',
+    text: '65-69',
     value: 8
   },{
-    text: '65-69',
+    text: '70-74',
     value: 9
   },{
-    text: '70-74',
-    value: 10
-  },{
     text: '75-79',
-    value: 11
-  },{
-    text: '≧80',
-    value: 12
+    value: 10
   }]
   
   var dataIsSmoke = [{
+    text: '否',
+    value:0
+  },{
     text: '是',
     value:1
-  },{
-    text: '否',
-    value:2
   }]
     
   var dataPressure = [{
     text: '<120',
-    value:1
+    value:0
   },{
     text:'120-129',
-    value:2
+    value:1
   },{
     text:'130-139',
-    value:3
+    value:2
   },{
     text:'140-159',
-    value:4
+    value:3
   },{
     text:'160+',
-    value:5
+    value:4
   }]
   
   var dataTreatment = [{
+    text: '无治疗',
+    value:0
+  },{
     text: '有治疗',
     value:1
-  },{
-    text: '无治疗',
-    value:2
   }]
 
   var dataCholesterol = [{
     text: '<160',
-    value:1
+    value:0
   },{
     text: '160-199',
-    value:2
+    value:1
   },{
     text: '200-239',
-    value:3
+    value:2
   },{
     text: '240-279',
-    value:4
+    value:3
   },{
     text: '≧280',
-    value:5
+    value:4
   }]
 
   var dataGoodCholesterol = [{
     text: '≧60',
-    value:1
+    value:0
   },{
     text: '50-59',
-    value:2
+    value:1
   },{
     text: '40-49',
-    value:3
+    value:2
   },{
     text: '<40',
-    value:4
+    value:3
   }]
   
   var pickerSex = new Picker({
     data: [dataSex],
-    selectedIndex: [0],
+    selectedIndex: [-1],
     title: '您的选择'
   });
   
   var pickerAge = new Picker({
     data: [dataAge],
-    selectedIndex: [0],
+    selectedIndex: [-1],
     title: '您的选择'
   });
   
   var pickerIsSmoke = new Picker({
     data: [dataIsSmoke],
-    selectedIndex: [0],
+    selectedIndex: [-1],
     title: '您的选择'
   });
   
   var pickerPressure = new Picker({
     data: [dataPressure],
-    selectedIndex: [0],
+    selectedIndex: [-1],
     title: '您的选择'
   });
   
     var pickerTreatment = new Picker({
     data: [dataTreatment],
-    selectedIndex: [0],
+    selectedIndex: [-1],
     title: '您的选择'
   });
 
   var pickerCholesterol = new Picker({
     data: [dataCholesterol],
-    selectedIndex: [0],
+    selectedIndex: [-1],
     title: '您的选择'
   });
   
   var pickerGoodCholesterol = new Picker({
     data: [dataGoodCholesterol],
-    selectedIndex: [0],
+    selectedIndex: [-1],
     title: '您的选择'
   });
   
+  
+  
   pickerSex.on('picker.select', function(selectedVal, selectedIndex) {
     showSex.innerText = dataSex[selectedIndex[0]].text;
-    if (dataSex[selectedIndex].value == 2) {
+    console.log(dataSex[selectedIndex].value);
+    sex = dataSex[selectedIndex].value;
+    if (dataSex[selectedIndex].value == 1) {
       $('#title').removeClass('display');
     } else {
       $('#title').addClass('display');
     }
+    return sex;
   });
   
   pickerAge.on('picker.select', function(selectedVal, selectedIndex) {
     showAge.innerText = dataAge[selectedIndex[0]].text;
-    if (dataAge[selectedIndex].value == 12) {
+    console.log(dataAge[selectedIndex].value);
+    age = dataAge[selectedIndex].value;
+    if (dataAge[selectedIndex].value == 11) {
       $('#title').removeClass('display');
     } else {
       $('#title').addClass('display');
     }
+    return age;
   });
 
     pickerIsSmoke.on('picker.select', function(selectedVal, selectedIndex) {
       showSmoke.innerText = dataIsSmoke[selectedIndex[0]].text;
-      if (dataIsSmoke[selectedIndex].value == 2) {
+      console.log(dataIsSmoke[selectedIndex].value);
+      smoke = dataIsSmoke[selectedIndex].value;
+      if (dataIsSmoke[selectedIndex].value == 1) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
+      return smoke;
    });
    
    pickerPressure.on('picker.select', function(selectedVal, selectedIndex) {
       showPressure.innerText = dataPressure[selectedIndex[0]].text;
-      if (dataPressure[selectedIndex].value == 5) {
+      console.log(dataPressure[selectedIndex].value);
+      systolic = dataPressure[selectedIndex].value;
+      if (dataPressure[selectedIndex].value == 4) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
+      return systolic;
    });
    
      pickerTreatment.on('picker.select', function(selectedVal, selectedIndex) {
       showTreatment.innerText = dataTreatment[selectedIndex[0]].text;
-      if (dataTreatment[selectedIndex].value == 2) {
+      console.log(dataTreatment[selectedIndex].value);
+      cure = dataTreatment[selectedIndex].value;
+      if (dataTreatment[selectedIndex].value == 1) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
+      return cure;
    });
    
    pickerCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
       showCholesterol.innerText = dataCholesterol[selectedIndex[0]].text;
-      if (dataCholesterol[selectedIndex].value == 5) {
+      console.log(dataCholesterol[selectedIndex].value);
+      TC = dataCholesterol[selectedIndex].value;
+      if (dataCholesterol[selectedIndex].value == 4) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
+      return TC;
    });
    
     pickerGoodCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
       showGoodCholesterol.innerText = dataGoodCholesterol[selectedIndex[0]].text;
-      if (dataGoodCholesterol[selectedIndex].value == 4) {
+      console.log(dataGoodCholesterol[selectedIndex].value);
+      HDL = dataGoodCholesterol[selectedIndex].value;
+      if (dataGoodCholesterol[selectedIndex].value == 3) {
         $('#title').removeClass('display');
       } else {
         $('#title').addClass('display');
       }
+      return HDL;
    });
+  
+  $(function(){
+    if(HDL == '' || TC == '' || age == '' || cure == '' || sex == '' || smoke == '' || systolic == ''){
+           $("riskbtn").attr("disabled",true);
+         }
+  }
+   $('#riskbtn').on('click', function(){
+     if(HDL !== '' && TC !== '' && age !== '' && cure !== '' && sex !== '' && smoke !== '' && systolic !== ''){
+           
+         }
+    });
+    
   
   showSex.addEventListener('click', function() {
     pickerSex.show();
@@ -308,12 +351,7 @@
   
   showGoodCholesterol.addEventListener('click', function() {
     pickerGoodCholesterol.show();
-  });
-  
-  if(showSex.innerText =="" || showAge.innerText =="" || showSmoke.innerText =="" || showPressure.innerText=="" || 
-  showTreatment.innerText =="" || showCholesterol.innerText == "" || showGoodCholesterol.innerText == ""){
-    
-  }
+  }); 
   </script>
 </body>
 

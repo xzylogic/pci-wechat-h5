@@ -6,6 +6,8 @@
   "ifRegister": "api/user/register/judge",
   "login": "api/user/login",
   "register": "api/user/register",
+  "risk":  "api/framingham",
+  "result": "api/framingham/recent",
   "familyApply": "api/user/family/apply",
   "familySearch": "api/user/family/search",
   "apply": "api/lecture/join",

@@ -11,9 +11,10 @@ $(document).ready(function() {
     $('#modalerr').css('display', 'none');
   });
 });
+var target = 0;
 
 function canClick() {
-  if ($('#tel').val() && $('#title').val()) {
+  if ($('#tel').val() && $('#title').val() && target) {
     $('#button').removeAttr('disabled');
   } else {
     $('#button').attr('disabled', 'true');
@@ -31,12 +32,15 @@ function errorHandle(msg) {
 }
 
 function inputChange() {
+  target = 0;
+  canClick();
   var tel = $('#tel').val();
   if (!isNaN(tel) && tel.length === 11) {
     $.get(window.location.pathname + "/search?tel=" + tel, function(result) {
       if (JSON.parse(result).code === 0) {
         $('#avatar').attr('src', JSON.parse(result).data.avatarUrl);
         $('#name').text(JSON.parse(result).data.name);
+        target = 1;
         canClick();
       } else if (JSON.parse(result).code === 1000) {
         var errormsg = "此账号未注册”全程心管家“，请您的家人注册后进行绑定";
