@@ -18,7 +18,13 @@
         <p><%=content[i].name%></p>
       </div>
       <div class="cell-right">
-        <span></span>
+        <%if(content[i].status == 0) {%>
+          <span class="red">申请中</span>
+        <%} else if(content[i].status == 1) {%>
+          <span>已添加</span>
+        <%} else if(content[i].status == 2) {%>
+          <span>已拒绝</span>
+        <%}%>
       </div>
       </div>
     <%}%>

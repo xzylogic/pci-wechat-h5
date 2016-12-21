@@ -6,6 +6,7 @@ var auth = require('../common/auth');
 
 module.exports = {
 
+  // 获取账号绑定页面
   getAccountBind: (req, res) => {
     let url = requestTool.setAuthUrl('/family', ''); // 重定向url
 
@@ -26,6 +27,7 @@ module.exports = {
     });
   },
 
+  // 获取添加绑定账号页面
   getAccountBindAdd: (req, res) => {
     let errorMessage = req.query.errorMessage || '';
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
@@ -40,6 +42,7 @@ module.exports = {
     }
   },
 
+  // 绑定账号
   bindAccount: (req, res) => {
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let postData = ''; // 记录form表单提交的数据
@@ -62,6 +65,7 @@ module.exports = {
     }
   },
 
+  // 通过手机号查找账号信息
   getAccountSearch: (req, res) => {
     var tel = req.query.tel || '';
     requestTool.getApi(res, 'familySearch', `tel=${tel}`, (data) => {
