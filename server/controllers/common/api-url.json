@@ -9,5 +9,7 @@
   "getRegisterCode": "api/user/register/code",
   "ifRegister": "api/user/register/judge",
   "login": "api/user/login",
-  "register": "api/user/register"
+  "register": "api/user/register",
+  "risk":  "api/framingham",
+  "result": "api/framingham/recent"
 }

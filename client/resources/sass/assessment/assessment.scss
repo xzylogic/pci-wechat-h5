@@ -19,7 +19,7 @@ body {
   margin-right: auto;
   box-sizing: border-box;
   padding: 5px 15px;
-  border: 1px solid #dcdcdc;
+  border-top: 1px solid #dcdcdc;
   font-size: 16px;
   background-color: #fff;
   img {
@@ -27,7 +27,7 @@ body {
   }
   span {
     display: block;
-    width: 22%;
+    width: 30%;
     height: 40px;
     float: right;
     background: url(../../image/icon-arrow-down.png) no-repeat right center;
@@ -75,7 +75,9 @@ input#title {
 }
 
 .account-btn {
-  padding-top: 200px
+  padding-top: 50px;
+  width:90%;
+  margin: 0 auto;
 }
 .weui-btn_primary {
   background-color: #35B2F2 !important;

@@ -11,4 +11,12 @@ module.exports = {
     // })
   },
 
+
+// 获取登录验证码接口
+  getLoginVerifyCode: (req, res) => {
+    let tel = req.query.tel;
+    requestTool.getApi(res, 'getLoginCode', `tel=${tel}`, (data) => {
+      res.send(data);
+    });
+  },
 }
