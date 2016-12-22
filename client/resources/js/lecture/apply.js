@@ -91,7 +91,6 @@
           data:{name:name, age:age, sex:sex, lectureId:lectureId},
           type:'get',
           success:function(data){
-            console.log(data.code);
             if(data.code == 0){
               location.href = "success?img="+data._data;
             }else if(data.code == 1){
@@ -100,4 +99,18 @@
           }
          })
     }
-  })
+  });
+  //底部提交按钮顶上去
+  var oHeight = $(document).height(); //浏览器当前的高度
+
+   $(window).resize(function(){
+ 
+        if($(document).height() < oHeight){
+         
+        $("#button").css("display","none");
+    }else{
+         
+        $("#button").css("display","block");
+    }
+        
+   });
