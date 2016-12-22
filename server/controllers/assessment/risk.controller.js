@@ -5,44 +5,54 @@ var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
 
 module.exports = {
-  
-  //  getLoad: (req,res) =>{
-  //   // 测试写死cookie数据
-  //   //auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
-  //   auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
-  //   // res.clearCookie('pci_secret');
-  //   let url = requestTool.setAuthUrl('/assessment/risk'); // 重定向url
-  // },
-  
+
   getRisk: (req, res) => {
+    let url = requestTool.setAuthUrl('assessment/risk', ''); // 重定向url
     auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
+    auth.getOpenId(req, res, url, (openId) => {
+      requestTool.getwithhandle('result', `openId=${openId}`,(result)=>{
+        console.log(result);
+        if(result){
+          res.render('assessment/result',{
+            level: result.level,
+            result: result.result,
+            date: '20161212',
+            name:'leo',
+            year:'2016'  
+          });
+          // res.redirect(`${global.config.root}/assessment/result`);
+        } else {
+          res.redirect(`${global.config.root}/assessment`);
+        }
+        
+      }, (err)=>{
+        
+      })
+    });
+  },
+  
+  getRiskEnter: (req, res)=>{
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-    // auth.getOpenId(req, res, url , (openId)=>{
+    if (openId) {
       res.render('assessment/risk');
-    // });
-    // if(openId){
-    //    res.render('assessment/risk');
-    // } else {
-    //   res.redirect(`${global.config.root}/assessment/risk`);
-    // }
+    } else {
+      res.redirect(`${global.config.root}/assessment/risk`);
+    }
   },
 
+  // 提交风险评估接口
   riskVerify: (req, res) => {
-    //   let postData = '';
-    //   req.addListener('data', (data) => {
-    //   postData += data;
-    // });
-    // req.addListener('end', () => {
-    //   let data = querystring.parse(postData);
-    //   let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-    //   data.openId = openId;
-    //   requestTool.postwithhandle('risk', data, (_data) => {
-    //     if (_data) {
-    //       res.redirect(`${global.config.root}/assessment/result`);
-    //     }
-    //   }, (err) => {
-    //     res.redirect(`${global.config.root}/assessment/result/enter?err=${err}`);
-    //   })
-    // });
+    // let openId = 'ox0ThwtVjZiQMWLCx3SwupAqG4zk'; // 从cookie中找openId
+    let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+    if (openId) {
+      let postData = req.body;
+      postData.openId = openId;
+      console.log(`[${new Date()}] Risk Post Data: ${JSON.stringify(postData)}`);
+      requestTool.postApi(res, 'risk', postData, (_data) => {
+        res.send(_data);;
+      });
+    } else {
+      res.redirect(`${global.config.root}/assessment/risk`);
+    }
   }
 }

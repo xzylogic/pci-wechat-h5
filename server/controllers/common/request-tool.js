@@ -129,6 +129,20 @@ requestTool.postwithhandle = function(key, data, call, error) {
     });
 }
 
+// 封装API post请求
+requestTool.postApi = function(res, key, data, call) {
+  superagent.post(BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .send(data)
+    .end(function(err, sres) {
+      if (err) {
+        res.send({ code: -1, msg: '接口请求错误' });
+      } else {
+        call(sres.text);
+      }
+    });
+}
+
 /**
  * 设置微信获取code的链接
  * @param {} redirectUrl [微信重定向Url]
