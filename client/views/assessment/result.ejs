@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="<%=_src('/css/assessment/assessment.min.css')%>">
 </head>
 
-<body style="background-color:#">
+<body style="background-color:#f6f6f6">
   <div class="result">
     <p class="result-title">风险评估结果</p>
     <p class="result-date"><%=date%></p>
@@ -29,7 +29,7 @@
     <span style="color:#ff0000;"><%=level%></span>
     <%}%>
     </p>
-    <button class="result-btn" onclick="window.location='risk'">再测一次</button>
+    <button class="result-btn" onclick="self.location=document.referrer;">再测一次</button>
   </div>
 </body>
 </html>
