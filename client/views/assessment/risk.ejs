@@ -31,21 +31,6 @@
   <div class="account-btn">
       <button type="button" id="riskbtn" class="weui-btn weui-btn_primary" >提交</button>
   </div>
- <div id="dialogs">
-   <div class="js_dialog" id="iosDialog2" style="display: none;">
-      <div class="weui-mask"></div>
-      <div class="weui-dialog">
-      <div class="weui-dialog__hd"><strong class="weui-dialog__title">一级亲属和冠心病史</strong></div>
-        <div class="weui-dialog__bd">
-          <div><a>一级亲属：</a><a>是一个人的父母，子女以及兄弟姐妹（同父母）</a></div>
-          <div><a style="display:block;float:left;">冠心病史：</a><p><a style="display:block;"><55岁男性发生冠心病史</a><a><65岁女性发生冠心病史</a></p></div>
-        </div>
-        <div class="weui-dialog__ft">
-          <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">关闭</a>
-        </div>
-     </div>
-   </div>
- </div>
    
 <script type="text/javascript">
   var HDL; //高密度脂蛋白
@@ -64,22 +49,6 @@
   var showCholesterol = document.getElementById('showCholesterol');
   var showGoodCholesterol = document.getElementById('showGoodCholesterol');
   
-    $(function(){
-        var $iosDialog2 = $('#iosDialog2')
-        
-        var $riskbtn = $('#riskbtn')
-
-        $('#dialogs').on('click', '.weui-dialog__btn', function(){
-            $(this).parents('.js_dialog').fadeOut(200);
-        });
-        $('#showIOSDialog2').on('click', function(){
-            $iosDialog2.fadeIn(200);
-        });
-        
-    });
-
-  
-
   var dataSex = [{
     text: '男',
     value: 0

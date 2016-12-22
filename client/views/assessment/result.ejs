@@ -14,19 +14,19 @@
     <p class="result-content">
     亲爱的<%=name%>,此次您的<%=year%>年风险FRS评估为
     <%if(level == '低') {%>
-    <span style="color:#ff0000;"><%=result%></span>
+    <span style="color:#13c26e;"><%=result%></span>
     <%}else if(level == '中') {%>
     <span style="color:#f5a623;"><%=result%></span>
     <%}else if(level == '高') {%>
-    <span style="color:#13c26e;"><%=result%></span>
+    <span style="color:#ff0000;"><%=result%></span>
     <%}%>
     ,风险等级
     <%if(level == '低') {%>
-    <span style="color:#ff0000;"><%=level%></span>
+    <span style="color:#13c26e;"><%=level%></span>
     <%}else if(level == '中') {%>
     <span style="color:#f5a623;"><%=level%></span>
     <%}else if(level == '高') {%>
-    <span style="color:#13c26e;"><%=level%></span>
+    <span style="color:#ff0000;"><%=level%></span>
     <%}%>
     </p>
     <button class="result-btn" onclick="window.location='risk'">再测一次</button>

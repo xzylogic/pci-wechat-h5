@@ -3,7 +3,6 @@
 var express = require('express');
 var router = express.Router();
 var RiskController = require('../../controllers/assessment/risk.controller');
-var ResultController = require('../../controllers/assessment/result.controller');
 
 router.route('/risk').get(RiskController.getRisk);//检测入口
 router.route('/').get(RiskController.getRiskEnter);//检测页面
