@@ -9,6 +9,7 @@ var AccountBindController = require('../../controllers/basic/account-bind.contro
 router.route('/login').get(LoginController.getLogin); // 登录入口页面
 router.route('/login/enter').get(LoginController.getLoginEnter); // 登录验证页面
 router.route('/register').get(LoginController.getRegister); // 注册验证页面
+// router.route('/register-test').get(LoginController.getRegisterTest); // 注册测试页面
 router.route('/login/success').get(LoginController.getLoginSuccess); // 登录成功页面
 
 router.route('/family').get(AccountBindController.getAccountBind); // 家庭账号列表页面

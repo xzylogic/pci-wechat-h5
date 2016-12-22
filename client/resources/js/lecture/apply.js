@@ -46,9 +46,10 @@
 
   namelecture.addEventListener('click', function() {
     lecture.show(function(){
-      lecture.refillColumn(0, lecture);
+      picker.refill(lecture);
     });
   });
+
 
   /*方法调用*/
   inputFn(".name");
@@ -78,11 +79,38 @@
             $("button").addClass("submit");
           } 
   };
+  //提交表单
+  $("#button").click(function(){
+    if($(".name").val() && $(".age").val() && $(".age").val().length <= 2 && !(/[^0-9]+/g).test($(".age").val())){
+         var name = $(".name").val();
+         var age = $(".age").val();
+         var sex = $("#sex").val();
+         var lectureId = $("#lecture").val();
+         $.ajax({
+          url:window.location.pathname+"/verify",
+          data:{name:name, age:age, sex:sex, lectureId:lectureId},
+          type:'get',
+          success:function(data){
+            if(data.code == 0){
+              location.href = "success?img="+data._data;
+            }else if(data.code == 1){
+              $(".space").html(data.err);
+            }
+          }
+         })
+    }
+  });
+  //底部提交按钮顶上去
+  var oHeight = $(document).height(); //浏览器当前的高度
 
-  //验证表单 的函数
-  function checkForm(){
-    if($(".name").val() && $(".age").val() && $(".age").val().length <= 2){
-      return true;   
-   }
-   return false;
-  };
+   $(window).resize(function(){
+ 
+        if($(document).height() < oHeight){
+         
+        $("#button").css("display","none");
+    }else{
+         
+        $("#button").css("display","block");
+    }
+        
+   });
