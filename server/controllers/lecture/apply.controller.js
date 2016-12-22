@@ -79,8 +79,7 @@ module.exports = {
 
         }
       }, (err) => {
-        //res.redirect(`${global.config.root}/lecture/apply/enter?err=${err}`);
-        res.send(err);
+          res.redirect(`${global.config.root}/lecture/apply/enter?err=${err}`);
       })
     });
   },

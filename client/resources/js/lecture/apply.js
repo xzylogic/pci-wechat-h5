@@ -45,7 +45,9 @@
   });
 
   namelecture.addEventListener('click', function() {
-    lecture.show();
+    lecture.show(function(){
+      lecture.refillColumn(0, lecture);
+    });
   });
 
   /*方法调用*/
