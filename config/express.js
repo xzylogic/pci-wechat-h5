@@ -27,7 +27,7 @@ module.exports = function() {
 
   //设置全局函数
   app.locals['_src'] = function(src) {
-    return routesTool.routesConfig.domain + routesTool.routesConfig.root + src;
+    return global.config.domain + routesTool.routesConfig.root + src;
   };
 
   // console.log(process.cwd() + resources.assets);
