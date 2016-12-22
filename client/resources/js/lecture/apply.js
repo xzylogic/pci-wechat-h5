@@ -46,9 +46,10 @@
 
   namelecture.addEventListener('click', function() {
     lecture.show(function(){
-      lecture.refillColumn(1, lecture);
+      picker.refill(lecture);
     });
   });
+
 
   /*方法调用*/
   inputFn(".name");
