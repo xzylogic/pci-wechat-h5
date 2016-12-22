@@ -20,7 +20,7 @@ body {
   }
 }
 .picker .picker-panel .picker-choose .confirm{
-  font-size:16px;
+  font-size:14px;
 }
 
 .cancel{
@@ -84,7 +84,7 @@ input#title {
 }
 
 .full{
-  font-size:12px;
+  font-size:14px;
   color:red;
 }
 .weui-btn{
@@ -130,4 +130,16 @@ input#title {
 .space{
   font-size:12px;
   color:red;
+}
+.picker .picker-panel .wheel-wrapper .wheel {
+  font-size:14px;
+}
+.picker .picker-panel .picker-choose{
+  border-bottom: 1px solid #ccc;
+}
+.picker .picker-panel .picker-choose .picker-title {
+  padding-top:30px;
+  font-weight: normal;
+  line-height:0;
+  font-size:14px;
 }
