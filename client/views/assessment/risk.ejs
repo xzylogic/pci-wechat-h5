@@ -52,7 +52,6 @@
   var TC; //总胆固醇
   var age; //年龄
   var cure; //是否治疗 0否 1是 
-  var openId = 1;  
   var sex; //性别
   var smoke; //是否吸烟 0否 1是 
   var systolic; //血压
@@ -87,7 +86,7 @@
   }, {
     text: '女',
     value: 1
-  }]
+  }];
   
   var dataAge = [{
     text: '20-34',
@@ -119,7 +118,7 @@
   },{
     text: '75-79',
     value: 10
-  }]
+  }];
   
   var dataIsSmoke = [{
     text: '否',
@@ -127,7 +126,7 @@
   },{
     text: '是',
     value:1
-  }]
+  }];
     
   var dataPressure = [{
     text: '<120',
@@ -144,7 +143,7 @@
   },{
     text:'160+',
     value:4
-  }]
+  }];
   
   var dataTreatment = [{
     text: '无治疗',
@@ -152,7 +151,7 @@
   },{
     text: '有治疗',
     value:1
-  }]
+  }];
 
   var dataCholesterol = [{
     text: '<160',
@@ -169,7 +168,7 @@
   },{
     text: '≧280',
     value:4
-  }]
+  }];
 
   var dataGoodCholesterol = [{
     text: '≧60',
@@ -183,7 +182,7 @@
   },{
     text: '<40',
     value:3
-  }]
+  }];
   
   var pickerSex = new Picker({
     data: [dataSex],
@@ -231,7 +230,7 @@
   
   pickerSex.on('picker.select', function(selectedVal, selectedIndex) {
     showSex.innerText = dataSex[selectedIndex[0]].text;
-    console.log(dataSex[selectedIndex].value);
+  
     sex = dataSex[selectedIndex].value;
     if (dataSex[selectedIndex].value == 1) {
       $('#title').removeClass('display');
@@ -243,7 +242,7 @@
   
   pickerAge.on('picker.select', function(selectedVal, selectedIndex) {
     showAge.innerText = dataAge[selectedIndex[0]].text;
-    console.log(dataAge[selectedIndex].value);
+ 
     age = dataAge[selectedIndex].value;
     if (dataAge[selectedIndex].value == 11) {
       $('#title').removeClass('display');
@@ -255,7 +254,7 @@
 
     pickerIsSmoke.on('picker.select', function(selectedVal, selectedIndex) {
       showSmoke.innerText = dataIsSmoke[selectedIndex[0]].text;
-      console.log(dataIsSmoke[selectedIndex].value);
+    
       smoke = dataIsSmoke[selectedIndex].value;
       if (dataIsSmoke[selectedIndex].value == 1) {
         $('#title').removeClass('display');
@@ -267,7 +266,7 @@
    
    pickerPressure.on('picker.select', function(selectedVal, selectedIndex) {
       showPressure.innerText = dataPressure[selectedIndex[0]].text;
-      console.log(dataPressure[selectedIndex].value);
+    
       systolic = dataPressure[selectedIndex].value;
       if (dataPressure[selectedIndex].value == 4) {
         $('#title').removeClass('display');
@@ -279,7 +278,7 @@
    
      pickerTreatment.on('picker.select', function(selectedVal, selectedIndex) {
       showTreatment.innerText = dataTreatment[selectedIndex[0]].text;
-      console.log(dataTreatment[selectedIndex].value);
+   
       cure = dataTreatment[selectedIndex].value;
       if (dataTreatment[selectedIndex].value == 1) {
         $('#title').removeClass('display');
@@ -291,7 +290,7 @@
    
    pickerCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
       showCholesterol.innerText = dataCholesterol[selectedIndex[0]].text;
-      console.log(dataCholesterol[selectedIndex].value);
+ 
       TC = dataCholesterol[selectedIndex].value;
       if (dataCholesterol[selectedIndex].value == 4) {
         $('#title').removeClass('display');
@@ -303,7 +302,7 @@
    
     pickerGoodCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
       showGoodCholesterol.innerText = dataGoodCholesterol[selectedIndex[0]].text;
-      console.log(dataGoodCholesterol[selectedIndex].value);
+   
       HDL = dataGoodCholesterol[selectedIndex].value;
       if (dataGoodCholesterol[selectedIndex].value == 3) {
         $('#title').removeClass('display');
@@ -317,11 +316,31 @@
     if(HDL == '' || TC == '' || age == '' || cure == '' || sex == '' || smoke == '' || systolic == ''){
            $("riskbtn").attr("disabled",true);
          }
-  }
+  });
    $('#riskbtn').on('click', function(){
      if(HDL !== '' && TC !== '' && age !== '' && cure !== '' && sex !== '' && smoke !== '' && systolic !== ''){
-           
-         }
+          
+       var list = {
+        "HDL": HDL,
+        "TC": TC,
+        "age": age,
+        "cure": cure,
+        "sex": sex,
+        "smoke": smoke,
+        "systolic": systolic
+       }; 
+       console.log(list);
+        $.ajax({  
+          url: window.location.pathname + "/verify",  
+          data: JSON.stringify(list),  
+          dataType: "json",  
+          type: "POST",  
+          contentType : 'application/json',
+          success: function (responseJSON) { 
+            window.location.href = window.location.pathname + "/risk";
+          }  
+        });  
+      }
     });
     
   
