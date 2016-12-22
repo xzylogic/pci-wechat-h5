@@ -31,7 +31,6 @@ module.exports = {
    requestTool.getwithhandle('lecture',"", (_data) => {
         if (_data && _data.length !== 0) {
           res.render('lecture/apply', {
-              postUrl:`/lecture/apply/verify`,
               "json":_data,
               name:_data[0].name,
               id:_data[0].id,
@@ -39,7 +38,6 @@ module.exports = {
             });
         } else if(_data && _data.length == 0){
           res.render('lecture/apply',{
-            postUrl:`/lecture/apply/verify`,
             "json":_data,
             name:"",
             id:"",
@@ -63,24 +61,27 @@ module.exports = {
 
 //报名请求
   applyVerify: (req, res) => {
-    let postData = '';
-     req.addListener('data', (data) => {
-      postData += data;
-    });
-    req.addListener('end', () => {
-      let data = querystring.parse(postData);
+      let data = {};
+      var success = {};
+      var error = {};
       let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
       data.openId = openId;
-      console.log(data);
+      data.name = req.query.name;
+      data.sex = req.query.sex;
+      data.lectureId = req.query.lectureId;
+      data.age = req.query.age;
       requestTool.postwithhandle('apply', data, (_data) => {
         if (_data) {
-
-          res.redirect(`${global.config.root}/lecture/apply/success?img=${_data}`);
+          success.code = 0;
+          success._data = _data;
+          res.send(success);
 
         }
       }, (err) => {
-          res.redirect(`${global.config.root}/lecture/apply/enter?err=${err}`);
+        
+        error.code = 1;
+        error.err = err;
+        res.send(error);
       })
-    });
   },
 }
