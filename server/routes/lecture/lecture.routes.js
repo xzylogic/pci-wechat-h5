@@ -14,7 +14,7 @@ router.route('/apply/enter').get(ApplyController.getApply);//报名页面
 
 router.route('/apply/success').get(ApplyController.Success); //报名成功
 
-router.route('/apply/verify').post(ApplyController.applyVerify);//报名请求
+router.route('/apply/enter/verify').get(ApplyController.applyVerify);//报名请求
 
 router.route('/info').get(InfoController.getIsinfo);//取消报名入口
 
