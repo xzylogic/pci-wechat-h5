@@ -9,7 +9,7 @@ module.exports = {
 
   getRisk: (req, res) => {
     let url = requestTool.setAuthUrl('assessment/risk', ''); // 重定向url
-    auth.setCookies(res,'pci_secret','ox0ThwtVjZiQMWLCx3SwupAqG4zk');
+    // auth.setCookies(res,'pci_secret','ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     auth.getOpenId(req, res, url, (openId) => {
       requestTool.getwithhandle('result', `openId=${openId}`,(result)=>{
           let time = moment(result.time).format('YYYY-MM-DD h:mm');
