@@ -8,6 +8,10 @@
     <script src="<%=_src('/lib/picker/picker.min.js')%>"></script>
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
     <link rel="stylesheet" href="<%=_src('/css/lecture/lecture-apply.min.css')%>">
+
+  <script>
+    var jsondata = '<%-JSON.stringify(json)%>';
+  </script>
 </head>
 
 <body>
@@ -48,9 +52,6 @@
         <div class="space"></div>
         <%}%>
 	  </div>
-  <script>
-    var jsondata = '<%-JSON.stringify(json)%>';
-  </script>
   <script src="<%=_src('/js/lecture/apply.min.js')%>"></script>
   
 

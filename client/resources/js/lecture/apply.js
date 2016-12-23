@@ -1,15 +1,16 @@
-
-  var nameEl = document.getElementById('showPicker');
-  var namelecture = document.getElementById('showPickerlecture');
+  var pickerEl = $('#showPicker');
+  var lectureEl = $("#showPickerlecture");
   var sex = document.getElementById('sex');
   var lectureInput = document.getElementById('lecture');
   var lecture = [];
   var json = JSON.parse(jsondata);
   for (var i = 0; i < json.length; i++) {
-    json[i].text = json[i].name;
-    json[i].value = json[i].id;
-    lecture.push(json[i]);
+    var data = {};
+    data.text = json[i].name;
+    data.value = json[i].id;
+    lecture.push(data);
   };
+
   var data = [{
     text: '男',
     value: 1
@@ -18,7 +19,7 @@
     value: 2
   }];
 
- var lecture = new Picker({
+ var lecturePicker = new Picker({
     data:[lecture],
     selectedIndex:[0],
     title:'您的选择'
@@ -35,19 +36,23 @@
     sex.value = data[selectedIndex[0]].text;
   });
 
-  lecture.on('picker.select', function(selectedVal, selectedIndex) {
-    namelecture.innerText = lecture.data[0][selectedIndex[0]].text;
+  lecturePicker.on('picker.select', function(selectedVal, selectedIndex) {
+    lectureEl.innerText = lecturer.data[0][selectedIndex[0]].text;
     lectureInput.value = selectedIndex[0]+1;
   });
 
-  nameEl.addEventListener('click', function() {
-    picker.show();
+  pickerEl.on('click', function() {
+    picker.show(function(){
+      picker.refillColumn(0, data);
+    });
   });
 
-  namelecture.addEventListener('click', function() {
-    lecture.show(function(){
-      picker.refill(lecture);
-    });
+  lectureEl.on('click', function() {
+      if(lecture){
+          lecturePicker.show(function(){
+          lecturePicker.refillColumn(0, lecture);
+        });
+      }
   });
 
 
