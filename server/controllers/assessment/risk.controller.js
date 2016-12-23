@@ -8,10 +8,8 @@ module.exports = {
 
   getRisk: (req, res) => {
     let url = requestTool.setAuthUrl('assessment/risk', ''); // 重定向url
-    auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     auth.getOpenId(req, res, url, (openId) => {
       requestTool.getwithhandle('result', `openId=${openId}`,(result)=>{
-        console.log(result);
         if(result){
           res.render('assessment/result',{
             level: result.level,
@@ -20,7 +18,6 @@ module.exports = {
             name:'leo',
             year:'2016'  
           });
-          // res.redirect(`${global.config.root}/assessment/result`);
         } else {
           res.redirect(`${global.config.root}/assessment`);
         }
@@ -42,7 +39,6 @@ module.exports = {
 
   // 提交风险评估接口
   riskVerify: (req, res) => {
-    // let openId = 'ox0ThwtVjZiQMWLCx3SwupAqG4zk'; // 从cookie中找openId
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     if (openId) {
       let postData = req.body;
