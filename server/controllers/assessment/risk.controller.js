@@ -3,20 +3,28 @@
 var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
+var moment = require("moment");	
 
 module.exports = {
 
   getRisk: (req, res) => {
     let url = requestTool.setAuthUrl('assessment/risk', ''); // 重定向url
+    auth.setCookies(res,'pci_secret','ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     auth.getOpenId(req, res, url, (openId) => {
       requestTool.getwithhandle('result', `openId=${openId}`,(result)=>{
+          let time = moment(result.time).format('YYYY-MM-DD h:mm');
+	    	  let	getDate = new Date(time).getDate();
+          let getMonth = new Date(time).getMonth() + 1;
+          let geYear = new Date(time).getFullYear();
+          
         if(result){
           res.render('assessment/result',{
             level: result.level,
             result: result.result,
-            date: '20161212',
-            name:'leo',
-            year:'2016'  
+            name: result.name,
+            month: getMonth,
+            date: getDate,
+            year: geYear
           });
         } else {
           res.redirect(`${global.config.root}/assessment`);
