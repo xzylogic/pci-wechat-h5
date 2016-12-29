@@ -5,8 +5,8 @@ body {
 
 .risk-top {
   margin: 5px 15px;
-  color:#666;
-  font-size:15px
+  color: #666;
+  font-size: 15px
 }
 
 .showPicker {
@@ -42,8 +42,9 @@ body {
     border: none;
   }
 }
+
 #age {
-  float:right;
+  float: right;
 }
 
 input {
@@ -76,9 +77,10 @@ input#title {
 
 .account-btn {
   padding-top: 30px;
-  width:90%;
+  width: 90%;
   margin: 0 auto;
 }
+
 .weui-btn_primary {
   background-color: #35B2F2 !important;
 }
@@ -106,46 +108,54 @@ input#title {
 }
 
 .result {
-  background:#FFFFFF;
-  border:1px solid #CCCCCC;
-  border-radius:6.5px;
-  margin:10px;
-  padding:10px;
-  height:142.5px
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-radius: 6.5px;
+  margin: 10px;
+  padding: 10px;
 }
 
 .result-title {
-  font-color:#333;
-  font-size:16px;
-  line-height:22.5px;
+  color: #333;
+  font-size: 16px;
+  line-height: 22.5px;
 }
 
-.result-date{
-  font-color:#999;
-  font-size:14px;
+.result-date {
+  padding: 5px 0;
+  color: #999;
+  font-size: 14px;
 }
 
-.result-content{
-  font-color:#666;
-  font-size:14px;
-  line-height:20px;
+.result-content {
+  color: #666;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.button-content {
+  text-align: right;
 }
 
 .result-btn {
-  background-color:#35B2F2;
-  border-radius:3.5px;
-  font-size:14px;
-  color:#fff;
-  width:70px;
-  height:25px;
-  border:none;
-  float:right
+  display: inline-block;
+  background-color: #35B2F2;
+  border-radius: 3.5px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  width: 70px;
+  height: 25px;
+  line-height: 25px;
+  border: none;
 }
+
 .result-btn:focus {
-  outline:none;
+  outline: none;
 }
+
 .result-grade {
-  color:#ff0000;
+  color: #ff0000;
   // color:#f5a623;
   // color:#13c26e;
 }
