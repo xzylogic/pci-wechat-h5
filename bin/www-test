@@ -1,11 +1,10 @@
 'use strict';
 
 global.config = {
-  server: 'http://139.224.186.36/pci-micro/',
-  //server: 'http://pciwx.qcxin.com/pci-micro/',
-  server: 'http://139.224.186.36/pci-micro/',
-  //domain: 'http://pciwx.qcxin.com',
-  domain: 'http://139.224.186.36',
+  server: 'http://pci.qubaopen.cn/pci-micro/',
+  // server: 'http://139.224.186.36/pci-micro/',
+  domain: 'http://pci.qubaopen.cn',
+  // domain: 'http://139.224.186.36',
   root: '/pci-wechat-test',
   appId: 'wx47391e9ef8958539'
 }
