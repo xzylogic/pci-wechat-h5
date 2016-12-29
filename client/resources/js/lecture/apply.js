@@ -1,5 +1,7 @@
   var pickerEl = $('#showPicker');
   var lectureEl = $("#showPickerlecture");
+  var nameEl = document.getElementById("showPicker");
+  var lectureEL = document.getElementById("showPickerlecture");
   var sex = document.getElementById('sex');
   var lectureInput = document.getElementById('lecture');
   var lecture = [];
@@ -37,7 +39,7 @@
   });
 
   lecturePicker.on('picker.select', function(selectedVal, selectedIndex) {
-    lectureEl.innerText = lecturer.data[0][selectedIndex[0]].text;
+    lectureEL.innerText = lecture[selectedIndex[0]].text;
     lectureInput.value = selectedIndex[0]+1;
   });
 
@@ -48,11 +50,10 @@
   });
 
   lectureEl.on('click', function() {
-      if(lecture){
-          lecturePicker.show(function(){
+        lecturePicker.show(function(){
           lecturePicker.refillColumn(0, lecture);
         });
-      }
+
   });
 
 
