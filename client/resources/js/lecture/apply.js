@@ -40,7 +40,7 @@
 
   lecturePicker.on('picker.select', function(selectedVal, selectedIndex) {
     lectureEL.innerText = lecture[selectedIndex[0]].text;
-    lectureInput.value = selectedIndex[0]+1;
+    lectureInput.value = lecture[selectedIndex[0]].value;
   });
 
   pickerEl.on('click', function() {
