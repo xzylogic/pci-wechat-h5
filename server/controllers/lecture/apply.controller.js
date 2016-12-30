@@ -24,25 +24,34 @@ module.exports = {
 
   getApply: (req, res) => {
     let err = req.query.err;
+    let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let errorMessage = '';
     if(err){
       errorMessage = err;
     };
    requestTool.getwithhandle('lecture',"", (_data) => {
         if (_data && _data.length !== 0) {
-          res.render('lecture/apply', {
+          if(openId){
+            res.render('lecture/apply', {
               "json":_data,
               name:_data[0].name,
               id:_data[0].id,
               errorMessage: errorMessage
             });
+          }else{
+            res.redirect(`${global.config.root}/lecture/apply`);
+          }         
         } else if(_data && _data.length == 0){
-          res.render('lecture/apply',{
-            "json":_data,
-            name:"",
-            id:"",
-            errorMessage:'没有可报名的讲座'
-          });
+          if(openId){
+            res.render('lecture/apply',{
+              "json":_data,
+              name:"",
+              id:"",
+              errorMessage:'没有可报名的讲座'
+            });
+          }else{
+            res.redirect(`${global.config.root}/lecture/apply`);
+          } 
         }
       }, (err) => {
         res.render('lecture/apply', {
@@ -54,9 +63,16 @@ module.exports = {
 //报名成功页面
   Success: (req, res) => {
     let img = req.query.img;
-    res.render('lecture/apply-success',{
-      imgUrl : img
-    });
+    let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+    if(openId){
+      res.render('lecture/apply-success',{
+        imgUrl : img
+      });
+    }else{
+      res.redirect(`${global.config.root}/lecture/apply`);
+    }
+    
+    
 },
 
 //报名请求
