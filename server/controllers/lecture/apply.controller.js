@@ -86,7 +86,6 @@ module.exports = {
       data.sex = req.query.sex;
       data.lectureId = req.query.lectureId;
       data.age = req.query.age;
-      console.log(data);
       requestTool.postwithhandle('apply', data, (_data) => {
         if (_data) {
           success.code = 0;
