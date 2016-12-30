@@ -52,7 +52,7 @@ module.exports = {
       postData.openId = openId;
       console.log(`[${new Date()}] Risk Post Data: ${JSON.stringify(postData)}`);
       requestTool.postApi(res, 'risk', postData, (_data) => {
-        res.send(_data);;
+        res.send(_data);
       });
     } else {
       res.redirect(`${global.config.root}/assessment/risk`);
