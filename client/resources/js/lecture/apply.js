@@ -50,9 +50,10 @@
   });
 
   lectureEl.on('click', function() {
-        lecturePicker.show(function(){
-          lecturePicker.refillColumn(0, lecture);
-        });
+      $(".space").text("");
+      lecturePicker.show(function(){
+        lecturePicker.refillColumn(0, lecture);
+      });
 
   });
 
@@ -100,7 +101,7 @@
             if(data.code == 0){
               location.href = "success?img="+data._data;
             }else if(data.code == 1){
-              $(".space").html(data.err);
+              $(".space").text(data.err);
             }
           }
          })
@@ -120,3 +121,7 @@
     }
         
    });
+   //关闭模态框
+   $('#closeerr').on('click', function() {
+      $('#modalerr').css('display', 'none');
+    });

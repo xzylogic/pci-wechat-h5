@@ -2,7 +2,8 @@
 
 global.config = {
   server: 'http://pci.qubaopen.cn/pci-micro/',
-  domain: 'http://pci.qubaopen.cn',
+  //domain: 'http://pci.qubaopen.cn',
+  domain: 'http://10.10.15.14:3000',
   root: '/pci-wechat-test',
   appId: 'wx47391e9ef8958539'
 }
