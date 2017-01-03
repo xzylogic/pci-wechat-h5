@@ -86,6 +86,7 @@
 
   $('#close').on('click', function() {
     $('#modal').css('display', 'none');
+    $.get(window.location.pathname);
   });
   $('#closeerr').on('click', function() {
     $('#modalerr').css('display', 'none');
