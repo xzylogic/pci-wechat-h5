@@ -39,10 +39,10 @@
       <span class="hint-title">友情提示</span>
       <span>您可以通过该账号和密码登录全程心管家app</span>
     </div>
-    <div class="footer">
-      <p>注册使用全程心管家，就表示您同意</p>
-      <p>全程心管家<a href="">服务协议</a></p>
-    </div>
+  </div>
+  <div class="footer">
+    <p>注册使用全程心管家，就表示您同意</p>
+    <p>全程心管家<a href="http://140.207.217.76/pci-user/agreement-user.html">服务协议</a></p>
   </div>
   <div id="modal" style="display: none">
     <div class="weui-mask"></div>
@@ -68,8 +68,20 @@
         </div>
       </div>
     </div>
-  <%}%>
-  <script src="<%=_src('/js/basic/register.min.js')%>"></script>
+    <%}%>
+      <script type="text/javascript">
+      setfooter();
+
+      function setfooter() {
+        if ($(".container").outerHeight(true) + 104 < document.documentElement.clientHeight) {
+          $('.footer').removeClass('footer_initial');
+        } else {
+          $('.footer').addClass('footer_initial');
+        }
+      }
+      window.onresize = setfooter();
+      </script>
+      <script src="<%=_src('/js/basic/register.min.js')%>"></script>
 </body>
 
 </html>
