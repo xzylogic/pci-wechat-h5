@@ -12,9 +12,10 @@
 <body>
   <div class="container">
     <form class="form-container" action="<%=_src(postUrl)%>" method="post">
-      <div class="input-field">
+      <div class="input-field" style="padding-bottom: 0">
         <div class="weui-cell input-code">
           <div class="weui-cell__bd">
+            <span class="Validform_label" style="display: none">验证码</span>
             <input type="tel" name="code" placeholder="请输入短信验证码" datatype="number" errormsg="请输入正确的验证码！">
           </div>
           <div class="weui-cell__hd">
@@ -25,10 +26,15 @@
         <!-- <input type="password" name="password" placeholder="设置密码" required> -->
         <div>
           <!--密码-->
-          <input type="password" name="password" placeholder="设置密码" datatype="*6-15" errormsg="密码范围在6~15位之间！" />
+          <div style="height: 82px; overflow: hidden;">
+            <span class="Validform_label" style="display: none">密码</span>
+            <input type="password" name="password" placeholder="设置密码" datatype="*6-15" errormsg="密码范围在6~15位之间！" />
+          </div>
           <!--确认密码-->
-          <div class="space"></div>
-          <input type="password" placeholder="再次输入密码" datatype="*" recheck="password" errormsg="您两次输入的账号密码不一致！" />
+          <div style="height: 97px; overflow: hidden;">
+            <span class="Validform_label" style="display: none">再次输入密码</span>
+            <input type="password" placeholder="再次输入密码" datatype="*6-15" recheck="password" errormsg="您两次输入的账号密码不一致！" />
+          </div>
         </div>
       </div>
       <div>
