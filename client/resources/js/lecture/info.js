@@ -21,18 +21,18 @@
   $searchInput.on('blur', function () {
         if(!this.value.length) cancelSearch();
       });
-
   //清空搜索框
   $searchClear.on('click', function(){
       hideSearchResult();
       $searchInput.focus();
+      $($(".info-container")).show();
   });
   //取消搜索
   $searchCancel.on('click', function(){
       cancelSearch();
       $searchInput.blur();
+      $($(".info-container")).show();
   });
-
   function getConfirms(id){
      var $cancel = $(".right"+id);
      $('#iosDialog'+id).fadeIn(0);
@@ -63,9 +63,9 @@
     jQuery.expr[':'].Contains = function(a,i,m){
         return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
     };
-    function filterList(list) { 
+  function filterList(list) { 
     $($searchInput)
-        .change( function () {
+        .change(function () {
           var filter = $(this).val();
           if(filter) {
             $matches = $(list).find('h4:Contains(' + filter + ')').parents();
@@ -91,3 +91,4 @@
   $('#closeerr').on('click', function() {
     $('#modalerr').css('display', 'none');
   });
+
