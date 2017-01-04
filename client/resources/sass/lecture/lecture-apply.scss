@@ -128,18 +128,30 @@ input#title {
   border:0;
 }
 .space{
-  font-size:12px;
+  font-size:14px;
   color:red;
 }
-.picker .picker-panel .wheel-wrapper .wheel {
-  font-size:14px;
+.picker-choose {
+  height: 46px !important;
+  line-height: 46px !important;
+  border-bottom: 1px solid #dcdcdc !important;
 }
-.picker .picker-panel .picker-choose{
-  border-bottom: 1px solid #ccc;
+
+.picker-title,
+.wheel-item {
+  font-size: 16px !important;
+  font-weight: 400 !important;
 }
-.picker .picker-panel .picker-choose .picker-title {
-  padding-top:30px;
-  font-weight: normal;
-  line-height:0;
+
+.picker .picker-panel .picker-choose .cancel,
+.picker .picker-panel .picker-choose .confirm {
+  padding: 0 10px !important;
+  top: 0 !important;
+}
+
+.picker .picker-panel .picker-choose .confirm {
+  color: #35B2F2 !important;
+}
+.cancel{
   font-size:14px;
 }
