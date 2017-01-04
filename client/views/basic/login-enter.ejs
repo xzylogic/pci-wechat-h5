@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>登录</title>
   <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
 </head>
+
 <body>
   <div class="container">
     <form class="form-container" action="<%=_src(postUrl)%>" method="post">
       <div class="input-field">
         <div class="weui-cell input-code">
           <div class="weui-cell__bd">
+            <span class="Validform_label" style="display: none">验证码</span>
             <input type="tel" name="code" placeholder="请输入短信验证码" datatype="number" errormsg="请输入正确的验证码！">
           </div>
           <div class="weui-cell__hd">
@@ -49,7 +52,8 @@
         </div>
       </div>
     </div>
-  <%}%>
-  <script src="<%=_src('/js/basic/enter.min.js')%>"></script>
+    <%}%>
+      <script src="<%=_src('/js/basic/enter.min.js')%>"></script>
 </body>
+
 </html>
