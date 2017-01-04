@@ -29,7 +29,7 @@
   </div>
   <input id="title" type="text" name="title" class="display">
   <div class="account-btn">
-      <button type="button" onclick="submit()"  id="riskbtn"  class="weui-btn" >提交</button>
+      <button type="button" onclick="submit()"  id="riskbtn"  class="weui-btn" disabled style="background:#ccc;">提交</button>
   </div>
    
 <script type="text/javascript">  
@@ -252,9 +252,9 @@
           ifFull();
    });
    
-  $(document).ready(function() {
-     $('#riskbtn').attr('disabled',true);
-     $('#riskbtn').css('background','#ccc');
+   $(document).ready(function() {
+  //    $('#riskbtn').attr('disabled',true);
+  //    $('#riskbtn').css('background','#ccc');
   });
    function submit(){
 
