@@ -59,36 +59,58 @@
 
 
   /*方法调用*/
-  inputFn(".name");
-  inputFn(".age");
-
-	 function inputFn(ele) {
-      $(ele).bind('keyup blur',function(){
+  name();
+  age();
+  //验证姓名
+  function name(){
+    $(".name").bind('keyup blur',function(){
           var val = $(this).val();
           if(val == ""){
-             $(this).next('p').html("请将信息添加完全");
+             $(this).next('p').html("请填写姓名");
+             $(this).siblings('label').children().css({'color':'red'});
+             $("button").removeClass("submit");
+           }else{
+              if(!(/^[\u4e00-\u9fa5a-zA-Z]+$/).test(val) && val !== ""){
+                $(".name").next('p').html("姓名只能填写中文或英文");
+                $("button").removeClass("submit"); 
+              }else{
+                $(this).next('p').html("");
+                $(this).siblings('label').children().css({'color':'#000'});
+                button();
+              }    
+           };
+          
+      });
+  }
+  //验证年龄
+  function age(){
+    $(".age").bind('keyup blur',function(){
+          var val = $(this).val();
+          if(val == ""){
+             $(this).next('p').html("请填写年龄");
              $(this).siblings('label').children().css({'color':'red'});
              $("button").removeClass("submit");
            }else{
               $(this).next('p').html("");
-              $(this).siblings('label').children().css({'color':'#000'});    
+              $(this).siblings('label').children().css({'color':'#000'});
+              button();
            };
-          if($(".name").val() && $(".age").val()){
-              $("button").addClass("submit");
-            };
-          var age = $(".age").val();
-          if(age.length > 2 || (/[^0-9]+/g).test(age)){
-            $(".age").next('p').html("请填写正确的年龄");
-            $("button").removeClass("submit"); 
-          }
+          if(!(/^([1-9]|[0-9]{2}|[1][0-9][0-9])$/).test(val) && val !== ""){
+            $(".age").next('p').html("请输入正确的年龄");
+            $("button").removeClass("submit");
+          };
       });
-        if($(".name").val() && $(".age").val()){
-            $("button").addClass("submit");
-          } 
-  };
+  }
+  //按钮变色
+  function button(){
+    if($(".full").text() === "" && $(".name").val() && $(".age").val()){
+      $("button").addClass("submit");
+    }
+  }
+      
   //提交表单
   $("#button").click(function(){
-    if($(".name").val() && $(".age").val() && $(".age").val().length <= 2 && !(/[^0-9]+/g).test($(".age").val())){
+    if($(".name").val() && $(".age").val() && $(".full").text() === ""){
          var name = $(".name").val();
          var age = $(".age").val();
          var sex = $("#sex").val();
