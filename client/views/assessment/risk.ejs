@@ -60,34 +60,34 @@
   
   var dataAge = [{
     text: '20-34',
-    value: 1
+    value: 0
   },{
     text: '35-39',
-    value: 2
+    value: 1
   },{
     text: '40-44',
-    value: 3
+    value: 2
   },{
     text: '45-49',
-    value: 4
+    value: 3
   },{
     text: '50-54',
-    value: 5
+    value: 4
   },{
     text: '55-59',
-    value: 6
+    value: 5
   },{
     text: '60-64',
-    value: 7
+    value: 6
   },{
     text: '65-69',
-    value: 8
+    value: 7
   },{
     text: '70-74',
-    value: 9
+    value: 8
   },{
     text: '75-79',
-    value: 10
+    value: 9
   }];
   
   var dataIsSmoke = [{
@@ -273,8 +273,10 @@
           dataType: "json",  
           type: "POST",  
           contentType : 'application/json',
-          success: function (responseJSON) { 
-            window.location.href = window.location.pathname + "/risk";
+          success: function (data) {
+            if(data.code === 0){
+              window.location.href = window.location.pathname + "/risk";
+            } 
           }  
         });  
       }
