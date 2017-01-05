@@ -5,6 +5,11 @@
   <title>全程心管家</title>
   <% include ../layout/layout %>
   <link rel="stylesheet" href="<%=_src('/css/assessment/assessment.min.css')%>">
+  <script type="text/javascript">
+      function toRisk(){
+        window.open("<%=_src('/assessment')%>?v=" + (new Date().getTime()), '_self');
+      }
+  </script>
 </head>
 
 <body style="background-color:#f6f6f6">
@@ -30,7 +35,7 @@
     <%}%>
     </p>
     <div class="button-content">
-        <a class="result-btn" href="<%=_src('/assessment')%>">再测一次</a>
+        <button class="result-btn" onclick="toRisk()">再测一次</button>
     </div>
   </div>
 </body>
