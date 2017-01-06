@@ -192,9 +192,10 @@ module.exports = {
 
     req.addListener('end', () => {
       let data = querystring.parse(postData);
-      console.log(`[${new Date()}] Register VerifyCode: ${JSON.stringify(data)}`);
+      data.password = (new Buffer(data.password)).toString('base64');
       data.tel = tel;
       data.openId = openId;
+      console.log(`[${new Date()}] Register VerifyCode: ${JSON.stringify(data)}`);
       requestTool.postwithhandle('register', data, (_data) => {
         if (_data) {
           if (status == 0) {
