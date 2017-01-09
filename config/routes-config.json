@@ -1,8 +1,8 @@
 {
   "root": "/pci-wechat",
   "routes": [{
-    "desc": "测试",
-    "parentUrl": "/test",
+    "desc": "用户协议",
+    "parentUrl": "/agreement",
     "routePath": "/test/test.routes"
   }, {
     "desc": "风险评估",
