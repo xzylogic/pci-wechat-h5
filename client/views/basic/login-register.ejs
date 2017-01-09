@@ -85,7 +85,9 @@
           $('.footer').addClass('footer_initial');
         }
       }
-      window.onresize = setfooter();
+      window.onresize = function(){
+        setfooter();
+      }
       </script>
       <script src="<%=_src('/js/basic/register.min.js')%>"></script>
 </body>
