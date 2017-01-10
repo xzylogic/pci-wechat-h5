@@ -70,7 +70,8 @@
              $(this).siblings('label').children().css({'color':'red'});
              $("button").removeClass("submit");
            }else{
-              if(!(/[\u4e00-\u9fa5a-zA-Z]/).test(val) && val !== ""){ 
+            console.log(val);
+              if(!(/^[\u4e00-\u9fa5a-zA-Z\s]+$/).test(val)){ 
                 $(".name").next('p').html("姓名只能填写中文或英文");
                 $("button").removeClass("submit"); 
               }else{
