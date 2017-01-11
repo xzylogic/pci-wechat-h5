@@ -6,7 +6,7 @@ var auth = require('../common/auth');
 module.exports = {
 
   getIsapply: (req,res) =>{
-    //auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
+    auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     let url = requestTool.setAuthUrl('/lecture/apply'); // 重定向url
     
     auth.getOpenId(req, res, url, (openId) => {

@@ -65,12 +65,12 @@
   function name(){
     $(".name").bind('keyup blur',function(){
           var val = $(this).val();
-          if(val == ""){
+          if(val === ""){
              $(this).next('p').html("请填写姓名");
              $(this).siblings('label').children().css({'color':'red'});
              $("button").removeClass("submit");
            }else{
-              if(!(/[\u4e00-\u9fa5a-zA-Z]/).test(val) && val !== ""){ 
+              if(!(/^[\u4e00-\u9fa5a-zA-Z]([\s\u4e00-\u9fa5a-zA-Z])+$/).test(val)){ 
                 $(".name").next('p').html("姓名只能填写中文或英文");
                 $("button").removeClass("submit"); 
               }else{
@@ -95,7 +95,7 @@
               $(this).siblings('label').children().css({'color':'#000'});
               button();
            };
-          if(!(/([1-9]|[0-9]{2}|[1][0-9][0-9])/).test(val) && val !== ""){
+          if(!(/^([1-9]|[0-9]{2}|[1][0-9][0-9])$/).test(val) && val !== ""){
             $(".age").next('p').html("请输入正确的年龄");
             $("button").removeClass("submit");
           };
