@@ -2,7 +2,7 @@
   "name": "pci-wechat-h5",
   "version": "1.0.0",
   "description": "全程心管家微信端H5",
-  "main": "www/bin",
+  "main": "bin/www",
   "scripts": {
     "start": "node bin/www",
     "server": "gulp server",
@@ -12,7 +12,7 @@
     "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "violetqqy",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
