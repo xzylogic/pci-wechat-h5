@@ -2,10 +2,11 @@
 
 global.config = {
   server: 'http://pci.qcxin.com/pci-micro/',
-  domain: 'http://pci.qcxin.com',
+  fatherServer: 'http://10.1.32.44/pci-operation/',
+  domain: 'http://139.224.186.36',
   root: '/pci-wechat',
-  filedir: '/opt/pci-wechat-h5',
-  appId: 'wx017488f36de81e22'
+  appId: 'wx017488f36de81e22',
+  secret:'33b122ef4682197246d65c732ce852d2'
 }
 
 var app = require('../app');
@@ -89,3 +90,6 @@ function onListening() {
   debug('Listening on ' + bind);
   console.log(`(START) [${new Date()}] Your application is runing on port: ${port} ${global.config.root}/`);
 }
+
+
+

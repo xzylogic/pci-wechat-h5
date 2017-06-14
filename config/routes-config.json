@@ -16,5 +16,9 @@
     "desc": "基本信息",
     "parentUrl": "/",
     "routePath": "/basic/basic.routes"
+  },{
+    "desc": "父亲节",
+    "parentUrl": "/father",
+    "routePath": "/father/father.routes"
   }]
 }

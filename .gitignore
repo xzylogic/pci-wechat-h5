@@ -17,5 +17,3 @@ Thumbs.db
 .sass-cache
 
 bin/www-local
-dist
-dist.zip

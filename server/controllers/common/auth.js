@@ -12,7 +12,18 @@ var auth = {};
  * @return {[type]}             []
  */
 auth.setCookies = (res, key, value) => {
-  res.cookie(key, value, { maxAge: 86400000, httpOnly: true, signed: true });
+  res.cookie(key, value, { maxAge: 900000, httpOnly: true, signed: true });
+}
+
+/**
+ * 存储加密的jsapi_ticket
+ * @param  {[type]} res         [response]
+ * @param  {[type]} openId      [openId]
+ * @param  {[type]} accessToken [accessToken]
+ * @return {[type]}             []
+ */
+auth.setJsCookies = (res, key, value) => {
+  res.cookie(key, value, { maxAge: 7200000, httpOnly: true, signed: true });
 }
 
 /**
@@ -31,7 +42,7 @@ auth.getToken = (res, code, call) => {
   }
   // 测试使用
 auth.getTokenCopy = (res, code, call) => {
-  requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx5921baa9a4522266&secret=23ed70a87e976da7756b076166f88723&code=${code}&grant_type=authorization_code`, call, (err) => {
+  requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wxee8d9fc7f496d8b1&secret=4ee061a42331ea76af1430e02e4f6fbe&code=${code}&grant_type=authorization_code`, call, (err) => {
     res.render('error', {
       "message": '请求错误'
     });

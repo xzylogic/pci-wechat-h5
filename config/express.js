@@ -15,12 +15,14 @@ module.exports = function() {
   };
 
   // 设置模版引擎
-  app.set('views', global.config.filedir + resources.view);
+  app.set('views', process.cwd() + resources.view);
   app.set('view engine', 'ejs');
 
   app.use(logger('[:date[clf]] :method :url :status :response-time ms - :res[content-length]'));
+  // app.use(logger('combined'));
 
   app.use(bodyParser.json());
+
 
   app.use(cookieParser('pcihahah'));
 
@@ -29,11 +31,14 @@ module.exports = function() {
     return global.config.domain + routesTool.routesConfig.root + src;
   };
 
+  // console.log(process.cwd() + resources.assets);
   // 静态资源访问路径设置
-  app.use(routesTool.routesConfig.root, express.static(global.config.filedir + resources.assets));
+  app.use(routesTool.routesConfig.root, express.static(process.cwd() + resources.assets));
 
   // 路由配置
   routesTool.useRoutes(app);
+
+  
 
   return app;
 
