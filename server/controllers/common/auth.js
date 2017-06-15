@@ -36,18 +36,18 @@ auth.setJsCookies = (res, key, value) => {
 auth.getToken = (res, code, call) => {
     requestTool.getwithhandle('getToken', `code=${code}`, call, (err) => {
       res.render('error', {
-        "message": '请求错误'
+        "message": '请求TOKEN错误'
       });
     });
   }
   // 测试使用
-auth.getTokenCopy = (res, code, call) => {
-  requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wxee8d9fc7f496d8b1&secret=4ee061a42331ea76af1430e02e4f6fbe&code=${code}&grant_type=authorization_code`, call, (err) => {
-    res.render('error', {
-      "message": '请求错误'
-    });
-  });
-}
+// auth.getTokenCopy = (res, code, call) => {
+//   requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wxee8d9fc7f496d8b1&secret=4ee061a42331ea76af1430e02e4f6fbe&code=${code}&grant_type=authorization_code`, call, (err) => {
+//     res.render('error', {
+//       "message": '请求错误'
+//     });
+//   });
+// }
 
 /**
  * 获取openId

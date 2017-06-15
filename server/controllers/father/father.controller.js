@@ -9,7 +9,7 @@ module.exports = {
   getFather: (req, res) => {
     var qrCode = req.query.qrCode || '';
     var share = req.query.share || '';
-    //auth.setCookies(res, 'pci_secret', 'ovMkVwAqHDRVJ9cTDVAUDBmNjHYw');
+    // auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
     let url = requestTool.setAuthInfoUrl('/father/father');// 重定向url
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     if(openId){
