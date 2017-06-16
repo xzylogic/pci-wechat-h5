@@ -12,6 +12,6 @@ router.route('/Share-page').get(FatherController.getSharePage); // 分享页面
 
 router.route('/transpond').get(FatherController.getTranspond); // 分享转发
 
-router.route('/signature').post(FatherController.getSignature); // 获取config配置参数
+router.route('/signature').get(FatherController.getSignature); // 获取config配置参数
 
 module.exports = router;

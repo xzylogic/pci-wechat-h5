@@ -51,8 +51,8 @@
 		});	 
   	});
 //将网页保存为图片
- $(document).ready(function(){
-	var w = document.body.scrollWidth;
+window.onload = function(){
+    var w = document.body.scrollWidth;
     var h = document.body.scrollHeight;
     //要将 canvas 的宽高设置成容器宽高的 2 倍
     var canvas = document.createElement("canvas");  
@@ -75,5 +75,7 @@
             newImg.height = h;
             document.body.appendChild(newImg);
         }
-	})   
-});
+    });
+
+}
+	  

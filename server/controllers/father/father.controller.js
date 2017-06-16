@@ -9,22 +9,14 @@ module.exports = {
   getFather: (req, res) => {
     var qrCode = req.query.qrCode || '';
     var share = req.query.share || '';
-    // auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
-    let url = requestTool.setAuthInfoUrl('/father/father');// 重定向url
-    let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-    if(openId){
+    //auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
+    let url = requestTool.setAuthUrl('/father/father');// 重定向url
+    auth.getFatherOpenId(req, res, url, (openId) => {
       getHomePage(openId);
-      if(qrCode){
-        QRcode(openId);
-      }
-    }else{
-       auth.getOpenId(req, res, url, (openId) => {
-        getHomePage(openId);
         if(qrCode){
           QRcode(openId);
         }       
       });
-    };
    
     //统计页面访问量和独立访客数
     function getHomePage(openId){
@@ -71,7 +63,7 @@ module.exports = {
     if(openId){
       res.render('father/make-greetingCard');
     }else{
-      auth.getOpenId(req, res, url, (openId) => {
+      auth.getFatherOpenId(req, res, url, (openId) => {
        res.render('father/make-greetingCard');
       });
     }
@@ -103,7 +95,7 @@ module.exports = {
         img:img
       });
     }else{
-      auth.getOpenId(req, res, url, (openId) => {
+      auth.getFatherOpenId(req, res, url, (openId) => {
         res.render('father/Share-page', {
           appellation:appellation,
           content:content,
@@ -117,7 +109,7 @@ module.exports = {
 
   getSignature: (req,res) => {
     let ticket = req.signedCookies.jsapi_ticket || ''; // 从cookie中找jsapi_ticket;
-    var url = req.body.url || '';
+    let url = req.query.url || '';
     let accdata = {};
     var jsapidata = {};
     accdata.grant_type ="client_credential";

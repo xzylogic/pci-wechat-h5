@@ -16,11 +16,9 @@
 	    //ajax请求config配置参数
 	    function wxconfig() {
 	    	$.ajax({
-			   type: "post",
+			   type: "get",
 			   url: pathName+"/signature",
-			   contentType: 'application/json',
-			   data: JSON.stringify({url:location.href}),
-			   processData: false,
+			   data: {url:location.href},
 			   success: function(msg){
 			   		//配置微信JS-SDK
 				    wx.config({
@@ -51,9 +49,7 @@
 			</div>
 			<div class="letter">
 				<img src="<%=_src('/image/father/qrcode.png')%>" alt="">
-				
 			</div>
-			
 		</section>
 		<div class="qrcode">
 			<span>扫码定制父亲节贺卡</span>
