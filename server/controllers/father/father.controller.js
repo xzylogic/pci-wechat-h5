@@ -138,11 +138,11 @@ module.exports = {
             signature:signature.signature,
           })
         }, err =>{
-            console.log("请求jsapi_ticket失败");
+            res.send("请求jsapi_ticket失败");
         })
           
       },err =>{
-          console.log("请求access_token失败");
+          res.send("请求access_token失败");
       })
     }
   },
