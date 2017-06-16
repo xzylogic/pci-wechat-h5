@@ -5,6 +5,7 @@ var rename = require('gulp-rename'); //重命名
 var imagemin = require('gulp-imagemin'); //压缩图片
 var pngquant = require('imagemin-pngquant');
 var supervisor = require('gulp-supervisor');
+var cssBase64 = require('gulp-css-base64');
 
 var config = {
   scssPath: './client/resources/sass/',
@@ -70,3 +71,9 @@ gulp.task('watch', ['compass', 'compress', 'imagemin'], function() {
 
 //编译项目
 gulp.task('build', ['compass', 'compress', 'imagemin']);
+
+gulp.task('base64', function() {
+  return gulp.src('client/assets/css/father/*.css')
+    .pipe(cssBase64())
+    .pipe(gulp.dest('dist'));
+});

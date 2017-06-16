@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>登录</title>
+  <% include ../layout/layout %>
+    <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
+    <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
+</head>
+
+<body>
+  <div class="container">
+    <form class="form-container" action="<%=_src('/login?status='+status)%>" method="post">
+      <div class="input-field">
+        <input type="tel" name="tel" placeholder="请输入手机号" datatype="phone" errormsg="请输入正确的11位手机号!">
+      </div>
+      <div>
+        <button type="submit" class="weui-btn weui-btn_primary">下一步</button>
+      </div>
+    </form>
+    <div class="hint-info">
+      <span class="hint-title">友情提示</span>
+      <span>请先注册登录，登录后可报名讲座、查看报名信息、绑定家庭成员等。</span>
+    </div>
+  </div>
+  <% if (errorMessage) {%>
+    <div id="modalerr">
+      <div class="weui-mask"></div>
+      <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">错误提示</strong></div>
+        <div class="weui-dialog__bd" id="message">
+          <%=errorMessage%>
+        </div>
+        <div class="weui-dialog__ft">
+          <a id="closeerr" href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+        </div>
+      </div>
+    </div>
+  <%}%>
+  <script src="<%=_src('/js/basic/login.min.js')%>"></script>
+</body>
+
+</html>
