@@ -12,6 +12,12 @@ body{
 		width:100%;
 	}
 }
+input:focus{
+	outline: none;
+}
+textarea:focus{
+	outline: none;
+}
 .father-header{
 	width:100%;
 	height:6.5rem;
@@ -151,29 +157,9 @@ body{
 		border:0;
 		line-height: 1rem;
 		text-indent:2em;
-		// text-decoration-line:underline;
-	}
-	span{
-		width:90%;
-		height:0.038647rem;
-		position:absolute;
-		border-bottom:1px solid #fff;
-	}
-	.liner-1{
-		top:0.950242rem;
+		background:linear-gradient(#056457 0.95rem,#fff 0);
+ 		background-size:100% 1rem;
 		
-	}
-	.liner-2{
-		// background: url("../../image/father/liner-08_03.png") 0px -0.25rem;
-		top:1.9rem;
-	}
-	.liner-3{
-		// background: url("../../image/father/liner-08_03.png") 0px -0.25rem;
-		top:2.9rem;
-	}
-	.liner-4{
-		// background: url("../../image/father/liner-08_03.png") 0px -0.25rem;
-		top:3.9rem;
 	}
 }
 .signature{
@@ -240,7 +226,7 @@ body{
 				top:0;
 				left:0;
 				width:100%;
-				div{
+				>div{
 					width:90%;
 					margin:0 auto;
 					input{
@@ -248,7 +234,7 @@ body{
 						display:block;
 						background:#056457;
 						border:0;
-						border-bottom:1px solid #fff;
+						
 						color:#fff;
 						height:1rem;
 						font-size:0.75rem;
@@ -259,7 +245,6 @@ body{
 					}
 					.edit-signature{
 						float:right;
-						margin-top:0.2rem;
 					}
 					textarea{
 						display:block;
@@ -274,6 +259,16 @@ body{
 						resize:none;
 						text-decoration:underline;
 						line-height:1rem;
+					}
+					.nickname{
+						width:4.5rem;
+						border-bottom:1px solid #fff;
+					}
+					.input-signature{
+						width:4.5rem;
+						margin-left:calc(100% - 4.5rem);
+						border-bottom:1px solid #fff;
+						height:1rem;
 					}
 				}
 			}

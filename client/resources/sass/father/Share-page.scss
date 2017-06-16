@@ -53,7 +53,7 @@ section{
 				font-size: 0.695652rem;
 				margin-left:0.386473rem;
 				font-weight: normal;
-				border-bottom: 1px solid #fff;
+
 			}
 			p{
 				font-size: 0.695652rem;
@@ -61,7 +61,6 @@ section{
 				margin-right:0.386473rem;
 				text-indent:2em;
 				line-height:1rem;
-				text-decoration:underline;
 			}
 			.signature{
 				float: right;
@@ -94,4 +93,61 @@ section{
 	line-height:1;
 	font-size:0.618357rem;
 	text-align: center;
+}
+.test{
+	width:100%;
+	height:6rem;
+	text-align:center;
+	color:#fff;
+	font-size:0.966184rem;
+	.save{
+		height:2rem;
+		line-height:2rem;
+		// background:-webkit-linear-gradient(left,#f00,#ff0 25%,#0f0 40%,#0ff 55%,#00f 70%,#f00);
+		animation: change 2s  linear  infinite ; color:yellow; font-weight: bold;
+        @keyframes change {  
+            0%{ text-shadow: 0 0 4px #f90}  
+            50%{ text-shadow: 0 0 40px #f90}  
+            100%{ text-shadow: 0 0 4px #f90}
+        } 
+	}
+}
+.arrows{
+	width:100%;
+	height:2.575rem;
+	position:relative;
+	span{
+		display:inline-block;
+		width:3.075rem;
+		height:2.575rem;
+		margin:0 auto;
+		position:absolute;
+		left:50%;
+		top:0;
+		margin-left:-1.535rem;
+		z-index:2;
+		background:url("../../image/father/arrows.png") no-repeat center;
+		background-size: cover;
+		animation:myfirst 1s linear infinite;
+		-moz-animation:myfirst 1s linear infinite; /* Firefox */
+		-webkit-animation:myfirst 1s linear infinite; /* Safari and Chrome */
+		-o-animation:myfirst 1s linear infinite; /* Opera */
+	}
+}
+
+@keyframes myfirst
+{
+	0%   {left:50%; top:0rem;}
+	25%  {left:50%; top:0.2rem;}
+	50%  {left:50%; top:0.4rem;}
+	75%  {left:50%; top:0.2rem;}
+	100% {left:50%; top:0rem;}
+}
+.img{
+	width:100%;
+	height:736px;
+	img{
+		width:100%;
+		height:736px;
+	}
 }

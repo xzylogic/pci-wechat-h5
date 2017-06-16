@@ -7,9 +7,9 @@
     });
 
     //禁止触摸拖动网页
-    $('body').on('touchmove', function (event) {
-      event.preventDefault();
-    });
+    // $('body').on('touchmove', function (event) {
+    //   event.preventDefault();
+    // });
 
     //计算页面转发次数和人数
     function share(){
@@ -63,11 +63,14 @@ window.onload = function(){
     var context = canvas.getContext("2d");
     //然后将画布缩放，将图像放大两倍画到画布上
     context.scale(2,2);
-   
+    $(".content").css({
+        'display':'block'
+    });
     html2canvas(document.body, {
         canvas:canvas,
         onrendered: function(canvas) {
             document.body.innerHTML='';
+            $("body").append("<div class='test'><div class='save'>长按保存下面图片给你的父亲吧</div><div class='arrows'><span></span></div></div>");
             var dataUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");  
             var newImg = document.createElement("img");
             newImg.src =  dataUrl;
@@ -76,6 +79,5 @@ window.onload = function(){
             document.body.appendChild(newImg);
         }
     });
-
 }
 	  

@@ -3,10 +3,10 @@
 <head>
   <title>父亲节活动</title>
   <% include ../layout/layout %>
+  <link rel="stylesheet" href="<%=_src('/css/father/make-greetingCard.min.css')%>">
   <link rel="stylesheet" href="<%=_src('/lib/swiper/swiper.min.css')%>">
   <script src="<%=_src('/lib/swiper/swiper.min.js')%>"></script>
   <script src="<%=_src('/js/father/rem.min.js')%>"></script>
-  <link rel="stylesheet" href="<%=_src('/css/father/make-greetingCard.min.css')%>">
   <script>
     var pathName = "<%=_src('/father')%>";//获取页面跳转路径
   </script>
@@ -48,10 +48,6 @@
                 </div>
                 <div class="details">
                   <p>我知道您一直是我最坚强的后盾，您对我的付出，我一直记在心里！么么哒！老爸，您辛苦啦！</p>
-                  <span class="liner-1"></span>
-                  <span class="liner-2"></span>
-                  <span class="liner-3"></span>
-                  <span class="liner-4"></span>
                 </div>
                 <div class="signature">
                   <h5>宝贝女儿</h5>
@@ -75,10 +71,6 @@
                 </div>
                 <div class="details">
                   <p>父爱如山，虽然我们会争吵，但您总是对我那么宽容。感谢您给我无言的爱，祝您父亲节快乐！</p>
-                  <span class="liner-1"></span>
-                  <span class="liner-2"></span>
-                  <span class="liner-3"></span>
-                  <span class="liner-4"></span>
                 </div>
                 <div class="signature">
                   <h5>您的儿子</h5>
@@ -102,10 +94,6 @@
                 </div>
                 <div class="details">
                   <p>少抽点烟，少喝点酒。照顾好自己身体，为了妈妈和我。父亲节快乐，我们爱你！</p>
-                  <span class="liner-1"></span>
-                  <span class="liner-2"></span>
-                  <span class="liner-3"></span>
-                  <span class="liner-4"></span>
                 </div>
                 <div class="signature">
                   <h5>您的女儿</h5>
@@ -125,9 +113,13 @@
             <span></span>
             <div class="Edit-Contents">
               <div>
-                <input type="text" class="edit-appellation" placeholder="称呼" required maxlength="6">
+                <div class="nickname">
+                   <input type="text" class="edit-appellation" placeholder="称呼" required maxlength="6">
+                </div>
                 <textarea name="" id="" placeholder="请输入您想对父亲说的话" maxlength="65" required></textarea>
-                <input type="text" class="edit-signature" placeholder="署名" required maxlength="6">
+                <div class="input-signature">
+                  <input type="text" class="edit-signature" placeholder="署名" required maxlength="6">
+                </div>
                 <input type="hidden" id="modalId">
               </div>
             </div>
