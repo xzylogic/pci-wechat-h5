@@ -25,17 +25,23 @@ module.exports = {
         if(_result.code == 0){
           console.log("页面访问量");
         }
+      }, err=>{
+        console.log('服务器请求错误');
       });
       requestTool.getStatistics('statistics',`openId=${openId}&type=1`,(_result) => {
         if(_result.code == 0){
           console.log("独立访客数");
         } 
+      },err=>{
+        console.log('服务器请求错误');
       });
       if(share){
         requestTool.getStatistics('statistics',`openId=${openId}&type=5`,(_result) => {
           if(_result.code == 0){
             console.log("页面分享转发人数");
           }
+        },err=>{
+          console.log('服务器请求错误');
         });
       }
     };
@@ -47,11 +53,15 @@ module.exports = {
         if(_result.code == 0){
           console.log("二维码扫码数量");
         }
+      },err=>{
+        console.log('服务器请求错误');
       });
       requestTool.getStatistics('statistics',`openId=${openId}&type=3`,(_result) => {
         if(_result.code == 0){
           console.log("二维码扫码人数");
         } 
+      },err=>{
+        console.log('服务器请求错误');
       }); 
     };
   },
@@ -79,7 +89,7 @@ module.exports = {
     var signature = req.query.signature || "";
     var id = req.query.id || "";
     if(id == 1){
-      img = '/father-1_03.png';
+      img = "/father-1_03.png";
     }else if( id == 2){
       img = '/father-02.png';
     }else if(id == 3){
@@ -152,9 +162,10 @@ module.exports = {
     let openId = req.signedCookies.pci_secret || '';// 从cookie中找openId
     requestTool.getStatistics('statistics',`openId=${openId}&type=4`,(_result) => {
         if(_result.code == 0){
-          console.log("页面分享转发次数");
           res.send("页面分享成功");
         }
+    }, err =>{
+        res.send("接口请求错误");
     });
   }
 

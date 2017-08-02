@@ -1,4 +1,4 @@
-var jsSHA = require('jssha');
+var jsSHA = require('./sha.js');
 var createNonceStr = function () {
   return Math.random().toString(36).substr(2, 15);
 };
