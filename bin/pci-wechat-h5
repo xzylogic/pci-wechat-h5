@@ -3,7 +3,7 @@
 global.config = {
   server: 'http://pci.qcxin.com/pci-micro/',
   domain: 'http://pci.qcxin.com',
-  root: '/pci-wechat',
+  root: '/pci-wechat-h5',
   filedir: '/opt/pci-wechat-h5',
   appId: 'wx017488f36de81e22'
 }
