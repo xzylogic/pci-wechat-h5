@@ -12,7 +12,18 @@ var auth = {};
  * @return {[type]}             []
  */
 auth.setCookies = (res, key, value) => {
-  res.cookie(key, value, { maxAge: 86400000, httpOnly: true, signed: true });
+  res.cookie(key, value, { maxAge: 900000, httpOnly: true, signed: true });
+}
+
+/**
+ * 存储加密的jsapi_ticket
+ * @param  {[type]} res         [response]
+ * @param  {[type]} openId      [openId]
+ * @param  {[type]} accessToken [accessToken]
+ * @return {[type]}             []
+ */
+auth.setJsCookies = (res, key, value) => {
+  res.cookie(key, value, { maxAge: 7200000, httpOnly: true, signed: true });
 }
 
 /**
@@ -25,13 +36,14 @@ auth.setCookies = (res, key, value) => {
 auth.getToken = (res, code, call) => {
     requestTool.getwithhandle('getToken', `code=${code}`, call, (err) => {
       res.render('error', {
-        "message": '请求错误'
+        "message": '请求TOKEN错误'
       });
     });
-  }
-  // 测试使用
+}
+
+  // 父亲节页面使用
 auth.getTokenCopy = (res, code, call) => {
-  requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=wx5921baa9a4522266&secret=23ed70a87e976da7756b076166f88723&code=${code}&grant_type=authorization_code`, call, (err) => {
+  requestTool.getwithurl('https://api.weixin.qq.com/sns/oauth2/access_token', `appid=${global.config.appId}&secret=${global.config.secret}&code=${code}&grant_type=authorization_code`, call, (err) => {
     res.render('error', {
       "message": '请求错误'
     });
@@ -64,6 +76,32 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
     //   auth.setCookies(res, 'pci_secret', data.openid);
     //   call(data.openid);
     // });
+  } else {
+    console.log(`[${new Date()}] Redirect Url: ${redirectUrl}`);
+    res.redirect(redirectUrl);
+  }
+}
+
+/**
+ * 获取父亲节页面openId
+ * @param  {[type]} req         [request]
+ * @param  {[type]} res         [response]
+ * @param  {[type]} redirectUrl [redirectUrl]
+ * @param  {[type]} call        [callback函数]
+ * @return {[type]}             []
+ */
+auth.getFatherOpenId = (req, res, redirectUrl, call) => {
+  console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
+  let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
+  let code = req.query.code || ''; // 微信返回code
+  if (openId) {
+    call(openId);
+  } else if (code) {
+    auth.getTokenCopy(res, code, (data) => {
+      console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
+      auth.setCookies(res, 'pci_secret', data.openid);
+      call(data.openid);
+    });
   } else {
     console.log(`[${new Date()}] Redirect Url: ${redirectUrl}`);
     res.redirect(redirectUrl);

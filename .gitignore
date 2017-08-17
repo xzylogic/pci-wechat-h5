@@ -1,5 +1,6 @@
 # dependencies
 /node_modules
+/dist
 
 # IDEs and editors
 /.idea
@@ -17,5 +18,3 @@ Thumbs.db
 .sass-cache
 
 bin/www-local
-dist
-dist.zip

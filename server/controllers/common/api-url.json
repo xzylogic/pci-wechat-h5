@@ -12,5 +12,6 @@
   "familySearch": "api/user/family/search",
   "apply": "api/lecture/join",
   "applyList": "api/lecture/join/list",
-  "applyCance": "api/lecture/join/cancel"
+  "applyCance": "api/lecture/join/cancel",
+  "statistics":"opt/father/day/request"
 }

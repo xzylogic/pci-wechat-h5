@@ -2,6 +2,7 @@
 var superagent = require('superagent');
 
 var BASE_URL = global.config.server;
+var Father_BASE_URL = global.config.fatherServer;
 var api = require('./api-url.json');
 
 var requestTool = {};
@@ -24,6 +25,58 @@ requestTool.get = function(key, param, call, error) {
         error(err);
       } else {
         call(sres.text);
+      }
+    });
+}
+
+/**
+ * 使用superagent进行get统计请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getStatistics = function(key, param, call, error) {
+  superagent
+    .get(Father_BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+//获取access_token
+requestTool.getAccessToken = function(param, call, error) {
+  superagent
+    .get('https://api.weixin.qq.com/cgi-bin/token')
+    .set('Content-Type', 'application/json')
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+//获取jsapi_ticket
+requestTool.getJsapiTicket = function(param, call, error) {
+  superagent
+    .get('https://api.weixin.qq.com/cgi-bin/ticket/getticket')
+    .set('Content-Type', 'application/json')
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
       }
     });
 }
@@ -81,6 +134,17 @@ requestTool.getwithurl = function(url, param, call, error) {
       } else {
         call(JSON.parse(sres.text));
       }
+    });
+}
+
+// 请求单独的url地址
+requestTool.getToken = function(url, param, call, error) {
+  superagent
+    .get(url)
+    .set('Content-Type', 'application/json')
+    .query(param)
+    .end(function(err, sres) {
+      console.log(sres);
     });
 }
 
@@ -144,13 +208,23 @@ requestTool.postApi = function(res, key, data, call) {
 }
 
 /**
- * 设置微信获取code的链接
+ * 设置base微信获取code的链接
  * @param {} redirectUrl [微信重定向Url]
  * @param {} state       [Url参数]
  */
 requestTool.setAuthUrl = function(redirectUrl, state) {
   let uri = encodeURIComponent(`${global.config.domain}${global.config.root}${redirectUrl}`);
   let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${global.config.appId}&redirect_uri=${uri}&response_type=code&scope=snsapi_base&state=${state}#wechat_redirect`;
+  return url;
+}
+
+/**
+ * 设置userinfo微信获取code的链接
+ * @param {} redirectUrl [微信重定向Url]
+ */
+requestTool.setAuthInfoUrl = function(redirectUrl) {
+  let uri = encodeURIComponent(`${global.config.domain}${global.config.root}${redirectUrl}`);
+  let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${global.config.appId}&redirect_uri=${uri}&response_type=code&scope=snsapi_base&#wechat_redirect`;
   return url;
 }
 
