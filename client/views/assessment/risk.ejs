@@ -28,14 +28,14 @@
   <div  class="showPicker">5 高密度脂蛋白 (mmol/L)
     <span id="showGoodCholesterol"></span>
   </div>
-  <div class="showPicker">5 高压水平 (mmol/L)
+  <div class="showPicker">6 高压水平 (mmol/L)
     <span id="showPressure"></span>
   </div>
-  <div class="showPicker" style="border-bottom: 1px solid #dcdcdc;">5 您是否服用过降压药
+  <div class="showPicker" style="border-bottom: 1px solid #dcdcdc;">7 您是否服用过降压药
     <span id="showHypotensor"></span>
   </div>
   <input id="title" type="text" name="title" class="display">
-  <div class="account-btn">
+  <div class="account-btn" style="margin-bottom: 20px;">
     <button type="button" onclick="submit()" id="riskbtn" class="weui-btn" disabled style="background:#ccc;">提交</button>
   </div>
   <div id="modal" style="display: none">
@@ -300,33 +300,31 @@
       "smoke": smoke,
       "systolic": systolic
     };
-    console.log(list);
-    // $.ajax({
-    //   url: url,
-    //   type: "POST",
-    //   data: JSON.stringify(list),
-    //   contentType: 'application/json',
-    //   dataType: 'json',
-    //   success: function(data) {
-    //     if (data.code === 0) {
-    //       // alert(window.location.pathname + "/risk");
-    //       window.open(window.location.pathname + "/risk?v=" + (new Date().getTime()), '_self');
-    //     } else {
-    //       var msg;
-    //       if (data.msg) {
-    //         msg = data.msg;
-    //       } else {
-    //         msg = '提交失败！';
-    //       }
-    //       $('#message').text(msg);
-    //       $('#modal').css('display', 'block');
-    //     }
-    //   },
-    //   error: function() {
-    //     $('#message').text('请求失败！');
-    //     $('#modal').css('display', 'block');
-    //   }
-    // });
+    $.ajax({
+      url: url,
+      type: "POST",
+      data: JSON.stringify(list),
+      contentType: 'application/json',
+      dataType: 'json',
+      success: function(data) {
+        if (data.code === 0) {
+          window.open(window.location.pathname + "/risk?v=" + (new Date().getTime()), '_self');
+        } else {
+          var msg;
+          if (data.msg) {
+            msg = data.msg;
+          } else {
+            msg = '提交失败！';
+          }
+          $('#message').text(msg);
+          $('#modal').css('display', 'block');
+        }
+      },
+      error: function() {
+        $('#message').text('请求失败！');
+        $('#modal').css('display', 'block');
+      }
+    });
   }
   $('#close').on('click', function() {
     $('#modal').css('display', 'none');
