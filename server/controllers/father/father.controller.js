@@ -9,7 +9,7 @@ module.exports = {
   getFather: (req, res) => {
     var qrCode = req.query.qrCode || '';
     var share = req.query.share || '';
-    //auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
+    // auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
     let url = requestTool.setAuthUrl('/father/father');// 重定向url
     auth.getFatherOpenId(req, res, url, (openId) => {
       getHomePage(openId);
@@ -115,7 +115,6 @@ module.exports = {
       });
     }
   },
-
 
   getSignature: (req,res) => {
     let ticket = req.signedCookies.jsapi_ticket || ''; // 从cookie中找jsapi_ticket;

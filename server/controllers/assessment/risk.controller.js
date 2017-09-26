@@ -9,7 +9,6 @@ module.exports = {
 
   getRisk: (req, res) => {
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
-    let url = requestTool.setAuthUrl('/assessment/risk', ''); // 重定向url
     auth.getOpenId(req, res, url, (openId) => {
       requestTool.getwithhandle('result', `openId=${openId}`, (result) => {
         if (result) {
@@ -40,9 +39,17 @@ module.exports = {
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     let url = requestTool.setAuthUrl('/assessment', ''); // 重定向url
     auth.getOpenId(req, res, url, (openId) => {
-      res.render('assessment/risk', {
-        url: `${global.config.root}/assessment/verify?openId=${openId}`
-      });
+      auth.getUserAttention(res, openId, (data) =>{
+        if (data.subscribe === 1) {
+          res.render('assessment/risk', {
+            url: `${global.config.root}/assessment/verify?openId=${openId}`
+          });
+        } else {
+          res.render('error', {
+            message: '请先关注该公众号',
+          });
+        }
+      })
     }, (err) => {
       res.render('error', {
         message: err
