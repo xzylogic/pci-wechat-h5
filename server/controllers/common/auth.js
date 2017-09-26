@@ -66,7 +66,8 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
     call(openId);
   } else if (code) {
     console.log(`[${new Date()}] Request Code: ${code}`);
-    auth.getToken(res, code, (data) => {
+    auth.getTokenCopy(res, code, (data) => {
+      console.log(data)
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
       call(data.openid);
@@ -80,6 +81,31 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
     console.log(`[${new Date()}] Redirect Url: ${redirectUrl}`);
     res.redirect(redirectUrl);
   }
+}
+
+/**
+ * 判断用户是否关注
+ * @param  {[type]} req         [request]
+ * @param  {[type]} res         [response]
+ * @param  {[type]} redirectUrl [redirectUrl]
+ * @param  {[type]} call        [callback函数]
+ * @return {[type]}             []
+ */
+
+auth.getUserAttention = (res, openId, call) => {
+  let accdata = {};
+    accdata.grant_type ="client_credential";
+    accdata.appid = global.config.appId;
+    accdata.secret = global.config.secret;
+    requestTool.getAccessToken(accdata,(_res) => {
+      requestTool.getwithurl('https://api.weixin.qq.com/cgi-bin/user/info', `access_token=${_res.access_token}&openId=${openId}`, (data) => {
+        call(data);
+      }, (err) => {
+        res.send("请求用户信息失败");
+      });
+    },err =>{
+      res.send("请求access_token失败");
+    })
 }
 
 /**
