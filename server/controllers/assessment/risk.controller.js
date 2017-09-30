@@ -9,6 +9,7 @@ module.exports = {
 
   getRisk: (req, res) => {
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
+    let url = requestTool.setAuthUrl('/assessment/risk', '');
     auth.getOpenId(req, res, url, (openId) => {
       requestTool.getwithhandle('result', `openId=${openId}`, (result) => {
         if (result) {
