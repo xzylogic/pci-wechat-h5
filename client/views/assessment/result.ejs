@@ -11,7 +11,7 @@
       window.open("<%=_src('/assessment')%>?v=" + (new Date().getTime()), '_self');
     }
     var level = '<%=level%>'
-    var pathName = "<%=_src('/father')%>"//获取当前Url
+    var pathName = "<%=_src('')%>"//获取当前Url
     wxconfig();
       //ajax请求config配置参数
     function wxconfig() {
@@ -90,11 +90,12 @@
     </div>
   </div>
   <div class="qrcode">
+    <img class="QrcodeItem-fakeImage" src="<%=_src('/image/assessment/1011508388884_.pic.jpg')%>" alt="">
     <div class="qrcode-img">
       <img src="<%=_src('/image/assessment/1011508388884_.pic.jpg')%>" alt="">
     </div>
-    <p>长按识别二维码并关注公众号</p>
-    <p>立即体验更多健康管理服务！</p>
+    <p class="qrcode-text">长按识别二维码并关注公众号</p>
+    <p class="qrcode-text">立即体验更多健康管理服务</p>
   </div>
 </body>
 

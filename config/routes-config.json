@@ -20,5 +20,9 @@
     "desc": "父亲节",
     "parentUrl": "/father",
     "routePath": "/father/father.routes"
+  },{
+    "desc": "JSSDK",
+    "parentUrl": "/",
+    "routePath": "/jssdk/jssdk.routes"
   }]
 }
