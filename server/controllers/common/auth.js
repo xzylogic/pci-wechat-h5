@@ -36,7 +36,7 @@ auth.setJsCookies = (res, key, value) => {
 auth.getToken = (res, code, call) => {
     requestTool.getwithhandle('getToken', `code=${code}`, call, (err) => {
       res.render('error', {
-        "message": '请求TOKEN错误'
+        "message": err
       });
     });
 }
