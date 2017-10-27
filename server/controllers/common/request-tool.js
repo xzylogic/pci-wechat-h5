@@ -224,7 +224,7 @@ requestTool.setAuthUrl = function(redirectUrl, state) {
  */
 requestTool.setAuthInfoUrl = function(redirectUrl) {
   let uri = encodeURIComponent(`${global.config.domain}${global.config.root}${redirectUrl}`);
-  let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${global.config.appId}&redirect_uri=${uri}&response_type=code&scope=snsapi_base&#wechat_redirect`;
+  let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${global.config.appId}&redirect_uri=${uri}&response_type=code&scope=snsapi_userinfo&#wechat_redirect`;
   return url;
 }
 

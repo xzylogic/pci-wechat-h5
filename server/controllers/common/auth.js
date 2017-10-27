@@ -35,6 +35,7 @@ auth.setJsCookies = (res, key, value) => {
  */
 auth.getToken = (res, code, call) => {
     requestTool.getwithhandle('getToken', `code=${code}`, call, (err) => {
+      console.log(err)
       res.render('error', {
         "message": '请求TOKEN错误'
       });
@@ -67,7 +68,6 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
   } else if (code) {
     console.log(`[${new Date()}] Request Code: ${code}`);
     auth.getToken(res, code, (data) => {
-      console.log(data)
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
       call(data.openid);
