@@ -66,8 +66,7 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
     call(openId);
   } else if (code) {
     console.log(`[${new Date()}] Request Code: ${code}`);
-    auth.getTokenCopy(res, code, (data) => {
-      console.log(data)
+    auth.getToken(res, code, (data) => {
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
       call(data.openid);
