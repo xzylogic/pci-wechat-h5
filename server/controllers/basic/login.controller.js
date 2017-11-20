@@ -18,6 +18,7 @@ module.exports = {
     let url = requestTool.setAuthUrl('/login', status); // 重定向url
 
     auth.getOpenId(req, res, url, (openId) => {
+      console.log('sererr')
       auth.isLogin(res, openId, (name) => {
         // 已登录跳转已登录页面
         res.redirect(`${global.config.root}/login/success?name=${name}`);

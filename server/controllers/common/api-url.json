@@ -13,5 +13,8 @@
   "apply": "api/lecture/join",
   "applyList": "api/lecture/join/list",
   "applyCance": "api/lecture/join/cancel",
-  "statistics":"opt/father/day/request"
+  "statistics":"opt/father/day/request",
+  "myDoctor":"api/doctorPatient/list",
+  "hospitalList":"api/user/option",
+  "doctorList":"api/relation/findDoctor"
 }

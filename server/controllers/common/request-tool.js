@@ -2,6 +2,7 @@
 var superagent = require('superagent');
 
 var BASE_URL = global.config.server;
+var BASE_URL2 = global.config.server2;
 var Father_BASE_URL = global.config.fatherServer;
 var api = require('./api-url.json');
 
@@ -120,6 +121,34 @@ requestTool.getwithhandle = function(key, param, call, error) {
         }
       }
     });
+}
+
+// 直接返回接口的data数据2
+requestTool.getwithhandle2 = function(key, param, call, error) {
+    console.log(`[${new Date()}] GET URL: ${BASE_URL}${api[key]}`);
+    superagent
+        .get(BASE_URL2 + api[key])
+        .set('Content-Type', 'application/json')
+        .set('access-token','f500475f-7fed-4c4c-95ad-c7beaaf2d182')
+        .query(param)
+        .end(function(err, sres) {
+            console.log(BASE_URL2 + api[key]);
+            if (err) {
+                error(err);
+            } else {
+                if (JSON.parse(sres.text).code === 0) {
+                    call(JSON.parse(sres.text).data);
+                } else {
+                    let msg = '';
+                    if (JSON.parse(sres.text).msg) {
+                        msg = JSON.parse(sres.text).msg;
+                    } else {
+                        msg = '接口返回错误';
+                    }
+                    error(msg);
+                }
+            }
+        });
 }
 
 // 请求单独的url地址
