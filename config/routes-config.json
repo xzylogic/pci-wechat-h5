@@ -24,5 +24,9 @@
     "desc": "JSSDK",
     "parentUrl": "/",
     "routePath": "/jssdk/jssdk.routes"
+  },{
+    "desc": "健康档案",
+    "parentUrl": "/",
+    "routePath": "/healthRecords/healthRecords.routes"
   }]
 }

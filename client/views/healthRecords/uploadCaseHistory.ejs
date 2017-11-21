@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>上传病历</title>
+  <% include ../layout/layout %>
+  <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
+  <script type="text/javascript">
+    var pathName = "<%=_src('')%>"//获取当前域名
+    wxconfig();
+      //ajax请求config配置参数
+    function wxconfig() {
+      $.ajax({
+       type: "get",
+       url: pathName+"/signature",
+       data: {url:location.href},
+       success: function(msg){
+          //配置微信JS-SDK
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: msg.appId, // 必填，公众号的唯一标识
+            timestamp:msg.timestamp , // 必填，生成签名的时间戳
+            nonceStr: msg.nonceStr, // 必填，生成签名的随机串
+            signature: msg.signature,// 必填，签名，见附录1
+            jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'],// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+       },
+       error:function(err){
+          console.log(err);
+       }
+      });
+    };
+    wx.ready(function () {
+    // 在这里调用 API
+    // 分享给朋友
+      wx.onMenuShareAppMessage({
+          title: '全程心管家', // 分享标题
+          desc: `全程心管家，健康你我他`, // 分享描述
+          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图标
+          success: function () { 
+              // 用户确认分享后执行的回调函数
+          },
+          cancel: function () { 
+              // 用户取消分享后执行的回调函数
+          },
+      });
+      // 分享到朋友圈
+      wx.onMenuShareTimeline({
+          title: '全程心管家', // 分享标题
+          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图
+          success: function () { 
+              // 用户确认分享后执行的回调函数
+          },
+          cancel: function () { 
+              // 用户取消分享后执行的回调函数
+          }
+      });  
+    });
+  </script>
+  <style>
+    body{
+      background: #ebebeb;
+      color: #666;
+    }
+    .weui-cell{
+      background: #fff;
+      border-bottom: 1px solid #ccc;
+    }
+    .weui-cells{
+      margin-top: 0;
+    }
+    .friendly_reminder{
+      padding: 10px 15px;
+    }
+    .friendly_reminder h3{
+      color:#666;
+    }
+    .friendly_reminder p{
+      color: #999;
+    }
+    .page__bd{
+      padding: 0 15px;
+    }
+    .weui-uploader__bd{
+      overflow: initial;
+    }
+    .upload_img a{
+      background: #35B2F2;
+    }
+    .weui-btn_primary:not(.weui-btn_disabled):active{
+      background-color: #6fc8f6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="uploadCaseHistory">
+    <div class="weui-cell weui-cell_access checkDate">
+      <div class="weui-cell__bd">
+          <span style="vertical-align: middle">检查时间</span>
+      </div>
+      <div class="weui-cell__ft confirmDate"></div>
+    </div>
+    <div class="weui-cells weui-cells_form" id="uploader">
+       <div class="weui-cell">
+           <div class="weui-cell__bd">
+               <div class="weui-uploader">
+                   <div class="weui-uploader__hd">
+                       <p class="weui-uploader__title">上传图片</p>
+                       <div class="weui-uploader__info"><span id="uploadCount">0</span>/9</div>
+                   </div>
+                   <div class="weui-uploader__bd">
+                       <ul class="weui-uploader__files" id="uploaderFiles"></ul>
+                       <div class="weui-uploader__input-box">
+                         <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>
+                      </div>                   
+                   </div>
+               </div>
+           </div>
+       </div>
+    </div>
+    <div class="friendly_reminder">
+      <h3>友情提示</h3>
+      <p>如有问题，我们将与您电话联系，我们电话为400-112-1881</p>
+    </div>
+    <div class="page__bd page__bd_spacing upload_img">
+      <a href="javascript:;" class="weui-btn weui-btn_primary" id="uploaderCustomBtn">确定上传</a>
+    </div>
+  </div>
+</body>
+<script>
+$(document).ready(function(){
+  $(".checkDate").on('click',function () {
+    let Y = new Date().getFullYear();
+    let M = new Date().getMonth() + 1;
+    let D = new Date().getDate();
+    weui.datePicker({
+        start: 1990,
+        end: new Date().getFullYear(),
+        defaultValue: [Y, M, D],
+        onChange: function (result) {
+          
+        },
+        onConfirm: function (result) {
+          $('.confirmDate').html(`${result[0].value}-${result[1].value}-${result[2].value}`)
+        }
+    });
+  })
+
+  /* 图片手动上传 */
+  var uploadCustomFileList = [];
+
+  // 这里是简单的调用，其余api请参考文档
+  var uploadCount = 0;
+  weui.uploader('#uploader', {
+     url: 'http://upload.qiniup.com/',
+     auto: false,
+     type: 'file',
+     fileVal: 'fileVal',
+     compress: {
+         width: 1600,
+         height: 1600,
+         quality: .8
+     },
+     onBeforeQueued: function(files) {
+         // `this` 是轮询到的文件, `files` 是所有文件
+
+         if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
+             weui.alert('请上传图片');
+             return false; // 阻止文件添加
+         }
+         if(this.size > 10 * 1024 * 1024){
+             weui.alert('请上传不超过10M的图片');
+             return false;
+         }
+         if (files.length > 9) { // 防止一下子选择过多文件
+             weui.alert('最多只能上传9张图片，请重新选择');
+             return false;
+         }
+         if (uploadCount + 1 > 9) {
+             weui.alert('最多只能上传9张图片');
+             return false;
+         }
+
+         ++uploadCount;
+         $('#uploadCount').text(uploadCount);
+
+         // return true; // 阻止默认行为，不插入预览图的框架
+     },
+     onQueued: function(){
+         console.log(this);
+         uploadCustomFileList.push(this);
+         // console.log(this.status); // 文件的状态：'ready', 'progress', 'success', 'fail'
+         // console.log(this.base64); // 如果是base64上传，file.base64可以获得文件的base64
+
+         // this.upload(); // 如果是手动上传，这里可以通过调用upload来实现；也可以用它来实现重传。
+         // this.stop(); // 中断上传
+
+         // return true; // 阻止默认行为，不显示预览图的图像
+     },
+     onBeforeSend: function(data, headers){
+         console.log(this, data, headers);
+         // $.extend(data, { test: 1 }); // 可以扩展此对象来控制上传参数
+         // $.extend(headers, { Origin: 'http://127.0.0.1' }); // 可以扩展此对象来控制上传头部
+
+         // return false; // 阻止文件上传
+     },
+     onProgress: function(procent){
+         console.log(this, procent);
+         // return true; // 阻止默认行为，不使用默认的进度显示
+     },
+     onSuccess: function (ret) {
+         console.log(this, ret);
+         // return true; // 阻止默认行为，不使用默认的成功态
+     },
+     onError: function(err){
+         console.log(this, err);
+         // return true; // 阻止默认行为，不使用默认的失败态
+     }
+  });
+
+  // 手动上传按钮
+  document.getElementById("uploaderCustomBtn").addEventListener('click', function(){
+      uploadCustomFileList.forEach(function(file){
+          file.upload();
+      });
+  });
+
+  // 缩略图预览
+  $('#uploaderFiles').on('click', '.weui-uploader__file', function(e){
+      var target = e.target;
+      
+      while(!target.classList.contains('weui-uploader__file') && target){
+          target = target.parentNode;
+      }
+      if(!target) return;
+
+      var url = target.getAttribute('style') || '';
+
+      var id = target.getAttribute('data-id');
+
+      if(url){
+          url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '');
+      }
+      console.log(url)
+      var gallery = weui.gallery(url, {
+          onDelete: function(){
+              weui.confirm('确定删除该图片？', function(){
+                --uploadCount;
+                $('#uploadCount').text(uploadCount);
+                  var index;
+                  for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+                      var file = uploadCustomFileList[i];
+                      if(file.id == id){
+                          index = i;
+                          break;
+                      }
+                  }
+                  if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+                  target.parentNode.remove();
+                  gallery.hide();
+              });
+          }
+      });
+  });
+  $("#uploaderFiles").on('click', '.delete', function(e){
+    var id = e.target.getAttribute('delete-id');
+    weui.confirm('确定删除该图片？', function(){
+      --uploadCount;
+      $('#uploadCount').text(uploadCount);
+        var index;
+        for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+            var file = uploadCustomFileList[i];
+            if(file.id == id){
+                index = i;
+                break;
+            }
+        }
+        if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+        e.target.parentNode.remove();
+    });
+  })
+})
+  
+</script>
+</html>

@@ -55,9 +55,9 @@ module.exports = {
   uploadImg: (req, res) => {
     let token = req.signedCookies.token || ''; // 从cookie中找access_token;
     let media_id = req.query.media_id || '';
-    let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${token}&media_id=${media_id}`
+    let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=Sb3Y66lyJYWUvBDjhzq15VkxclhReXQ1RkeJp0v8ZqJoZ6CRHlfoFs3B1ejJiHEfEqvjKgAf5P_kbiFXsUxbUwRb52NZytZfe9rcxgazLpCeWPnYnOyQ5EK9KAlKOQqdSWJgADAIMZ&media_id=${media_id}`
     let randomName = 'image'+Date.now()+'.jpg';
-    console.log(url);
+    res.send({url:url})
     if (token && media_id) {
       bucketManager.fetch(url, 'baoxiu', randomName, function(err, respBody, respInfo) {
         if (err) {
@@ -77,5 +77,17 @@ module.exports = {
         }
       });
     }
+  },
+
+  // 分享网页
+  getShare: (req, res) => {
+    let url = requestTool.setAuthUrl('/share', '');
+    auth.getOpenId(req, res, url, (openId) => {
+      res.render('share/share')
+    }, (err) => {
+      res.render('error', {
+        message: err
+      });
+    });
   }
 }

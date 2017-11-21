@@ -68,6 +68,7 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
   } else if (code) {
     console.log(`[${new Date()}] Request Code: ${code}`);
     auth.getToken(res, code, (data) => {
+      console.log(data + '王兵');
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
       call(data.openid);
@@ -145,6 +146,7 @@ auth.getFatherOpenId = (req, res, redirectUrl, call) => {
  */
 auth.isLogin = (res, openId, call, calllogin) => {
   requestTool.get('login', `openId=${openId}`, (data) => {
+    console.log(data)
     var _data = JSON.parse(data);
     if (_data.code === 0 && _data.data && _data.data.name) {
       call(_data.data.name);

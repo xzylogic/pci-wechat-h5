@@ -8,7 +8,7 @@ module.exports = {
 
   // 登录入口页面
   // 登录4种status状态
-  // 0 登录 1 讲座报名 2 家庭账号绑定 3 讲座报名信息
+  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5 关联医生
   getLogin: (req, res) => {
     // 测试写死cookie数据
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
@@ -155,11 +155,11 @@ module.exports = {
           if (status == 0) {
             res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           } else if (status == 1) {
-            res.redirect(`${global.config.root}/lecture/apply/enter`);
+            res.redirect(`${global.config.root}/uploadCaseHistory`);
           } else if (status == 2) {
-            res.redirect(`${global.config.root}/family`);
+            res.redirect(`${global.config.root}/EMR`);
           } else if (status == 3) {
-            res.redirect(`${global.config.root}/lecture/info`);
+            res.redirect(`${global.config.root}/followUp`);
           }
           // res.render('basic/login-success', {
           //   status: '登录',
@@ -201,11 +201,11 @@ module.exports = {
           if (status == 0) {
             res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           } else if (status == 1) {
-            res.redirect(`${global.config.root}/lecture/apply/enter`);
+            res.redirect(`${global.config.root}/uploadCaseHistory`);
           } else if (status == 2) {
-            res.redirect(`${global.config.root}/family`);
+            res.redirect(`${global.config.root}/EMR`);
           } else if (status == 3) {
-            res.redirect(`${global.config.root}/lecture/info`);
+            res.redirect(`${global.config.root}/followUp`);
           }
           // res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           // res.render('basic/login-success', {

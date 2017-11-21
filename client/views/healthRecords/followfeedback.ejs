@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>随访计划列表</title>
+  <% include ../layout/layout %>
+  <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
+  <script type="text/javascript">
+    var pathName = "<%=_src('')%>"//获取当前域名
+    wxconfig();
+    //ajax请求config配置参数
+    function wxconfig() {
+      $.ajax({
+       type: "get",
+       url: pathName+"/signature",
+       data: {url:location.href},
+       success: function(msg){
+          //配置微信JS-SDK
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: msg.appId, // 必填，公众号的唯一标识
+            timestamp:msg.timestamp , // 必填，生成签名的时间戳
+            nonceStr: msg.nonceStr, // 必填，生成签名的随机串
+            signature: msg.signature,// 必填，签名，见附录1
+            jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'],// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+       },
+       error:function(err){
+          console.log(err);
+       }
+      });
+    };
+    wx.ready(function () {
+    // 在这里调用 API
+    // 分享给朋友
+      wx.onMenuShareAppMessage({
+          title: '全程心管家', // 分享标题
+          desc: `全程心管家，健康你我他`, // 分享描述
+          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图标
+          success: function () { 
+              // 用户确认分享后执行的回调函数
+          },
+          cancel: function () { 
+              // 用户取消分享后执行的回调函数
+          },
+      });
+      // 分享到朋友圈
+      wx.onMenuShareTimeline({
+          title: '全程心管家', // 分享标题
+          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图
+          success: function () { 
+              // 用户确认分享后执行的回调函数
+          },
+          cancel: function () { 
+              // 用户取消分享后执行的回调函数
+          }
+      });  
+    });
+  </script>
+  <style>
+    body{
+      background: #ebebeb;
+      color: #666;
+    }
+    .weui-cells{
+      margin-top: 0;
+    }
+   .follow_hint{
+      font-size: 12px;
+      text-align: center;
+      padding: 7px 0;
+      background: #666;
+    }
+    .follow_hint p{
+      color: #fff;
+    }
+    .follow_content{
+      background: #fff;
+    }
+    .weui-cells_checkbox .weui-check:checked+.weui-icon-checked:before{
+      color:#5abef1;
+    }
+    .follow_feedback_confirm{
+      padding: 0 15px;
+      margin-top: 20px;
+    }
+    .weui-btn_primary{
+      background:#5abef1;
+    }
+    .weui-btn_primary:not(.weui-btn_disabled):active{
+      background-color: #6fc8f6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="follow_feedback">
+    <div class="follow_hint">
+      <p>请勾选已做的检查（未做任何检查可不勾选直接点确定）</p>
+    </div>
+    <div class="follow_content">
+      <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>随访计划内容</p>
+        </div>
+        <div class="weui-cell__ft">2016年1月23日</div>
+      </div>
+      <div class="weui-cells weui-cells_checkbox">
+        <label class="weui-cell weui-check__label" for="s11">
+            <div class="weui-cell__hd">
+                <input type="checkbox" class="weui-check" name="checkbox1" id="s11" checked="checked"/>
+                <i class="weui-icon-checked"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p>血常规</p>
+            </div>
+        </label>
+        <label class="weui-cell weui-check__label" for="s12">
+            <div class="weui-cell__hd">
+                <input type="checkbox" name="checkbox1" class="weui-check" id="s12"/>
+                <i class="weui-icon-checked"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p>血常规</p>
+            </div>
+        </label>
+        <label class="weui-cell weui-check__label" for="s13">
+            <div class="weui-cell__hd">
+                <input type="checkbox" name="checkbox2" class="weui-check" id="s13"/>
+                <i class="weui-icon-checked"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p>血常规</p>
+            </div>
+        </label>
+      </div>
+    </div>
+    <div class="page__bd page__bd_spacing follow_feedback_confirm">
+        <a href="javascript:;" class="weui-btn weui-btn_primary">确定</a>
+    </div>
+  </div>
+</body>
+<script>
+$(document).ready(function(){
+  
+})
+  
+</script>
+</html>

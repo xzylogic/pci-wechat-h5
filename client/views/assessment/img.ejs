@@ -6,9 +6,14 @@
   <title>全程心管家</title>
   <% include ../layout/layout %>
   <style>
-    .img img{
-      width: 100px;
-      height: 100px;
+    .weui-uploader__file{
+      float: left;
+      margin-right: 9px;
+      margin-bottom: 9px;
+      width: 79px;
+      height: 79px;
+      background: no-repeat 50%;
+      background-size: cover;
     }
   </style>
   <script type="text/javascript">
@@ -40,19 +45,25 @@
 </head>
 
 <body style="background-color:#f6f6f6">
-  <div>
-    <button onclick="uploadImg()">上传图片</button>
+  <div class="weui-cells weui-cells_form">
+      <div class="weui-cell">
+          <div class="weui-cell__bd">
+              <div class="weui-uploader">
+                  <div class="weui-uploader__hd">
+                      <p class="weui-uploader__title">图片上传</p>
+                      <div class="weui-uploader__info">0/2</div>
+                  </div>
+                  <div class="weui-uploader__bd">
+                      <ul class="weui-uploader__files" id="uploaderFiles"></ul>
+                      <div class="weui-uploader__input-box" onclick="uploadImg()"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
   </div>
-  <div class="img" style="width: 100px; height: 100px">
-    <!-- <img class="imglist" src="http://img02.tooopen.com/images/20141231/sy_78327074576.jpg" alt="">
-    <img class="imglist" src="http://img07.tooopen.cn/images/20170811/tooopen_sy_219898696246.jpg" alt="">
-    <img class="imglist" src="http://img05.tooopen.com/images/20141225/sy_106447848191.jpg" alt="">
- -->  </div>
- <div>
-   <input type="file" accept="image/*">
- </div>
 </body>
 <script>
+  var count = 0;
   function uploadImg() {
     wx.ready(function(){
       wx.chooseImage({
@@ -61,9 +72,11 @@
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-           for (var i = 0; i < localIds.length; i++) {
-             window.setTimeout(serverImg(localIds[i]), 100)
+           for (let i = 0; i < localIds.length; i++) {
+              $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><img class="img-responsive" width="100%" src="${localIds[i]}"></li>`) 
+              window.setTimeout(serverImg(localIds[i]), 100)
            }
+           count = count + localIds.length;
           }
       });
     });
@@ -74,30 +87,29 @@
         isShowProgressTips: 1, // 默认为1，显示进度提示
         success: function (res) {
             var serverId = res.serverId; // 返回图片的服务器端ID
-            // ajax(serverId)
+            ajax(serverId)
         }
     });
   }
   // 预览图片
-   // $('.imglist').click(function(event) {//绑定图片点击事件
+   $('#uploaderFiles').on("click", "li", function(event) {//绑定图片点击事件
+            var thisimg = $(this).children().attr('src');
+            var imglist = $('#uploaderFiles');
+            var srcs = new Array();
+            for (let i =0; i < imglist.length; i++) {
             
-   //          var thisimg=$(this).attr('src');
-   //          var imglist=$('.imglist');
-   //          var srcs=new Array();
-   //          for (var i =0; i <imglist.length; i++) {
+                srcs.push(imglist.eq(i).attr('src'));
             
-   //              srcs.push(imglist.eq(i).attr('src'));
-            
-   //          }
+            }
             
       
-   //          wx.ready(function(){
-   //              wx.previewImage({
-   //                  current: thisimg, // 当前显示图片的http链接
-   //                  urls: srcs // 需要预览的图片http链接列表
-   //              });
-   //          });   
-   //  }); 
+            wx.ready(function(){
+                wx.previewImage({
+                  current: 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=Sb3Y66lyJYWUvBDjhzq15VkxclhReXQ1RkeJp0v8ZqJoZ6CRHlfoFs3B1ejJiHEfEqvjKgAf5P_kbiFXsUxbUwRb52NZytZfe9rcxgazLpCeWPnYnOyQ5EK9KAlKOQqdSWJgADAIMZ&media_id=iaXXlJ2r9adMON-8tMP4sOjhYyfe6s9xdcU3kl86Z5aAS7xGrCMkVkAoleLw0eHg', // 当前显示图片的http链接
+                  urls: ['https://api.weixin.qq.com/cgi-bin/media/get?access_token=Sb3Y66lyJYWUvBDjhzq15VkxclhReXQ1RkeJp0v8ZqJoZ6CRHlfoFs3B1ejJiHEfEqvjKgAf5P_kbiFXsUxbUwRb52NZytZfe9rcxgazLpCeWPnYnOyQ5EK9KAlKOQqdSWJgADAIMZ&media_id=iaXXlJ2r9adMON-8tMP4sOjhYyfe6s9xdcU3kl86Z5aAS7xGrCMkVkAoleLw0eHg'] // 需要预览的图片http链接列表
+                });
+            });   
+    }); 
   // function downloadImage(serverId) {
   //   wx.downloadImage({
   //       serverId: serverId, // 需要下载的图片的服务器端ID，由uploadImage接口获得
@@ -110,22 +122,25 @@
   // }
   // function getLocalImgData(localId) {
   //   wx.getLocalImgData({
-  //       localId: localId, // 图片的localID
+  //       localId: '' + localId, // 图片的localID
   //       success: function (res) {
-  //           var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-  //           alert(localData);
-  //           $(".img").html(`<img src="${localData}">`)
+  //         var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+  //          // for (let i = 0; i < localData.length; i++) {
+  //          //  $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><img class="img-responsive" width="100%" src="${localData[i]}"></li>`)
+  //          // }
+  //          console.log(localData)
+  //          count = count + localId.length; 
   //       }
   //   });
   // }
+
   function ajax(serverId) {
     $.ajax({
       url: pathName +'/uploadimg',
       type: 'get',
       data: {media_id: serverId},
       success: function (msg) {
-        $(".img").html(`<img src="${msg.imgurl}">`)
-        alert(msg.imgUrl)
+        console.log(msg.url);
       },
       error: function (err) {
         console.log(err)

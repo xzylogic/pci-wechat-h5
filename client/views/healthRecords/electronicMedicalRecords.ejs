@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>上传病历</title>
+  <% include ../layout/layout %>
+  <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
+  <script src="<%=_src('/lib/lightgallery/lightgallery.min.js')%>"></script>
+  <script src="<%=_src('/lib/lightgallery/lg-zoom.min.js')%>"></script>
+  <link rel="stylesheet" href="<%=_src('/css/lightgallery/lightgallery.min.css')%>">
+  <script type="text/javascript">
+    var pathName = "<%=_src('')%>"//获取当前路径
+    wxconfig();
+      //ajax请求config配置参数
+    function wxconfig() {
+      $.ajax({
+       type: "get",
+       url: pathName+"/signature",
+       data: {url:location.href},
+       success: function(msg){
+          //配置微信JS-SDK
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: msg.appId, // 必填，公众号的唯一标识
+            timestamp:msg.timestamp , // 必填，生成签名的时间戳
+            nonceStr: msg.nonceStr, // 必填，生成签名的随机串
+            signature: msg.signature,// 必填，签名，见附录1
+            jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline','previewImage'],// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+       },
+       error:function(err){
+          console.log(err);
+       }
+      });
+    };
+    wx.ready(function () {
+    // 在这里调用 API
+    // 分享给朋友
+      wx.onMenuShareAppMessage({
+          title: '全程心管家', // 分享标题
+          desc: `全程心管家，健康你我他`, // 分享描述
+          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图标
+          success: function () { 
+              // 用户确认分享后执行的回调函数
+          },
+          cancel: function () { 
+              // 用户取消分享后执行的回调函数
+          },
+      });
+      // 分享到朋友圈
+      wx.onMenuShareTimeline({
+          title: '全程心管家', // 分享标题
+          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图
+          success: function () { 
+              // 用户确认分享后执行的回调函数
+          },
+          cancel: function () { 
+              // 用户取消分享后执行的回调函数
+          }
+      });  
+    });
+  </script>
+  <style>
+    body{
+      background: #ebebeb;
+      color: #666;
+    }
+    .binding_security{
+      font-size: 12px;
+      text-align: center;
+      padding: 7px 0;
+      background: #ff666c;
+    }
+    .binding_security a{
+      color: #fff;
+    }
+    .weui-cells{
+      margin-top: 0;
+    }
+    .weui-cell{
+      background: #e1f4fd;
+    }
+    .Inspection-report{
+      float: left;
+    }
+    .weui-cell__bd span{
+      float: left;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 3px;
+      font-size: 14px;
+      display: inline-block;
+      margin-left: 10px;
+    }
+    .Inspection-report_title, .routine_blood, .myocardial_protein{
+      padding: 10px 15px;
+    }
+    .Inspection-report_title td{
+      min-width: 80px;
+      color:#999;
+    }
+    .hospital_title{
+      color: #333 !important;
+    }
+    .Inspection_department{
+      color: #333 !important;
+    }
+    .Outpatient_service{
+      color: #333 !important;
+    }
+    .routine_blood table, .myocardial_protein table{
+      width: 100%;
+      margin-top: 8px;
+      text-align: center;
+      border-right: 1px solid #ededed;
+      border-bottom: 1px solid #ededed;
+    }
+    .routine_blood td,.routine_blood th,.myocardial_protein td, .myocardial_protein th{
+      border-left: 1px solid #ededed;
+      border-top: 1px solid #ededed;
+      padding: 5px;
+    }
+    .routine_blood tr td:nth-child(3){
+      min-width: 50px;
+    }
+    .arrow_up{
+      background: url('<%=_src('/image/箭头向上@3x.png')%>') no-repeat right;
+      background-size: 18px 25px;
+    }
+    .arrow_down{
+      background: url('<%=_src('/image/箭头向下@3x.png')%>') no-repeat right;
+      background-size: 18px 25px;
+    }
+    .image_data{
+      margin-top: 10px;
+      background: #fff;
+    }
+    .uploader_img{
+      overflow: hidden;
+      background: #fff;
+    }
+    .weui-uploader__file{
+      margin: 9px;
+    }
+    .more{
+      color: #21b3f3;
+    }
+    .weui-cell_access .weui-cell__ft:after{
+      border-color: #21b3f3;
+    }
+    .checkout_more{
+      border-top: 1px solid #ededed;
+      margin: 10px 0;
+    }
+    .checkout_more_href{
+      background: #fff;
+    }
+    #lg-download{
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="EMR">
+    <div class="page__bd">
+      <div class="weui-cells">
+        <div class="binding_security">
+          <a href="<%=_src('/bindingSocialSecurity')%>">立即绑定医保/社保卡，获取完整的个人病史资料 >></a>
+        </div>
+        <div class="weui-cell">
+              <div class="weui-cell__bd">
+                <h3 class="Inspection-report">检验报告</h3>
+                <span>医联平台</span>
+              </div>
+              <div class="weui-cell__ft">2017-11-7</div>
+          </div>
+          <div class="Inspection-report_title">
+            <table>
+              <tr>
+                <td class="hospital_title">医院名称:</td>
+                <td>上海市上海交通大学医学院附属瑞金医院</td> 
+              </tr>
+              <tr>
+                <td class="Inspection_department">检验科室:</td>
+                <td>心内科</td>
+              </tr>
+              <tr>
+                <td class="Outpatient_service">门诊类型:</td>
+                <td>普通门诊</td>
+              </tr>
+            </table>
+          </div>
+          <div class="routine_blood">
+            <h4>血常规</h4>
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <th>检查指标</th>
+                <th>标准区间</th>
+                <th>数值</th>
+              </tr>
+              <tr>
+                <td>白细胞计数</td>
+                <td>3.69-9.16*10^9/L</td>
+                <td class="arrow_up">3.70</td>
+              </tr>
+              <tr>
+                <td>白细胞计数</td>
+                <td>3.69-9.16*10^9/L</td>
+                <td>3.70</td>
+              </tr>
+              <tr>
+                <td>白细胞计数</td>
+                <td>3.69-9.16*10^9/L</td>
+                <td>3.70</td>
+              </tr>
+              <tr>
+                <td>白细胞计数</td>
+                <td>3.69-9.16*10^9/L</td>
+                <td>3.70</td>
+              </tr>
+            </table>
+          </div>
+          <div class="myocardial_protein">
+            <h4>心肌蛋白全套</h4>
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <th>检查指标</th>
+                <th>标准区间</th>
+                <th>数值</th>
+              </tr>
+              <tr>
+                <td>乳酸脱氢酶</td>
+                <td>3.69-9.16*10^9/L</td>
+                <td>3.70</td> 
+              </tr>
+              <tr>
+                <td>乳酸脱氢酶</td>
+                <td>3.69-9.16*10^9/L</td>
+                <td>3.70</td> 
+              </tr>
+            </table>
+          </div>
+      </div>
+      <div class="image_data">
+        <div class="weui-cell">
+          <div class="weui-cell__bd">
+            <h3 class="Inspection-report">影像资料</h3>
+            <span>自传数据</span>
+          </div>
+          <div class="weui-cell__ft">2017-11-7</div>
+        </div>
+        <div class="uploader_img">
+            <ul class="weui-uploader__files" id="uploaderFiles">
+                <li class="weui-uploader__file">
+                  <img class="img-responsive" width="100%" src="http://img.ivsky.com/img/bizhi/pre/201710/27/zhaoliying-001.jpg">
+                </li>
+                <li class="weui-uploader__file">
+                  <img class="img-responsive" width="100%" src="http://img.ivsky.com/img/bizhi/pre/201710/27/zhaoliying-001.jpg">
+                </li>
+                <li class="weui-uploader__file">
+                  <img class="img-responsive" width="100%" src="http://img.ivsky.com/img/bizhi/pre/201710/27/zhaoliying-001.jpg">
+                </li>
+                <li class="weui-uploader__file">
+                  <img class="img-responsive" width="100%" src="http://img.ivsky.com/img/bizhi/pre/201710/27/zhaoliying-001.jpg">
+                </li>
+                <li class="weui-uploader__file">
+                  <img class="img-responsive" width="100%" src="http://img.ivsky.com/img/bizhi/pre/201710/27/zhaoliying-001.jpg">
+                </li>
+            </ul>
+        </div>
+        <div class="weui-cells checkout_more">
+            <a class="weui-cell weui-cell_access checkout_more_href" href="javascript:;" id="showIOSDialog1">
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft more">
+                  查看更多
+                </div>
+            </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="dialogs">
+    <div class="js_dialog" id="iosDialog1" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">查看更多</strong></div>
+                <div class="weui-dialog__bd">微信平台可显示的病史记录条数已达上限。下载APP查看完整病史。</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">下载APP</a>
+                </div>
+            </div>
+        </div>
+  </div>
+</body>
+<script>
+$(document).ready(function(){
+  // 查看图片
+  // $('#uploaderFiles').lightGallery();
+
+  $("#uploaderFiles").on('click', 'li', function() {
+    var src = $(this).children().attr('src');
+    console.log(src);
+    wx.previewImage({
+        current: src, // 当前显示图片的http链接
+        urls: ['http://img.ivsky.com/img/bizhi/pre/201710/27/zhaoliying-001.jpg','https://img20.360buyimg.com/da/jfs/t12076/19/404787366/79769/6e24fbaa/5a0ac174Nfabce46f.jpg','https://img12.360buyimg.com/babel/jfs/t13840/322/320560648/132890/5f055c11/5a08f32eN0e7b6831.jpg','https://img10.360buyimg.com/babel/jfs/t7645/136/4418299358/59009/e82f37fa/5a0a815aN3bf82ea9.jpg','https://img11.360buyimg.com/babel/jfs/t12364/200/471312269/109877/17e077ad/5a0c24b9N3d35430b.jpg'] // 需要预览的图片http链接列表
+    });
+  })
+
+  // 模态框
+  var $iosDialog1 = $('#iosDialog1');
+  $('#dialogs').on('click', '.weui-dialog__btn', function(){
+      $(this).parents('.js_dialog').fadeOut(200);
+  });
+  $('#showIOSDialog1').on('click', function(){
+      $iosDialog1.fadeIn(200);
+  });
+
+});  
+</script>
+</html>
