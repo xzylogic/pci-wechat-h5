@@ -8,7 +8,7 @@ module.exports = {
 
   // 登录入口页面
   // 登录4种status状态
-  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5 关联医生
+  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5 关联医生 6实名认证
   getLogin: (req, res) => {
     // 测试写死cookie数据
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
@@ -16,18 +16,28 @@ module.exports = {
     // res.clearCookie('pci_secret');
     let status = req.query.status || 0; // status状态数据
     let url = requestTool.setAuthUrl('/login', status); // 重定向url
-
+    let userId = req.signedCookies.userId || '';
+    let accessToken = req.signedCookies.accessToken || '';
+    let name = req.signedCookies.name || '';
     auth.getOpenId(req, res, url, (openId) => {
-      auth.isLogin(res, openId, (name) => {
-        // 已登录跳转已登录页面
+      // auth.isLogin(res, openId, (name) => {
+      //   // 已登录跳转已登录页面
+      //   res.redirect(`${global.config.root}/login/success?name=${name}`);
+      // }, () => {
+      //   // 未登录跳转登录页面
+      //   res.render('basic/login', {
+      //     status: status,
+      //     errorMessage: ''
+      //   });
+      // });
+      if (userId && accessToken) {
         res.redirect(`${global.config.root}/login/success?name=${name}`);
-      }, () => {
-        // 未登录跳转登录页面
+      } else {
         res.render('basic/login', {
           status: status,
           errorMessage: ''
         });
-      });
+      }
     });
   },
 
@@ -36,7 +46,6 @@ module.exports = {
     let tel = req.query.tel;
     let errorMessage = req.query.errorMessage || '';
     let status = req.query.status; // status状态数据
-
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
 
     if (openId) {
@@ -152,6 +161,9 @@ module.exports = {
       data.openId = openId;
       requestTool.postwithhandle('login', data, (_data) => {
         if (_data) {
+          auth.setUserCookies(res, 'userId', _data.userId)
+          auth.setUserCookies(res, 'accessToken', _data.accessToken)
+          auth.setUserCookies(res, 'name', _data.name)
           if (status == 0) {
             res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           } else if (status == 1) {
@@ -160,6 +172,8 @@ module.exports = {
             res.redirect(`${global.config.root}/EMR`);
           } else if (status == 3) {
             res.redirect(`${global.config.root}/followUp`);
+          } else if (status == 6) {
+            res.redirect(`${global.config.root}/authlist`);
           }
           // res.render('basic/login-success', {
           //   status: '登录',
@@ -168,7 +182,7 @@ module.exports = {
         }
       }, (err) => {
         console.log(`[${new Date()}] User ${tel} login failed!`);
-        res.redirect(`${global.config.root}/login/enter?tel=${tel}&errorMessage=${err}`);
+        res.redirect(`${global.config.root}/login/enter?tel=${tel}&errorMessage=${err}&&status=${status}`);
         // res.render('basic/login-enter', {
         //   postUrl: `/login/verify?tel=${tel}`,
         //   errorMessage: err,
@@ -198,6 +212,9 @@ module.exports = {
       console.log(`[${new Date()}] Register VerifyCode: ${JSON.stringify(data)}`);
       requestTool.postwithhandle('register', data, (_data) => {
         if (_data) {
+          auth.setUserCookies(res, 'userId', _data.userId)
+          auth.setUserCookies(res, 'accessToken', _data.accessToken)
+          auth.setUserCookies(res, 'name', _data.name)
           if (status == 0) {
             res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           } else if (status == 1) {
@@ -206,6 +223,8 @@ module.exports = {
             res.redirect(`${global.config.root}/EMR`);
           } else if (status == 3) {
             res.redirect(`${global.config.root}/followUp`);
+          } else if (status == 6) {
+            res.redirect(`${global.config.root}/authlist`);
           }
           // res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           // res.render('basic/login-success', {

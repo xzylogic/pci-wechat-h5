@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-  <title>上传病历</title>
+  <title>绑定医保卡</title>
   <% include ../layout/layout %>
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script type="text/javascript">
@@ -76,6 +76,8 @@
       color: #da322e;
       font-size: 12px;
       padding: 0 15px;
+      text-align: center;
+      display: none;
     }
     .gain_social_security{
       padding: 0 15px;
@@ -123,13 +125,13 @@
         <div class="weui-cell__bd">
             <p>持卡人姓名</p>
         </div>
-        <div class="weui-cell__ft">王*林</div>
+        <div class="weui-cell__ft"><%=name%></div>
       </div>
       <div class="weui-cell">
         <div class="weui-cell__bd">
             <p>持卡人身份证</p>
         </div>
-        <div class="weui-cell__ft">2103**********3022</div>
+        <div class="weui-cell__ft"><%=card%></div>
       </div>
       <div class="weui-cell">
           <div class="weui-cell__hd"><label class="weui-label">卡号</label></div>
@@ -143,7 +145,7 @@
       <a href="javascript:;" class="weui-btn weui-btn_primary" id="accomplish">完成</a>
     </div>
     <div class="error">
-      *请重新填写您的个人信息并认真核对，以免再次认证失败。
+      请重新填写您的个人信息并认真核对，以免再次认证失败。
     </div>
   </div>
   <div class="gain_social_security">
@@ -199,14 +201,48 @@ $(document).ready(function(){
     var card_number = $("#card_number").val();
     if (card_number) {
       if ((/^[0-9a-zA-Z]*$/g).test(card_number) && card_number) {
-        alert('正确')
+        ajax(card_number);
       } else {
-        $(".error").html('*请填写正确的社保卡号')
+        $(".error").html('请填写正确的社保卡号')
       }
     } else {
      cardNumberToast();   
     }
   });
+  // 提交申请
+  function ajax(card_number) {
+    $.ajax({
+      type: 'get',
+      url: `<%=_src('')%>/bindingSocialSecuritySuccess`,
+      data:{cardNumber: card_number},
+      success: function (data) {
+        if (data && data.code === 0) {
+          auditToast()
+        } else if ( data && data.code === 1000) {
+          $(".error").css({
+            'display': 'block'
+          })
+          $(".error").html(data.msg || '医保卡格式错误，请重新输入')
+        } else if (data && data.code === -1) {
+          $(".error").css({
+            'display': 'block'
+          })
+          $(".error").html(data.msg || '无效卡号')
+        } else {
+          $(".error").css({
+            'display': 'block'
+          })
+          $(".error").html('未知错误')
+        }
+      },
+      error: function (err) {
+        $(".error").css({
+            'display': 'block'
+        })
+        $(".error").html('啊~接口请求出错了，请稍后再试');
+      }
+    })
+  }
   // 填写卡号
   function cardNumberToast() {
     var $toast = $('#card_number_toast');
@@ -218,7 +254,7 @@ $(document).ready(function(){
   }
   // 审核中
   function auditToast() {
-    var $toast = $('#toast');
+    var $toast = $('#audit_toast');
     if ($toast.css('display') != 'none') return;
     $toast.fadeIn(100);
   }

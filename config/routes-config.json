@@ -17,6 +17,18 @@
     "parentUrl": "/",
     "routePath": "/basic/basic.routes"
   },{
+    "desc": "找医生",
+    "parentUrl": "/",
+    "routePath": "/find-doctor/find-doctor.routes"
+  }, {
+      "desc": "向医生报到",
+      "parentUrl": "/",
+      "routePath": "/find-doctor/check-in.routes"
+    },{
+    "desc": "我的医生",
+    "parentUrl": "/",
+    "routePath": "/my-doctor/my-doctor.routes"
+  },{
     "desc": "父亲节",
     "parentUrl": "/father",
     "routePath": "/father/father.routes"

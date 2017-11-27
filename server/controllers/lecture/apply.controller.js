@@ -20,7 +20,6 @@ module.exports = {
   },
 
 
-
   getApply: (req, res) => {
     let err = req.query.err;
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
@@ -70,8 +69,6 @@ module.exports = {
     }else{
       res.redirect(`${global.config.root}/lecture/apply`);
     }
-    
-    
 },
 
 //报名请求
@@ -90,10 +87,8 @@ module.exports = {
           success.code = 0;
           success._data = _data;
           res.send(success);
-
         }
       }, (err) => {
-        
         error.code = 1;
         error.err = err;
         res.send(error);

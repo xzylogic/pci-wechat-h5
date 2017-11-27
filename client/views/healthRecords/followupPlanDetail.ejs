@@ -80,7 +80,7 @@
         <div class="weui-cell__bd">
             <p>计划开始时间</p>
         </div>
-        <div class="weui-cell__ft">2016/09/21</div>
+        <div class="weui-cell__ft"><%=flupDetail.planDate%></div>
       </div>
       <div class="weui-cells">
         <div class="weui-cell">
@@ -93,106 +93,38 @@
       </div>
     </div>
     <div class="follow_up_cycle">
-      <div class="cycle">
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>一个月后</p>
-            </div>
-            <div class="weui-cell__ft">2016/05/27</div>
+      <% for (let i = 0; i < flupDetail.flupList.length; i++) { %>
+        <div class="cycle">
+          <div class="weui-cell">
+              <div class="weui-cell__bd">
+                <% if (i === 0) {%>
+                  <p>一个月后</p>
+                <% } %>
+                <% if (i === 1) {%>
+                  <p>三个月后</p>
+                <% } %>
+                <% if (i === 2) {%>
+                  <p>六个月后</p>
+                <% } %>
+                <% if (i === 3) {%>
+                  <p>九个月后</p>
+                <% } %>
+                <% if (i === 4) {%>
+                  <p>十二个月后</p>
+                <% } %>
+              </div>
+              <div class="weui-cell__ft">2016/05/27</div>
+          </div>
+            <% for (let j = 0; j < flupDetail.flupList[i].length; j++) { %>
+              <div class="weui-cell">
+                  <div class="weui-cell__bd">
+                      <p><%=flupDetail.flupList[i][j]%></p>
+                  </div>
+                  <div class="weui-cell__ft"></div>
+              </div>
+            <% } %>
         </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>血样检查</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>心电图</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-      </div>
-      <div class="cycle">
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>三个月后</p>
-            </div>
-            <div class="weui-cell__ft">2016/05/27</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>血样检查</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>心电图</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-      </div>
-      <div class="cycle">
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>六个月后</p>
-            </div>
-            <div class="weui-cell__ft">2016/05/27</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>血样检查</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>心电图</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-      </div>
-      <div class="cycle">
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>九个月后</p>
-            </div>
-            <div class="weui-cell__ft">2016/05/27</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>血样检查</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>心电图</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-      </div>
-      <div class="cycle">
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>十二个月后</p>
-            </div>
-            <div class="weui-cell__ft">2016/05/27</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>血样检查</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <p>心电图</p>
-            </div>
-            <div class="weui-cell__ft">已复查</div>
-        </div>
-      </div>
+      <% } %>
     </div>
   </div>
 </body>

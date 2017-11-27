@@ -2,6 +2,7 @@
 var superagent = require('superagent');
 
 var BASE_URL = global.config.server;
+var User_BASE_URL = global.config.userServer;
 var Father_BASE_URL = global.config.fatherServer;
 var api = require('./api-url.json');
 
@@ -28,6 +29,31 @@ requestTool.get = function(key, param, call, error) {
       }
     });
 }
+
+/**
+ * 使用superagent进行get添加请求头请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getHeader = function(key, accessToken, param, call, error) {
+  superagent
+    .get(User_BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .set('access-token', accessToken)
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+
 
 /**
  * 使用superagent进行get统计请求
@@ -165,6 +191,28 @@ requestTool.post = function(key, data, call, error) {
         error(err);
       } else {
         call(sres.text);
+      }
+    });
+}
+
+/**
+ * 使用superagent添加请求头进行post请求
+ * @param  {} key    [api key]
+ * @param  {} data   [post data]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.postHeader = function(key, accessToken, data, call, error) {
+  superagent.post(User_BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .set('access-token', accessToken)
+    .send(data)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
       }
     });
 }

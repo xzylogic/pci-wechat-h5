@@ -12,7 +12,18 @@ var auth = {};
  * @return {[type]}             []
  */
 auth.setCookies = (res, key, value) => {
-  res.cookie(key, value, { maxAge: 900000, httpOnly: true, signed: true });
+  res.cookie(key, value, { maxAge: 7200000, httpOnly: true, signed: true });
+}
+
+/**
+ * 存储加密的cookie永久保留
+ * @param  {[type]} res         [response]
+ * @param  {[type]} openId      [openId]
+ * @param  {[type]} accessToken [accessToken]
+ * @return {[type]}             []
+ */
+auth.setUserCookies = (res, key, value) => {
+  res.cookie(key, value, { maxAge: 2592000000, httpOnly: true, signed: true });
 }
 
 /**
@@ -68,7 +79,6 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
   } else if (code) {
     console.log(`[${new Date()}] Request Code: ${code}`);
     auth.getToken(res, code, (data) => {
-      console.log(data + '王兵');
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
       call(data.openid);
@@ -136,7 +146,7 @@ auth.getFatherOpenId = (req, res, redirectUrl, call) => {
 }
 
 /**
- * 判断用户是否已登录
+ * 判断用户是否登录
  * 0 登录 1 讲座报名 2 家庭账号绑定 3 讲座报名信息
  * @param  {[type]} res       [response]
  * @param  {[type]} openId    [openId]
@@ -144,20 +154,18 @@ auth.getFatherOpenId = (req, res, redirectUrl, call) => {
  * @param  {[type]} calllogin [未登录返回登录操作]
  * @return {}                 []
  */
-auth.isLogin = (res, openId, call, calllogin) => {
-  requestTool.get('login', `openId=${openId}`, (data) => {
-    console.log(data)
-    var _data = JSON.parse(data);
-    if (_data.code === 0 && _data.data && _data.data.name) {
-      call(_data.data.name);
-    } else {
-      calllogin();
-    }
-  }, (err) => {
-    res.render('error', {
-      message: '请求错误'
-    });
-  });
+auth.isLogin = (req, call, calllogin) => {
+  let access_token = req.signedCookies.accessToken || '';
+  let userId = req.signedCookies.userId || '';
+  let data = {
+    access_token: access_token,
+    userId: userId
+  };
+  if (access_token && userId) {
+    call(data);
+  } else {
+    calllogin();
+  }
 }
 
 module.exports = auth;

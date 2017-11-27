@@ -6,6 +6,7 @@
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script type="text/javascript">
     var pathName = "<%=_src('')%>"//获取当前域名
+    // var myFlupList = "<%=myFlupList%>"
     wxconfig();
     //ajax请求config配置参数
     function wxconfig() {
@@ -75,10 +76,10 @@
 <body>
   <div class="follow_up_plan">
     <div class="weui-cells">
-      <% for (var i = 0; i < 10; i++) { %>
+      <% for (let i = 0; i < myFlupList.length; i++) { %>
         <a class="weui-cell weui-cell_access" href="javascript:;">
           <div class="weui-cell__bd">
-              <p>2016-12-21  张瑞岩医师的随访计划</p>
+              <p><%=myFlupList[i].planDate%>  <%=myFlupList[i].name%></p>
           </div>
           <div class="weui-cell__ft">
           </div>

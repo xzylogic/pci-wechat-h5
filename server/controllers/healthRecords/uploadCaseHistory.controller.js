@@ -5,14 +5,15 @@ var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
 
 module.exports = {
-
+ //上传图片页面
 	getCaseHistory: (req, res) => {
 		let url = requestTool.setAuthUrl('/uploadCaseHistory', '');
 		auth.getOpenId(req, res, url, (openId) => {
-      auth.isLogin(res, openId, (name) => {
+      auth.isLogin(req, (data) => {
         // 已登录跳转上传病历页面
         res.render('healthRecords/uploadCaseHistory',{
-
+          url: global.config.server,
+          userId: data.userId
         })
       }, () => {
         // 未登录跳转登录页面
@@ -23,11 +24,5 @@ module.exports = {
         message: err
       });
     });
-	},
-
-  getImg: (req, res) => {
-    res.render('assessment/img',{
-
-    })
-  }
+	}
 }

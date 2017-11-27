@@ -1,6 +1,5 @@
 'use strict';
 
-var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
 
@@ -9,9 +8,11 @@ module.exports = {
 	getAuthList: (req, res) => {
 		let url = requestTool.setAuthUrl('/authlist', '');
 		auth.getOpenId(req, res, url, (openId) => {
-      res.render('healthRecords/authlist',{
-
-			})
+      auth.isLogin(req, (data) =>{
+        res.render('healthRecords/authlist')
+      },() =>{
+        res.redirect(`${global.config.root}/login?status=6`);
+      })
     }, (err) => {
       res.render('error', {
         message: err
@@ -23,8 +24,12 @@ module.exports = {
   getAuthPhone: (req, res) => {
     let url = requestTool.setAuthUrl('/authphone', '');
     auth.getOpenId(req, res, url, (openId) => {
-      res.render('healthRecords/authphone',{
+      auth.isLogin(req, (data) =>{
+        res.render('healthRecords/authphone',{
 
+        })
+      },() =>{
+        res.redirect(`${global.config.root}/login?status=6`);
       })
     }, (err) => {
       res.render('error', {
@@ -37,8 +42,13 @@ module.exports = {
   getAuthCard: (req, res) => {
     let url = requestTool.setAuthUrl('/authcard', '');
     auth.getOpenId(req, res, url, (openId) => {
-      res.render('healthRecords/authcard',{
-
+      auth.isLogin(req, (data) =>{
+        res.render('healthRecords/authcard',{
+          access_token: data.access_token,
+          url: global.config.userServer
+        })
+      },() =>{
+        res.redirect(`${global.config.root}/login?status=6`);
       })
     }, (err) => {
       res.render('error', {
@@ -47,3 +57,4 @@ module.exports = {
     });
   }
 }
+
