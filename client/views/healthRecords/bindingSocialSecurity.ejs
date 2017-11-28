@@ -211,24 +211,29 @@ $(document).ready(function(){
   });
   // 提交申请
   function ajax(card_number) {
+    auditToast()
     $.ajax({
       type: 'get',
       url: `<%=_src('')%>/bindingSocialSecuritySuccess`,
       data:{cardNumber: card_number},
       success: function (data) {
+        $('#audit_toast').fadeOut(100);
         if (data && data.code === 0) {
-          auditToast()
+          certificationByToast()
         } else if ( data && data.code === 1000) {
+          authenticationFailedToast()
           $(".error").css({
             'display': 'block'
           })
           $(".error").html(data.msg || '医保卡格式错误，请重新输入')
         } else if (data && data.code === -1) {
+          authenticationFailedToast()
           $(".error").css({
             'display': 'block'
           })
           $(".error").html(data.msg || '无效卡号')
         } else {
+          authenticationFailedToast()
           $(".error").css({
             'display': 'block'
           })
@@ -236,6 +241,8 @@ $(document).ready(function(){
         }
       },
       error: function (err) {
+        $('#audit_toast').fadeOut(100);
+        authenticationFailedToast()
         $(".error").css({
             'display': 'block'
         })
@@ -250,7 +257,7 @@ $(document).ready(function(){
     $toast.fadeIn(100);
     setTimeout(function () {
         $toast.fadeOut(100);
-    }, 2000);
+    }, 1000);
   }
   // 审核中
   function auditToast() {
@@ -271,7 +278,7 @@ $(document).ready(function(){
 
   // 认证失败
   function authenticationFailedToast() {
-    var $toast = $('#certification_by');
+    var $toast = $('#authentication_failed');
     if ($toast.css('display') != 'none') return;
     $toast.fadeIn(100);
     setTimeout(function () {

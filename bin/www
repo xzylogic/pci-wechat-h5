@@ -4,7 +4,7 @@ global.config = {
   userServer: 'http://10.2.10.10/pci-user/',
   server: 'http://10.2.10.10/pci-micro/',
   fatherServer: 'http://172.18.27.62:8080/pci-operation/',
-  domain: 'http://10.2.101.84:3000',
+  domain: 'http://10.2.101.38:3000',
   root: '/pci-wechat',
   filedir: '/Users/wangbing/project/pci-wechat-h5',
   appId: 'wxee8d9fc7f496d8b1',

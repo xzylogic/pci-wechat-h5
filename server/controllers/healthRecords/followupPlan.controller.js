@@ -8,12 +8,12 @@ module.exports = {
   // 随访计划列表
 	getfollowupPlan: (req, res) => {
 		let url = requestTool.setAuthUrl('/followUp', '');
-                      let accessToken = 'f500475f-7fed-4c4c-95ad-c7beaaf2d182'
 		auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
-        requestTool.getHeader('flupList', accessToken, `userId=68`, (_data) =>{
+        requestTool.getHeader('flupList', data.access_token, `userId=${data.userId}`, (_data) =>{
           if (_data && _data.code === 0 && _data.data.myFlupList.length !== 0 && _data.data.myFlupList.length !== 1) {
             // 已登录跳转随访计划列表页面
+            console.log(_data.data.myFlupList)
             res.render('healthRecords/followupPlan',{
               myFlupList: _data.data.myFlupList
             })
@@ -50,15 +50,14 @@ module.exports = {
   getfollowupPlanDetail: (req, res) => {
     let url = requestTool.setAuthUrl('/followUpDetail', '');
     let doctorId = req.query.doctorId || '';
-                              let accessToken = 'f500475f-7fed-4c4c-95ad-c7beaaf2d182';
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
         if (doctorId) {
           let postData = {
             doctorId: doctorId,
-            userId: 68
+            userId: data.userId
           }
-          requestTool.postHeader('flupDetail', accessToken, postData, (_data) =>{
+          requestTool.postHeader('flupDetail', data.access_token, postData, (_data) =>{
             if (_data && _data.code === 0) {
               res.render('healthRecords/followupPlanDetail',{
                 flupDetail: _data.data

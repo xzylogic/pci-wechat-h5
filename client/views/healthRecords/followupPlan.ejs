@@ -67,27 +67,40 @@
     .weui-cells{
       margin-top: 0;
     }
-    .weui-cell__bd{
-      text-align: center;
-    }
   </style>
 </head>
 
 <body>
   <div class="follow_up_plan">
     <div class="weui-cells">
-      <% for (let i = 0; i < myFlupList.length; i++) { %>
-        <a class="weui-cell weui-cell_access" href="javascript:;">
-          <div class="weui-cell__bd">
-              <p><%=myFlupList[i].planDate%>  <%=myFlupList[i].name%></p>
-          </div>
-          <div class="weui-cell__ft">
-          </div>
-        </a>
+      <% if (myFlupList.length > 10) { %>
+        <% for (let i = 0; i < 10; i++) { %>
+          <a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%><%=myFlupList[i].doctorId%>">
+            <div class="weui-cell__bd">
+                <p><%=myFlupList[i].planDate%></p>
+            </div>
+            <div class="weui-cell__ft">
+              <%=myFlupList[i].name%>
+            </div>
+          </a>
+        <% } %>
+      <% } else { %>
+        <% for (let i = 0; i < myFlupList.length; i++) { %>
+          <a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%><%=myFlupList[i].doctorId%>">
+            <div class="weui-cell__bd">
+                <p><%=myFlupList[i].planDate%></p>
+            </div>
+            <div class="weui-cell__ft">
+              <%=myFlupList[i].name%>
+            </div>
+          </a>
+        <% } %>
       <% } %>
-      <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
-        <div class="weui-cell__bd">加载更多</div>
-      </a>    
+      <% if (myFlupList.length > 10) { %>
+        <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
+          <div class="weui-cell__bd">加载更多</div>
+        </a>
+      <% } %>  
     </div>
   </div>
 </body>
