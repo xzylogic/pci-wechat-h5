@@ -15,7 +15,8 @@ module.exports = {
             // 已登录跳转随访计划列表页面
             console.log(_data.data.myFlupList)
             res.render('healthRecords/followupPlan',{
-              myFlupList: _data.data.myFlupList
+              myFlupList: _data.data.myFlupList,
+              "json": _data.data.myFlupList
             })
           } else if (_data && _data.code === 0 && _data.data.myFlupList.length === 1) {
             res.redirect(`${global.config.root}/followUpDetail?doctorId=${_data.data.myFlupList[0].doctorId}`);

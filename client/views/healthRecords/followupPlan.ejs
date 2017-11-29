@@ -6,7 +6,7 @@
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script type="text/javascript">
     var pathName = "<%=_src('')%>"//获取当前域名
-    // var myFlupList = "<%=myFlupList%>"
+    var list = JSON.parse('<%-JSON.stringify(json)%>');
     wxconfig();
     //ajax请求config配置参数
     function wxconfig() {
@@ -67,12 +67,16 @@
     .weui-cells{
       margin-top: 0;
     }
+    .weui-cell_link{
+      color: #666;
+      text-align: center;
+    }
   </style>
 </head>
 
 <body>
   <div class="follow_up_plan">
-    <div class="weui-cells">
+    <div class="weui-cells" id="follow_up_list">
       <% if (myFlupList.length > 10) { %>
         <% for (let i = 0; i < 10; i++) { %>
           <a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%><%=myFlupList[i].doctorId%>">
@@ -95,18 +99,48 @@
             </div>
           </a>
         <% } %>
-      <% } %>
+      <% } %>  
+    </div>
+    <div class="weui-cells">
       <% if (myFlupList.length > 10) { %>
         <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
-          <div class="weui-cell__bd">加载更多</div>
+          <div class="weui-cell__bd" id="load_more">加载更多</div>
         </a>
-      <% } %>  
+      <% } %>
     </div>
   </div>
 </body>
 <script>
 $(document).ready(function(){
-  
+  var followList = $("#follow_up_list");
+  var count = 9;
+  $("#load_more").on('click', function() {
+    if (list.length - count >= 10){
+      for (let i = 0; i < 10; i++) {
+        followList.append(`<a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%>${list[i+count].doctorId}">
+              <div class="weui-cell__bd">
+                  <p>${list[i+count].planDate}</p>
+              </div>
+              <div class="weui-cell__ft">
+                ${list[i+count].name}
+              </div>
+            </a>`)
+      }
+      count = count + 10;
+    } else {
+      for (let i = 0; i < list.length; i++) {
+        followList.append(`<a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%>${list[i+count].doctorId}">
+              <div class="weui-cell__bd">
+                  <p>${list[i+count].planDate}</p>
+              </div>
+              <div class="weui-cell__ft">
+                ${list[i+count].name}
+              </div>
+            </a>`)
+      }
+    }
+    
+  })
 })
 </script>
 </html>

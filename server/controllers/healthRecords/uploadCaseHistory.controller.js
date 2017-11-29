@@ -12,7 +12,8 @@ module.exports = {
       auth.isLogin(req, (data) => {
         // 已登录跳转上传病历页面
         res.render('healthRecords/uploadCaseHistory',{
-          url: global.config.server,
+          healthUrl: global.config.healthServer,
+          qiniuUrl: global.config.server,
           userId: data.userId
         })
       }, () => {

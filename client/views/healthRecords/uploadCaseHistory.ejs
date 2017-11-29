@@ -8,7 +8,8 @@
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script type="text/javascript">
     var pathName = "<%=_src('')%>"//获取当前域名
-    var url = "<%=url%>" //获取接口域名
+    var qiniuUrl = "<%=qiniuUrl%>" //获取七牛接口域名
+    var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
     var userId = "<%=userId%>"
     wxconfig();
       //ajax请求config配置参数
@@ -158,7 +159,7 @@ $(document).ready(function(){
   var token;
   $.ajax({
     type: 'get',
-    url: `${url}api/qiniu/auth`,
+    url: `${qiniuUrl}api/qiniu/auth`,
     success: function (res) {
       if (res && res.code === 0) {
         domain = res.data.domain
@@ -251,7 +252,7 @@ $(document).ready(function(){
           picUrlList.push(`${domain}${ret.key}`)
           if (picUrlList.length === uploadCount) {
             ajax(picUrlList)
-          }
+           }
          // return true; // 阻止默认行为，不使用默认的成功态
      },
      onError: function(err){
@@ -338,17 +339,18 @@ $(document).ready(function(){
 // 提交数据
 function ajax(picUrlList) {
   let data = {
-    picUrlList: picUrlList,
-    title: $('.confirmDate').text(),
+    imgUrlList: picUrlList,
+    checkDate: $('.confirmDate').text(),
     userId: userId
   }
-  console.log(data)
   $.ajax({
     type: 'post',
-    url: `${url}api/case/reviews/upload`,
+    url: `${healthUrl}record/photo/upload`,
+    headers:{
+      'healthClient': 'pci'
+    },
     data: data,
     processData: false,
-    contentType: 'application/json;charset=UTF-8',
     success: function (success) {
       console.log(success);
     },
