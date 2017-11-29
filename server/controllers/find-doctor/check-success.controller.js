@@ -6,17 +6,19 @@ var auth = require('../common/auth');
 
 module.exports = {
 
-    findDoctor: (req, res) => {
+    checkSuccess: (req, res) => {
     // auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
-    let url = requestTool.setAuthUrl('/find-doctor');
+    let doctorName = req.query.doctorName || '';
+    let admissionTime = req.query.admissionTime || '';
+    let url = requestTool.setAuthInfoUrl('/find-doctor/check-success', '');
     let openId = req.query.openId;
+    console.log(doctorName);
     auth.getOpenId(req, res, url, (openId) => {
         if (openId) {
-            res.render('doctor/find-doctor', {
-                url: `${global.config.server}`,
-                url2: `${global.config.server2}`,
+            res.render('doctor/check-success',{
+                doctorName: doctorName,
+                admissionTime: admissionTime
             });
         }
     });
-    }
-}
+}}

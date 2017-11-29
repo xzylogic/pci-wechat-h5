@@ -26,7 +26,7 @@
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn" style="font-size: 14px;" id="searchCancel">取消</a>
         </div>
-        <div class="show-hospital" onclick="showHospital()">
+        <div class="show-hospital" onclick="showHospital(keywords)">
             <button class="btn-hospital" href="javascript:;" id="showPicker">
                 <span>全部医院</span><img class="img-down" src="<%= _src('/image/arrow-down.png') %>">
             </button>
@@ -119,30 +119,35 @@
         background-color: white;
         border-radius: 50px
     }
+    .active{
+        color: #ccc;
+        border: 1px solid #ccc;
+    }
 </style>
 <script type="text/javascript">
     var url = "<%= url %>"
     var url2 = "<%= url2 %>"
     var userId = 68
-    var keywords
-    var hospitalId
+    var keywords = ''
+    var hospitalId = 0
     var doctorList
+    var active = 'active'
     var hospitalList
-    showDoctor(0);
+    showDoctor('', 0);
 
-    function showDoctor(hospitalId) {
-        console.log(hospitalId)
+    function showDoctor(keywords, hospitalId) {
         $.ajax({
             type: "get",
             url: `${url}api/relation/findDoctor/${userId}`,
-            data: {hospitalId: hospitalId},
-            success: function (doctorList) {
-                doctorList = doctorList.data.content;
+            data: {keywords: keywords, hospitalId: hospitalId},
+            success: function (data) {
+                doctorList = data.data.content;
                 var $searchResult = $('#searchResult')
                 var applyStatus
-                for (var i = 0; i <= doctorList.length; i++) {
+                for (var i = 0; i < doctorList.length; i++) {
                     if (doctorList[i].applyStatus === 0) {
                         applyStatus = '报到'
+                        active = ''
                     } else if (doctorList[i].applyStatus === 1) {
                         applyStatus = '等待中'
                     } else if (doctorList[i].applyStatus === 2) {
@@ -153,15 +158,15 @@
                     $searchResult.append(`<div class="weui-cell weui-cell_access">
                 <div class="weui-cell__bd weui-cell_primary doctor-introduce">
                     <div class="doctor-img">
-                    <img class="img-doctor" src="${doctorList[i].doctorPic}">
+                    <img class="img-doctor" id="doctorPic" src="${doctorList[i].doctorPic}">
                     </div>
                     <div class="doctor-info">
-                        <p class="doctor-name">${doctorList[i].doctorName}</p>
+                        <p class="doctor-name" id="doctorName">${doctorList[i].doctorName}</p>
                         <p class="doctor-title">${doctorList[i].department} ${doctorList[i].doctorTitle}</p>
                         <p class="doctor-hospital">${doctorList[i].hospitalName }</p>
                     </div>
-                    <div class="doctor-btn">
-                        <button class="btn-doctor" onclick="toDoctor()">${applyStatus}</button>
+                    <div class="doctor-btn" id="doctor">
+                        <button id="${i}" class="btn-doctor ${active}">${applyStatus}</button>
                     </div>
                 </div>
             </div>`)
@@ -173,7 +178,7 @@
         });
     };
 
-    function showHospital() {
+    function showHospital(keywords) {
         $.ajax({
             type: "get",
             headers: {
@@ -188,8 +193,9 @@
                 }
                 weui.picker(hospitalList, {
                     onConfirm: function (result) {
+                        hospitalId = result[0].id
                         $('#searchResult').html('');
-                        showDoctor(result[0].id);
+                        showDoctor(keywords, hospitalId);
                     }
                 });
             },
@@ -211,6 +217,8 @@
         function cancelSearch() {
             $searchBar.removeClass('weui-search-bar_focusing');
             $searchText.show();
+            $('#searchResult').html('');
+            showDoctor('', 0);
         }
 
         $searchText.on('click', function () {
@@ -223,23 +231,32 @@
             })
             .on('input', function () {
                 if (this.value.length) {
+                    keywords = this.value;
                     $searchResult.show();
-                    showDoctor();
+                    $('#searchResult').html('');
+                    showDoctor(keywords, hospitalId);
+
                 } else {
                     $searchResult.hide();
                 }
             })
         ;
         $searchClear.on('click', function () {
+            $searchInput.val('');
+            keywords = '';
             $searchInput.focus();
         });
         $searchCancel.on('click', function () {
             cancelSearch();
             $searchInput.blur();
         });
+    });
 
-        function toDoctor() {
-
+    $('#searchResult').on('click', '.btn-doctor', function() {
+        let id  = $(this).attr('id')
+        let data = doctorList[id]
+        if ($(this).html() === '报到') {
+            window.location.href = `<%=_src('/find-doctor/check-in')%>?doctorId=${data.doctorId}&&doctorPic=${data.doctorPic}&&doctorName=${data.doctorName}&&department=${data.department}&&hospitalName=${data.hospitalName}&&doctorTitle=${data.doctorTitle}`
         }
     });
 
