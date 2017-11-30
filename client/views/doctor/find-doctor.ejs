@@ -127,7 +127,7 @@
 <script type="text/javascript">
     var url = "<%= url %>"
     var url2 = "<%= url2 %>"
-    var userId = 68
+    var userId = <%= userId %>
     var keywords = ''
     var hospitalId = 0
     var doctorList
@@ -139,21 +139,23 @@
         $.ajax({
             type: "get",
             url: `${url}api/relation/findDoctor/${userId}`,
-            data: {keywords: keywords, hospitalId: hospitalId},
+            data: {hospitalId: hospitalId, keywords:keywords},
             success: function (data) {
                 doctorList = data.data.content;
                 var $searchResult = $('#searchResult')
-                var applyStatus
                 for (var i = 0; i < doctorList.length; i++) {
                     if (doctorList[i].applyStatus === 0) {
-                        applyStatus = '报到'
+                        doctorList[i].applyStatus = '报到'
                         active = ''
                     } else if (doctorList[i].applyStatus === 1) {
-                        applyStatus = '等待中'
+                        doctorList[i].applyStatus = '等待中'
+                        active = 'active'
                     } else if (doctorList[i].applyStatus === 2) {
-                        applyStatus = '已报到'
+                        doctorList[i].applyStatus = '已报到'
+                        active = 'active'
                     } else if (doctorList[i].applyStatus === 3) {
-                        applyStatus = '等待中'
+                        doctorList[i].applyStatus = '等待中'
+                        active = 'active'
                     }
                     $searchResult.append(`<div class="weui-cell weui-cell_access">
                 <div class="weui-cell__bd weui-cell_primary doctor-introduce">
@@ -165,8 +167,8 @@
                         <p class="doctor-title">${doctorList[i].department} ${doctorList[i].doctorTitle}</p>
                         <p class="doctor-hospital">${doctorList[i].hospitalName }</p>
                     </div>
-                    <div class="doctor-btn" id="doctor">
-                        <button id="${i}" class="btn-doctor ${active}">${applyStatus}</button>
+                    <div class="doctor-btn">
+                        <button class="btn-doctor ${active}" id="${i}">${doctorList[i].applyStatus}</button>
                     </div>
                 </div>
             </div>`)
@@ -182,7 +184,7 @@
         $.ajax({
             type: "get",
             headers: {
-                'access-token': 'f500475f-7fed-4c4c-95ad-c7beaaf2d182'
+                'access-token': '<%= accessToken %>'
             },
             url: `${url2}api/user/option`,
             success: function (hospitalList) {
@@ -205,7 +207,6 @@
         });
     };
 
-
     $(function () {
         var $searchBar = $('#searchBar'),
             $searchResult = $('#searchResult'),
@@ -213,6 +214,7 @@
             $searchInput = $('#searchInput'),
             $searchClear = $('#searchClear'),
             $searchCancel = $('#searchCancel');
+
 
         function cancelSearch() {
             $searchBar.removeClass('weui-search-bar_focusing');

@@ -24,7 +24,8 @@
       "desc": "向医生报到",
       "parentUrl": "/",
       "routePath": "/find-doctor/check-in.routes"
-    },{
+    },
+    {
     "desc": "我的医生",
     "parentUrl": "/",
     "routePath": "/my-doctor/my-doctor.routes"
@@ -36,5 +37,9 @@
     "desc": "JSSDK",
     "parentUrl": "/",
     "routePath": "/jssdk/jssdk.routes"
+  },{
+    "desc": "健康档案",
+    "parentUrl": "/",
+    "routePath": "/healthRecords/healthRecords.routes"
   }]
 }

@@ -6,6 +6,7 @@
   <% include ../layout/layout %>
   <link rel="stylesheet" href="<%=_src('/css/assessment/assessment.css')%>">
   <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="<%=_src('/lib/flexible/rem.min.js')%>"></script>
   <script type="text/javascript">
     function toRisk(){
       window.open("<%=_src('/assessment')%>?v=" + (new Date().getTime()), '_self');

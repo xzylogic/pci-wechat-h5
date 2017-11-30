@@ -7,23 +7,28 @@ var auth = require('../common/auth');
 module.exports = {
 
     getIsMyDoc: (req, res) => {
-        //auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
+        auth.setCookies(res, 'pci_secret', 'ovMkVwAqHDRVJ9cTDVAUDBmNjHYw');
         let url = requestTool.setAuthInfoUrl('/my-doctor', ''); // 重定向url
         let openId = req.query.openId;
-        let userId = req.signedCookies.userId || 68;// 从cookie中找userId
+        let userId = req.signedCookies.userId || '';// 从cookie中找userId
+        let accessToken = req.signedCookies.accessToken
         let data
         auth.getOpenId(req, res, url, (openId) => {
             if (userId) {
-                requestTool.getwithhandle2('myDoctor', `userId=${userId}`, (myDoctor) => {
-                if (myDoctor) {
-                    console.log(myDoctor);
+                requestTool.getHeader('myDoctor',  accessToken,`userId=${userId}`, (myDoctor) => {
+                if (myDoctor && myDoctor.code === 0 && myDoctor.data.content.length !== 0) {
                     res.render('doctor/my-doctor', {
-                        data: myDoctor.content
+                        data: myDoctor.data.content
+
                     });
-                } else {
+                } else if(myDoctor && myDoctor.code === 0 && myDoctor.data.content.length ===0) {
                     res.render('doctor/no-check', {
                         url: `${global.config.root}/doctor/no-check`
                     });
+                } else {
+                    res.render('error', {
+                        message: err
+                    })
                 }
             }, (err) => {
                     res.render('error', {
@@ -39,7 +44,7 @@ module.exports = {
     },
 
     goConsult: (req, res) => {
-    // auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
+    auth.setCookies(res, 'pci_secret', 'ovMkVwAqHDRVJ9cTDVAUDBmNjHYw');
     let url = requestTool.setAuthUrl('/my-doctor/consult-doctor');
     let openId = req.query.openId;
     auth.getOpenId(req, res, url, (openId) => {

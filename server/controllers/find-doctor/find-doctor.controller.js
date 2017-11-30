@@ -7,14 +7,18 @@ var auth = require('../common/auth');
 module.exports = {
 
     findDoctor: (req, res) => {
-    // auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
+    auth.setCookies(res, 'pci_secret', 'ovMkVwAqHDRVJ9cTDVAUDBmNjHYw');
     let url = requestTool.setAuthUrl('/find-doctor');
     let openId = req.query.openId;
+    let userId = req.signedCookies.userId || ''; // 从cookie中找userId
+    let accessToken = req.signedCookies.accessToken
     auth.getOpenId(req, res, url, (openId) => {
         if (openId) {
             res.render('doctor/find-doctor', {
                 url: `${global.config.server}`,
-                url2: `${global.config.server2}`,
+                url2: `${global.config.userServer}`,
+                userId: userId,
+                accessToken: accessToken
             });
         }
     });
