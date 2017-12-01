@@ -53,6 +53,29 @@ requestTool.getHeader = function(key, accessToken, param, call, error) {
     });
 }
 
+/**
+ * 使用superagent添加healthClient进行get请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getHealthClient = function(url, param, call, error) {
+  superagent
+    .get(url)
+    .set('Content-Type', 'application/json')
+    .set('healthClient', 'pci')
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
 
 
 /**
