@@ -54,6 +54,29 @@ requestTool.getHeader = function(key, accessToken, param, call, error) {
 }
 
 /**
+ * 使用superagent进行get拼接url添加请求头请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getHeaderUrl = function(key, accessToken, param, call, error) {
+  superagent
+    .get(User_BASE_URL + key)
+    .set('Content-Type', 'application/json')
+    .set('access-token', accessToken)
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+/**
  * 使用superagent添加healthClient进行get请求
  * @param  {} key    [api key]
  * @param  {} param  [query参数]

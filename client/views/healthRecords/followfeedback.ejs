@@ -1,67 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>随访计划列表</title>
+  <title>随访计划-反馈</title>
   <% include ../layout/layout %>
-  <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script type="text/javascript">
-    var pathName = "<%=_src('')%>"//获取当前域名
-    wxconfig();
-    //ajax请求config配置参数
-    function wxconfig() {
-      $.ajax({
-       type: "get",
-       url: pathName+"/signature",
-       data: {url:location.href},
-       success: function(msg){
-          //配置微信JS-SDK
-        wx.config({
-            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: msg.appId, // 必填，公众号的唯一标识
-            timestamp:msg.timestamp , // 必填，生成签名的时间戳
-            nonceStr: msg.nonceStr, // 必填，生成签名的随机串
-            signature: msg.signature,// 必填，签名，见附录1
-            jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'],// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-        });
-       },
-       error:function(err){
-          console.log(err);
-       }
-      });
-    };
-    wx.ready(function () {
-    // 在这里调用 API
-    // 分享给朋友
-      wx.onMenuShareAppMessage({
-          title: '全程心管家', // 分享标题
-          desc: `全程心管家，健康你我他`, // 分享描述
-          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图标
-          success: function () { 
-              // 用户确认分享后执行的回调函数
-          },
-          cancel: function () { 
-              // 用户取消分享后执行的回调函数
-          },
-      });
-      // 分享到朋友圈
-      wx.onMenuShareTimeline({
-          title: '全程心管家', // 分享标题
-          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图
-          success: function () { 
-              // 用户确认分享后执行的回调函数
-          },
-          cancel: function () { 
-              // 用户取消分享后执行的回调函数
-          }
-      });  
-    });
+    var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
   <style>
     body{
       background: #ebebeb;
       color: #666;
+    }
+    .weui-toast{
+        min-height: 0;
+        top: 50%;
+        width: 80%;
+        margin-left: -40%;
+    }
+    .weui-toast p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
     }
     .weui-cells{
       margin-top: 0;
@@ -107,44 +66,125 @@
         <div class="weui-cell__ft">2016年1月23日</div>
       </div>
       <div class="weui-cells weui-cells_checkbox">
-        <label class="weui-cell weui-check__label" for="s11">
+      <% for (let i = 0; i < plan.length; i++) { %>
+        <label class="weui-cell weui-check__label">
             <div class="weui-cell__hd">
-                <input type="checkbox" class="weui-check" name="checkbox1" id="s11" checked="checked"/>
+                <input type="checkbox" class="weui-check" name="checkbox" value="<%=plan[i]%>"/>
                 <i class="weui-icon-checked"></i>
             </div>
             <div class="weui-cell__bd">
-                <p>血常规</p>
+                <p><%=plan[i]%></p>
             </div>
         </label>
-        <label class="weui-cell weui-check__label" for="s12">
-            <div class="weui-cell__hd">
-                <input type="checkbox" name="checkbox1" class="weui-check" id="s12"/>
-                <i class="weui-icon-checked"></i>
-            </div>
-            <div class="weui-cell__bd">
-                <p>血常规</p>
-            </div>
-        </label>
-        <label class="weui-cell weui-check__label" for="s13">
-            <div class="weui-cell__hd">
-                <input type="checkbox" name="checkbox2" class="weui-check" id="s13"/>
-                <i class="weui-icon-checked"></i>
-            </div>
-            <div class="weui-cell__bd">
-                <p>血常规</p>
-            </div>
-        </label>
+      <% } %>
+      <% if (item.length !== 0) { %>
+        <% for (let i = 0; i < item.length; i++) { %>
+          <p style="display: none;" class="review"><%=item[i]%></p>
+        <% } %>
+      <% } %>
       </div>
     </div>
     <div class="page__bd page__bd_spacing follow_feedback_confirm">
         <a href="javascript:;" class="weui-btn weui-btn_primary">确定</a>
     </div>
+    <div id="toast" style="display: none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <p class="weui-toast__content"></p>
+        </div>
+    </div>
   </div>
 </body>
 <script>
+var items = [];
+var url = "<%=url%>";
+var accessToken = "<%=access_token%>";
+var item = "<%=item%>";
+var otherRemind = "<%=otherRemind%>";
+var feedbackTimes = "<%=feedbackTimes%>";
+var flupFeedbackId = "<%=flupFeedbackId%>";
+var dn = "<%=dn%>";
 $(document).ready(function(){
   
+  $(".weui-check").on('click', function() {
+    let checked = $(this).prop('checked')
+    if (checked === true) {
+      $(this).attr('checked', true)
+      items.push($(this).val())
+    } else {
+      $(this).attr('checked', false)
+      for (let i = 0; i < items.length; i++) {
+        if ($(this).val() == items[i]) {
+          items.splice(i, 1)
+        }
+      }
+    }
+  });
+  $('.follow_feedback_confirm').on('click', function() {
+    let $review = $(".review")
+    if ($review) {
+      $(".review").each(function() {
+        items.push($(this).text())
+      })
+    }
+    let data = {
+      feedbackStatus: true,
+      feedbackTimes: feedbackTimes,
+      flupFeedbackId:flupFeedbackId,
+      items:items,
+      otherRemindId: otherRemindId
+    }
+    $.ajax({
+      type: 'post',
+      url: `${url}api/doctorPatient/flup/feedback/update`,
+      headers:{
+        'access-token': accessToken
+      },
+      data: JSON.stringify(data),
+      processData: false,
+      contentType: 'application/json;charset=UTF-8',
+      success: function (res) {
+          if (res.code === 0) {
+            weui.alert(`${dn}XXX医生已收到您的随访反馈，为了您的健康，请坚持按时随访`, function(){
+              wx.closeWindow()
+            })
+          } else if (res.code === 403) {
+            weui.alert('请重新登录', function() {
+              reset();
+            })
+          } else {
+             toast(data.msg)
+          }
+      },
+      error: function () {
+          toast('接口请求出错了')
+      }
+    });
+    
+  })
 })
-  
+// token过期，重新登录
+function reset() {
+   $.ajax({
+        type: "get",
+        url: "<%=_src('')%>/reset",
+        success: function(msg){
+          if (msg.code === 0) {
+              window.location.href = `<%=_src('')%>/login?status=6`
+          }
+        },
+        error:function(err){
+          console.log(err);
+        }
+    });
+}
+function toast(msg) {
+    var $toast = $('#toast');
+    $('#toast p').html(msg)
+    $toast.fadeIn(100);
+    setTimeout(function () {
+        $toast.fadeOut(100);
+    }, 1500);
+}
 </script>
 </html>

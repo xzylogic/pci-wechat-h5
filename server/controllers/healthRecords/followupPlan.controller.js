@@ -1,6 +1,5 @@
 'use strict';
 
-var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
 
@@ -11,12 +10,16 @@ module.exports = {
 		auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
         requestTool.getHeader('flupList', data.access_token, `userId=${data.userId}`, (_data) =>{
-          if (_data && _data.code === 0 && _data.data.myFlupList.length !== 0 && _data.data.myFlupList.length !== 1) {
+          if (_data && _data.code === 0 && _data.data.myFlupList.length === 0) {
+            res.render('healthRecords/followupPlan',{
+              status: false
+            })
+          } else if (_data && _data.code === 0 && _data.data.myFlupList.length !== 0 && _data.data.myFlupList.length !== 1) {
             // 已登录跳转随访计划列表页面
-            console.log(_data.data.myFlupList)
             res.render('healthRecords/followupPlan',{
               myFlupList: _data.data.myFlupList,
-              "json": _data.data.myFlupList
+              "json": _data.data.myFlupList,
+              status: true
             })
           } else if (_data && _data.code === 0 && _data.data.myFlupList.length === 1) {
             res.redirect(`${global.config.root}/followUpDetail?doctorId=${_data.data.myFlupList[0].doctorId}`);
@@ -95,11 +98,46 @@ module.exports = {
 
   //随访计划反馈
   getFollowFeedback: (req, res) => {
+    let fbId = req.query.fbId || 1;
+    let otherRemind = req.query.otherRemind || '';
+    let feedbackTimes = req.query.feedbackTimes || '';
+    let dn = req.query.feedbackTimes || '';
     let url = requestTool.setAuthUrl('/followfeedback', '');
     auth.getOpenId(req, res, url, (openId) => {
-      res.render('healthRecords/followfeedback',{
-
-      })
+      auth.isLogin(req, (data) => {
+        requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
+          console.log(_data)
+          if (_data.code === 0 && _data.data.plan && _data.data.plan.length !== 0 && _data.data.firstPushStatus === true) {
+            res.render('healthRecords/followfeedback',{
+              plan: _data.data.plan,
+              item: _data.data.item,
+              otherRemind: otherRemind,
+              feedbackTimes: feedbackTimes,
+              flupFeedbackId: fbId,
+              dn: dn,
+              url: global.config.userServer,
+              access_token: data.access_token
+            })
+          } else if (_data.code === 0 && _data.data.firstPushStatus === null || _data.data.firstPushStatus === false) {
+              res.redirect(`${global.config.root}/followfailure`);
+          } else if (_data.code === 403) {
+            res.clearCookie('accessToken');
+            res.clearCookie('userId');
+            res.redirect(`${global.config.root}/login?status=6`);
+          } else {
+            res.render('error', {
+              message: _data.msg || '未知错误'
+            });
+          }
+        }, (error) => {
+          res.render('error', {
+            message: error
+          });
+        })
+      }, () => {
+        // 未登录跳转登录页面
+        res.redirect(`${global.config.root}/login?status=6`);
+      });
     }, (err) => {
       res.render('error', {
         message: err

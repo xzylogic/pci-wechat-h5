@@ -8,13 +8,14 @@ module.exports = {
 
   // 登录入口页面
   // 登录4种status状态
-  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5 关联医生 6实名认证
+  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5实名认证 6随访反馈
   getLogin: (req, res) => {
     // 测试写死cookie数据
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     // auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     // res.clearCookie('pci_secret');
     let status = req.query.status || 0; // status状态数据
+    let doctor = req.query.doctor || ''; // 向医生报到
     let url = requestTool.setAuthUrl('/login', status); // 重定向url
     let userId = req.signedCookies.userId || '';
     let accessToken = req.signedCookies.accessToken || '';
@@ -35,6 +36,7 @@ module.exports = {
       } else {
         res.render('basic/login', {
           status: status,
+          doctor: doctor,
           errorMessage: ''
         });
       }
@@ -45,6 +47,7 @@ module.exports = {
   getLoginEnter: (req, res) => {
     let tel = req.query.tel;
     let errorMessage = req.query.errorMessage || '';
+    let doctor = req.query.doctor || ''; // 向医生报到 
     let status = req.query.status; // status状态数据
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
 
@@ -52,7 +55,8 @@ module.exports = {
       res.render('basic/login-enter', {
         postUrl: `/login/verify?tel=${tel}&status=${status}`,
         errorMessage: errorMessage,
-        tel: tel
+        tel: tel,
+        doctor:doctor
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);
@@ -64,14 +68,15 @@ module.exports = {
     let tel = req.query.tel;
     let errorMessage = req.query.errorMessage || '';
     let status = req.query.status; // status状态数据
-
+    let doctor = req.query.doctor || ''; // 向医生报到
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
 
     if (openId) {
       res.render('basic/login-register', {
         postUrl: `/register?tel=${tel}&status=${status}`,
         errorMessage: errorMessage,
-        tel: tel
+        tel: tel,
+        doctor:doctor
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);
@@ -100,6 +105,7 @@ module.exports = {
 
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     let status = req.query.status; // status状态数据
+    let doctor = req.query.doctor; // status状态数据
     let postData = ''; // 记录form表单提交的数据
 
     // 获取POST提交数据
@@ -116,7 +122,7 @@ module.exports = {
         requestTool.getwithhandle('ifRegister', postData, (result) => {
           if (result) {
             // 未注册 跳转到注册页面
-            res.redirect(`${global.config.root}/register?tel=${tel}&status=${status}`);
+            res.redirect(`${global.config.root}/register?tel=${tel}&status=${status}&doctor=${doctor}`);
             // res.render('basic/login-register', {
             //   postUrl: `/register?${postData}`,
             //   errorMessage: '',
@@ -124,7 +130,7 @@ module.exports = {
             // });
           } else {
             // 注册过 跳转到登录页面
-            res.redirect(`${global.config.root}/login/enter?tel=${tel}&status=${status}`);
+            res.redirect(`${global.config.root}/login/enter?tel=${tel}&status=${status}&doctor=${doctor}`);
             // res.render('basic/login-enter', {
             //   postUrl: `/login/verify?${postData}`,
             //   errorMessage: '',
@@ -164,6 +170,7 @@ module.exports = {
           auth.setUserCookies(res, 'userId', _data.userId)
           auth.setUserCookies(res, 'accessToken', _data.accessToken)
           auth.setUserCookies(res, 'name', _data.name)
+          auth.setUserCookies(res, 'phone', tel)
           if (status == 0) {
             res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           } else if (status == 1) {
@@ -172,8 +179,12 @@ module.exports = {
             res.redirect(`${global.config.root}/EMR`);
           } else if (status == 3) {
             res.redirect(`${global.config.root}/followUp`);
-          } else if (status == 6) {
+          } else if (status == 4) {
+            res.redirect(`${global.config.root}/find-doctor`);
+          } else if (status == 5) {
             res.redirect(`${global.config.root}/authlist`);
+          } else if (status == 6) {
+            res.redirect(`${global.config.root}/followfeedback`);
           }
           // res.render('basic/login-success', {
           //   status: '登录',
@@ -215,6 +226,7 @@ module.exports = {
           auth.setUserCookies(res, 'userId', _data.userId)
           auth.setUserCookies(res, 'accessToken', _data.accessToken)
           auth.setUserCookies(res, 'name', _data.name)
+          auth.setUserCookies(res, 'phone', tel)
           if (status == 0) {
             res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           } else if (status == 1) {
@@ -223,9 +235,15 @@ module.exports = {
             res.redirect(`${global.config.root}/EMR`);
           } else if (status == 3) {
             res.redirect(`${global.config.root}/followUp`);
-          } else if (status == 6) {
+          } else if (status == 4) {
+            res.redirect(`${global.config.root}/find-doctor`);
+          } else if (status == 5) {
             res.redirect(`${global.config.root}/authlist`);
+          } else if (status == 6) {
+            res.redirect(`${global.config.root}/followfeedback`);
           }
+
+          
           // res.redirect(`${global.config.root}/login/success?name=${_data.name}`);
           // res.render('basic/login-success', {
           //   status: '注册',

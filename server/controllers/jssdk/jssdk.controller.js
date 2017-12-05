@@ -51,32 +51,13 @@ module.exports = {
     }
   },
 
-  // 上传图片
-  uploadImg: (req, res) => {
-    let token = req.signedCookies.token || ''; // 从cookie中找access_token;
-    let media_id = req.query.media_id || '';
-    let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=Sb3Y66lyJYWUvBDjhzq15VkxclhReXQ1RkeJp0v8ZqJoZ6CRHlfoFs3B1ejJiHEfEqvjKgAf5P_kbiFXsUxbUwRb52NZytZfe9rcxgazLpCeWPnYnOyQ5EK9KAlKOQqdSWJgADAIMZ&media_id=${media_id}`
-    let randomName = 'image'+Date.now()+'.jpg';
-    res.send({url:url})
-    if (token && media_id) {
-      bucketManager.fetch(url, 'baoxiu', randomName, function(err, respBody, respInfo) {
-        if (err) {
-          console.log(err);
-          //throw err;
-        } else {
-          if (respInfo.statusCode == 200) {
-            let re_url = 'http://oyf5a8fu2.bkt.clouddn.com/' + respBody.key; //生成图片的可访问url
-            console.log(re_url);
-            res.send({
-              imgurl: re_url
-            })
-          } else {
-            console.log(respInfo.statusCode);
-            console.log(respBody);
-          }
-        }
-      });
-    }
+  // token过期，清除cookie,重新登录
+  resetLogin: (req, res) => {
+    res.clearCookie('accessToken');
+    res.clearCookie('userId');
+    res.send({
+      code: 0
+    })
   },
 
   // 分享网页

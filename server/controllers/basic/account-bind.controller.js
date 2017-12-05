@@ -10,20 +10,15 @@ module.exports = {
   getAccountBind: (req, res) => {
     // auth.setCookies(res, 'pci_secret', 'ox0ThwmPe29gK2bl8v7cbr6Z-emg');
     let url = requestTool.setAuthUrl('/family', ''); // 重定向url
-
     auth.getOpenId(req, res, url, (openId) => {
-      auth.isLogin(res, openId, (name) => {
-        requestTool.getwithhandle('familyApply', `openId=${openId}`, (data) => {
-          res.render('basic/account-bind', {
-            content: data.content
-          });
-        }, (err) => {
-          res.render('error', {
-            message: '请求错误'
-          })
+      requestTool.getwithhandle('familyApply', `openId=${openId}`, (data) => {
+        res.render('basic/account-bind', {
+          content: data.content
         });
-      }, () => {
-        res.redirect(`${global.config.root}/login?status=2`);
+      }, (err) => {
+        res.render('error', {
+          message: '请求错误'
+        })
       });
     });
   },
@@ -32,7 +27,6 @@ module.exports = {
   getAccountBindAdd: (req, res) => {
     let errorMessage = req.query.errorMessage || '';
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-
     if (openId) {
       res.render('basic/account-bind-add', {
         postUrl: '/family/add',

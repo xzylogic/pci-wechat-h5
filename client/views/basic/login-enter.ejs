@@ -6,10 +6,48 @@
   <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
+    <style>
+      .navigation{
+        padding: 15px 0 0;
+        overflow: hidden;
+      }
+      ul{
+        list-style: none;
+        overflow: hidden;
+        width: 90%;
+        margin: 0 auto;
+      }
+      .navigation li{
+        float: left;
+        padding:0 10px;
+        color: #35b2f2;
+        font-size: 14px;
+      }
+      .navigation span{
+        text-align: center;
+        width: 24px;
+        display: inline-block;
+        border: 1px solid #35b2f2;
+        border-radius: 12px;
+      }
+      .navigation li:nth-child(1) span{
+        background-color: #35b2f2;
+        color: #fff;
+      }
+    </style>
 </head>
 
 <body>
   <div class="container">
+    <% if (doctor === 'doctor') { %>
+    <div class="navigation">
+      <ul>
+        <li><span>1</span> 注册登录</li>
+        <li>—------></li>
+        <li><span>2</span> 向医生报到</li>
+      </ul>
+    </div>
+    <% } %>
     <form class="form-container" action="<%=_src(postUrl)%>" method="post">
       <div class="input-field">
         <div class="weui-cell input-code">

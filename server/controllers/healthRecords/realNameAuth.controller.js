@@ -11,7 +11,7 @@ module.exports = {
       auth.isLogin(req, (data) =>{
         res.render('healthRecords/authlist')
       },() =>{
-        res.redirect(`${global.config.root}/login?status=6`);
+        res.redirect(`${global.config.root}/login?status=5`);
       })
     }, (err) => {
       res.render('error', {
@@ -23,13 +23,15 @@ module.exports = {
   // 手机号认证页面
   getAuthPhone: (req, res) => {
     let url = requestTool.setAuthUrl('/authphone', '');
+    let tel = req.signedCookies.phone || '';// 从cookie中找手机号
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) =>{
         res.render('healthRecords/authphone',{
-
+          url: global.config.userServer,
+          tel: tel
         })
       },() =>{
-        res.redirect(`${global.config.root}/login?status=6`);
+        res.redirect(`${global.config.root}/login?status=5`);
       })
     }, (err) => {
       res.render('error', {
@@ -48,7 +50,7 @@ module.exports = {
           url: global.config.userServer
         })
       },() =>{
-        res.redirect(`${global.config.root}/login?status=6`);
+        res.redirect(`${global.config.root}/login?status=5`);
       })
     }, (err) => {
       res.render('error', {

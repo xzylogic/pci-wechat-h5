@@ -4,58 +4,8 @@
   <title>实名认证</title>
   <% include ../layout/layout %>
   <script type="text/javascript">
-    var pathName = "<%=_src('')%>" //获取当前域名
-    wxconfig();
-    //ajax请求config配置参数
-    function wxconfig() {
-      $.ajax({
-       type: "get",
-       url: pathName+"/signature",
-       data: {url:location.href},
-       success: function(msg){
-          //配置微信JS-SDK
-        wx.config({
-            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: msg.appId, // 必填，公众号的唯一标识
-            timestamp:msg.timestamp , // 必填，生成签名的时间戳
-            nonceStr: msg.nonceStr, // 必填，生成签名的随机串
-            signature: msg.signature,// 必填，签名，见附录1
-            jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'],// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-        });
-       },
-       error:function(err){
-          console.log(err);
-       }
-      });
-    };
-    wx.ready(function () {
-    // 在这里调用 API
-    // 分享给朋友
-      wx.onMenuShareAppMessage({
-          title: '全程心管家', // 分享标题
-          desc: `全程心管家，健康你我他`, // 分享描述
-          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图标
-          success: function () { 
-              // 用户确认分享后执行的回调函数
-          },
-          cancel: function () { 
-              // 用户取消分享后执行的回调函数
-          },
-      });
-      // 分享到朋友圈
-      wx.onMenuShareTimeline({
-          title: '全程心管家', // 分享标题
-          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图
-          success: function () { 
-              // 用户确认分享后执行的回调函数
-          },
-          cancel: function () { 
-              // 用户取消分享后执行的回调函数
-          }
-      });  
-    });
+    var url = "<%=url%>"
+    var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
   <style>
     body{
@@ -94,8 +44,16 @@
     .weui-btn:after{
       border: 0;
     }
-    .weui-toast{
-      min-height: 0;
+    .toast{
+        min-height: 0;
+        top: 50%;
+        width: 80%;
+        margin-left: -40%;
+    }
+    .toast p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
     }
     .weui-toast__content{
       margin-top: 10px;
@@ -109,7 +67,7 @@
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" id="phone" type="number" maxlength="11" placeholder="请输入手机号"/>
+            <input class="weui-input" id="phone" type="number" maxlength="11" placeholder="请输入手机号" value="<%=tel%>"/>
         </div>
       </div>
       <div class="weui-cell">
@@ -127,7 +85,7 @@
     </div>
     <p class="authphone_prompting">全程心管家将对您的个人信息严格保密，请放心填写。</p>
     <div class="authphone_footer">
-      <div class="authphone_footer_error">
+      <div class="authphone_footer_error" style="display: none;">
         *请重新填写您的个人信息并认真核对，以免再次认证失败。
       </div>
       <div class="page__bd page__bd_spacing authphone_btn">
@@ -156,7 +114,12 @@
         <p class="weui-toast__content">认证失败</p>
     </div>
   </div>
-
+  <div id="toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast toast" >
+        <p class="weui-toast__content"></p>
+    </div>
+</div>
 </body>
 <script>
 $(document).ready(function(){
@@ -169,7 +132,7 @@ $(document).ready(function(){
       $(".authphone_footer_error").css({
         'display': 'none'
       })
-      authphone();
+      authphone(phone, name, card);
     }   
   });
 
@@ -178,15 +141,16 @@ $(document).ready(function(){
   if (phone){
     if ((/^1[3|5|7|8][0-9]{9}$/).test(phone)) {
       if (phone.substr(0,3) === '170' || phone.substr(0,3) === '171') {
-        $(".authphone_footer_error").html('*此手机号码暂不支持实名认证');
+        toast('此手机号码暂不支持实名认证')
       } else {
         return true;
       }
     } else {
       $(".authphone_footer_error").html('*请填写正确的手机号码');
+      toast('请填写正确的手机号码')
     }
   } else {
-    $(".authphone_footer_error").html('*请输入手机号');
+    toast('请输入手机号')
   }
  };
 
@@ -196,34 +160,67 @@ $(document).ready(function(){
     if ((/^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/).test(name)) {
       return true;
     } else {
-      $(".authphone_footer_error").html('*请填写正确的姓名');
+      toast('请填写正确的姓名')
     }
   } else {
-    $(".authphone_footer_error").html('*请输入姓名');
+    toast('请输入姓名')
   }
  };
 
  //验证身份证
  function testCard(card) {
   if (card) {
-    if ((/(^\d{15}$)|(^\d{17}([0-9]|X)$)/).test(card)) {
+    if ((/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/).test(card)) {
       return true;
     } else {
-      $(".authphone_footer_error").html('*请输入正确的身份证号码');
+      toast('请输入正确的身份证号码')
     }
   } else {
-    $(".authphone_footer_error").html('*请输入身份证号码');
+    toast('请输入身份证号码')
   }
  };
 
  //提交请求
- function authphone() {
-  alert('成功')
+ function authphone(phone, name, card) {
+    auditToast()
+    $.ajax({
+      type: 'POST',
+      url: `${url}api/ipd/validateCardNum`,
+      data:JSON.stringify({mobileNum: phone, name:name, idCard:card}),
+      processData: false,
+      contentType: 'application/json',
+      success: function (data) {
+        $('#audit_toast').fadeOut(100);
+        if (data && data.code === 0) {
+          certificationByToast()
+        } else if ( data && data.code === 1000) {
+          authenticationFailedToast()
+          $(".authphone_footer_error").css({
+            'display': 'block'
+          })
+          $(".authphone_footer_error").html(data.msg);
+        } else {
+          authenticationFailedToast()
+          $(".authphone_footer_error").css({
+            'display': 'block'
+          })
+          $(".authphone_footer_error").html(data.msg || '未知错误')
+        }
+      },
+      error: function (err) {
+        $('#audit_toast').fadeOut(100);
+        authenticationFailedToast()
+        $(".authphone_footer_error").css({
+            'display': 'block'
+        })
+        $(".authphone_footer_error").html('啊~接口请求出错了，请稍后再试');
+      }
+    })
  };
 
  // 审核中
  function auditToast() {
-    var $toast = $('#toast');
+    var $toast = $('#audit_toast');
     if ($toast.css('display') != 'none') return;
     $toast.fadeIn(100);
  }
@@ -240,7 +237,7 @@ $(document).ready(function(){
 
   // 认证失败
  function authenticationFailedToast() {
-    var $toast = $('#certification_by');
+    var $toast = $('#authentication_failed');
     if ($toast.css('display') != 'none') return;
     $toast.fadeIn(100);
     setTimeout(function () {
@@ -248,22 +245,14 @@ $(document).ready(function(){
     }, 2000);
  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ function toast(msg) {
+        var $toast = $('#toast');
+        $('#toast p').html(msg)
+        $toast.fadeIn(100);
+        setTimeout(function () {
+            $toast.fadeOut(100);
+        }, 1500);
+    }
 }) 
 </script>
 </html>
