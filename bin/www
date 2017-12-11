@@ -5,11 +5,11 @@ global.config = {
   healthServer: 'http://10.2.10.10/pro-health/',
   server: 'http://10.2.10.10/pci-micro/',
   fatherServer: 'http://172.18.27.62:8080/pci-operation/',
-  domain: 'http://10.2.101.53:3000',
+  domain: 'http://10.2.101.106:3000',
   root: '/pci-wechat',
-  filedir: '/Users/wangbing/project/pci-wechat-h5',
-  appId: 'wxee8d9fc7f496d8b1',
-  secret:'4ee061a42331ea76af1430e02e4f6fbe'
+  filedir: '/Users/zhanglin/pci-wechat-h5',
+  appId: 'wx40d951d18dd984ae',
+  secret:'01f26df7fa63f162e445aaf0fca998cd'
 }
 
 var app = require('../app');

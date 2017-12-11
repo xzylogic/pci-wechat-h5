@@ -260,7 +260,7 @@
         overflow: inherit;
     }
     .navigation{
-        padding: 15px 0 0;
+        padding: 10px 0;
         overflow: hidden;
       }
      .navigation ul{
@@ -282,6 +282,17 @@
         border: 1px solid #35b2f2;
         border-radius: 12px;
       }
+
+    @media screen and (max-width: 320px) {
+        .navigation span {
+            width: 18px;
+            border-radius: 18px;
+            font-size: 12px;
+        }
+        .navigation li{
+            font-size: 12px;
+        }
+    }
       .navigation li:nth-child(3) span{
         background-color: #35b2f2;
         color: #fff;
