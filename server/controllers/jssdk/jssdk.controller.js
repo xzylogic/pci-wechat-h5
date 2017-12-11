@@ -1,6 +1,7 @@
 'use strict';
 var sign = require('./sign.js');
 var qiniu = require('qiniu');
+var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
 
@@ -59,6 +60,55 @@ module.exports = {
       code: 0
     })
   },
+
+  getImg: (req, res) => {
+    res.render('assessment/img')
+  },
+
+   // 上传图片
+  uploadImg: (req, res) => {
+    let token = req.signedCookies.token || ''; // 从cookie中找access_token;
+
+    let postData = '';
+
+    req.addListener('data', (data) => {
+      postData += data;
+    });
+
+    req.addListener('end', () => {
+      let data = JSON.parse(postData);
+      var url;
+      console.log(postData)
+      var imgUrl = [];
+      var randomName;
+      for (let i = 0; i < data.length; i++) {
+        randomName = 'image'+Date.now()+ String(Math.random()).substring(3)+'.jpg';
+        if (token) {
+          url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${token}&media_id=${data[i]}`
+          bucketManager.fetch(url, 'baoxiu', randomName, function(err, respBody, respInfo) {
+            if (err) {
+              console.log(err);
+              //throw err;
+            } else {
+              if (respInfo.statusCode == 200) {
+                imgUrl.push('http://oyf5a8fu2.bkt.clouddn.com/' + respBody.key); //生成图片的可访问url
+                if (imgUrl.length === data.length){
+                  console.log(imgUrl)
+                  res.send({
+                    imgurl: imgUrl
+                  })
+                }
+              } else {
+                console.log(respInfo.statusCode);
+                console.log(respBody);
+              }
+            }
+          });
+        }
+      }
+    })
+  },
+
 
   // 分享网页
   getShare: (req, res) => {

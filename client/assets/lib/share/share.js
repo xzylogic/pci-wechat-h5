@@ -11,12 +11,12 @@ function share(pathName){
               timestamp:msg.timestamp , // 必填，生成签名的时间戳
               nonceStr: msg.nonceStr, // 必填，生成签名的随机串
               signature: msg.signature,// 必填，签名，见附录1
-              jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'],// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+              jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline','chooseImage', 'uploadImage', 'downloadImage', 'getLocalImgData', 'previewImage', 'getNetworkType'],// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
           });
       },
-          error:function(err){
-            console.log(err);
-          }
+      error:function(err){
+        console.log(err);
+      }
   });
   wx.ready(function () {
     // 在这里调用 API

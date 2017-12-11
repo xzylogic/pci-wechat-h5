@@ -2,10 +2,12 @@
 <html lang="en">
 
 <head>
-  <title>注册</title>
-  <% include ../layout/layout %>
+  <% if (doctor === 'doctor') { %>
+    <title>向医生报到</title>
+  <% } else {%>
+    <title>注册</title>
+  <% } %>  <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
-    <script src="<%=_src('/lib/base64/base64.min.js')%>"></script>
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
     <style>
       .navigation{
@@ -20,7 +22,7 @@
       }
       .navigation li{
         float: left;
-        padding:0 10px;
+        padding-right: 10px;
         color: #35b2f2;
         font-size: 14px;
       }
@@ -35,10 +37,21 @@
         background-color: #35b2f2;
         color: #fff;
       }
+      .weui-toast{
+        min-height: 0;
+        top: 50%;
+        width: 80%;
+        margin-left: -40%;
+    }
+    .weui-toast p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
+    }
     </style>
 </head>
 
-<body>
+<body ontouchstart>
   <div class="container">
     <% if (doctor === 'doctor') { %>
     <div class="navigation">
@@ -49,12 +62,12 @@
       </ul>
     </div>
     <% } %>
-    <form class="form-container" action="<%=_src(postUrl)%>" method="post">
+    <div class="form-container">
       <div class="input-field" style="padding-bottom: 0">
         <div class="weui-cell input-code">
           <div class="weui-cell__bd">
             <span class="Validform_label" style="display: none">验证码</span>
-            <input type="tel" name="code" placeholder="请输入短信验证码" datatype="number" errormsg="请输入正确的验证码！">
+            <input type="tel" id="code" name="code" placeholder="请输入短信验证码">
           </div>
           <div class="weui-cell__hd">
             <button id="getcode" type="button" class="weui-vcode-btn" onclick="getCode('<%=tel%>')">获取验证码</button>
@@ -66,19 +79,19 @@
           <!--密码-->
           <div style="height: 82px; overflow: hidden;">
             <span class="Validform_label" style="display: none">密码</span>
-            <input type="password" name="password" placeholder="设置密码" datatype="*6-15" errormsg="密码范围在6~15位之间！" />
+            <input type="password" id="password" name="password" placeholder="设置密码" />
           </div>
           <!--确认密码-->
           <div style="height: 97px; overflow: hidden;">
             <span class="Validform_label" style="display: none">再次输入密码</span>
-            <input type="password" placeholder="再次输入密码" datatype="*6-15" recheck="password" errormsg="您两次输入的账号密码不一致！" />
+            <input type="password" id="again_password" placeholder="再次输入密码"  />
           </div>
         </div>
       </div>
       <div>
-        <button type="submit" class="weui-btn weui-btn_primary">注册</button>
+        <button class="weui-btn weui-btn_primary" disabled>注册</button>
       </div>
-    </form>
+    </div>
     <div class="hint-info">
       <span class="hint-title">友情提示</span>
       <span>您可以通过该账号和密码登录全程心管家app</span>
@@ -97,6 +110,12 @@
       <div class="weui-dialog__ft">
         <a id="close" href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
       </div>
+    </div>
+  </div>
+  <div id="toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <p class="weui-toast__content"></p>
     </div>
   </div>
   <% if (errorMessage) {%>
@@ -129,5 +148,144 @@
       </script>
       <script src="<%=_src('/js/basic/register.min.js')%>"></script>
 </body>
-
 </html>
+<script>
+  var status = "<%=status%>";
+  var doctor = "<%=doctor%>";
+  var tel = "<%=tel%>";
+  $(".weui-btn").on('click', function() {
+    let code = $("#code").val(),
+        password = $("#password").val(),
+        again_password = $("#again_password").val();
+    if (testCode(code) === true && testPassword(password) === true) {
+      if (password === again_password) {
+        register(code, password)
+      } else {
+        toast('两次输入密码不一致，请重新输入')
+      }
+    }
+
+  })
+
+  $("#code").on('input', function() {
+    let code = $("#code").val().length
+    let password = $("#password").val().length
+    let again_password = $("#again_password").val().length
+    if (code === 6 && password >= 6 && again_password >= 6) {
+      $(".weui-btn").attr('disabled',false)
+      $(".weui-btn").css({
+        'background-color': '#35B2F2'
+      })
+    } else {
+      $(".weui-btn").attr('disabled',true)
+      $(".weui-btn").css({
+        'background-color': '#ccc'
+      })
+    }
+  })
+
+  $("#password").on('input', function() {
+    let code = $("#code").val().length
+    let password = $("#password").val().length
+    let again_password = $("#again_password").val().length
+    if (code === 6 && password >= 6 && again_password >= 6) {
+      $(".weui-btn").attr('disabled',false)
+      $(".weui-btn").css({
+        'background-color': '#35B2F2'
+      })
+    } else {
+      $(".weui-btn").attr('disabled',true)
+      $(".weui-btn").css({
+        'background-color': '#ccc'
+      })
+    }
+  })
+
+  $("#again_password").on('input', function() {
+    let code = $("#code").val().length
+    let password = $("#password").val().length
+    let again_password = $("#again_password").val().length
+    if (code === 6 && password >= 6 && again_password >= 6) {
+      $(".weui-btn").attr('disabled',false)
+      $(".weui-btn").css({
+        'background-color': '#35B2F2'
+      })
+    } else {
+      $(".weui-btn").attr('disabled',true)
+      $(".weui-btn").css({
+        'background-color': '#ccc'
+      })
+    }
+  })
+
+  // 验证验证码
+  function testCode(code) {
+    if (code) {
+      if ((/^\d{6}$/).test(code)) {
+        return true;
+      } else {
+        toast('请输入正确的6位短信验证码')
+      }
+    } else {
+      toast('请输入验证码！')
+    }
+  };
+
+  // 验证密码
+  function testPassword(password) {
+    if (password) {
+      if ((/^[A-Za-z0-9]{6,15}$/).test(password)) {
+        return true;
+      } else {
+        toast('密码范围在6~15位之间！')
+      }
+    } else {
+      toast('请输入密码！')
+    }
+  };
+
+  function register(code,password) {
+    $.ajax({
+      type: 'post',
+      url: `<%=_src('/register')%>?tel=${tel}&status=${status}&doctor=${doctor}`,
+      data: {code:code,password:password},
+      success: function(res) {
+        if (res.data && res.data.code === 0) {
+          if (status == 0) {
+            window.location = `<%=_src('/login/success?name=${res.data.name}')%>`
+          } else if (status == 1) {
+            window.location = `<%=_src('/uploadCaseHistory')%>`
+          } else if (status == 2) {
+            window.location = `<%=_src('/EMR')%>`
+          } else if (status == 3) {
+            window.location = `<%=_src('/followUp')%>`
+          } else if (status == 4) {
+            window.location = `<%=_src('/find-doctor')%>?doctor=${doctor}`
+          } else if (status == 5) {
+            window.location = `<%=_src('/authlist')%>`
+          } else if (status == 6) {
+            window.location = `<%=_src('/followfeedback')%>`
+          } else if (status == 7) {
+            window.location = `<%=_src('/family')%>`
+          }
+        } else {
+          toast(res.err)
+        } 
+      },
+      error:function (err) {
+        console.log(err)
+        toast("服务器请求出错")
+      }
+    })
+  }
+
+
+  function toast(msg) {
+    var $toast = $('#toast');
+    $('#toast p').html(msg)
+    $toast.fadeIn(100);
+    setTimeout(function () {
+        $toast.fadeOut(100);
+    }, 1500);
+  }
+</script>

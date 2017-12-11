@@ -2,7 +2,11 @@
 <html lang="en">
 
 <head>
-  <title>登录</title>
+  <% if (doctor === 'doctor') { %>
+    <title>向医生报到</title>
+  <% } else {%>
+    <title>登录</title>
+  <% } %>
   <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
@@ -19,7 +23,7 @@
       }
       .navigation li{
         float: left;
-        padding:0 10px;
+        padding-right: 10px;
         color: #35b2f2;
         font-size: 14px;
       }
@@ -34,10 +38,21 @@
         background-color: #35b2f2;
         color: #fff;
       }
+      .weui-toast{
+        min-height: 0;
+        top: 50%;
+        width: 80%;
+        margin-left: -40%;
+    }
+    .weui-toast p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
+    }
     </style>
 </head>
 
-<body>
+<body ontouchstart>
   <div class="container">
     <% if (doctor === 'doctor') { %>
     <div class="navigation">
@@ -48,23 +63,23 @@
       </ul>
     </div>
     <% } %>
-    <form class="form-container" action="<%=_src(postUrl)%>" method="post">
+    <div class="form-container">
       <div class="input-field">
         <div class="weui-cell input-code">
           <div class="weui-cell__bd">
             <span class="Validform_label" style="display: none">验证码</span>
-            <input type="tel" name="code" placeholder="请输入短信验证码" datatype="number" errormsg="请输入正确的验证码！">
+            <input type="tel" name="code" id="code" maxlength="6" placeholder="请输入短信验证码">
           </div>
           <div class="weui-cell__hd">
-            <button id="getcode" type="button" class="weui-vcode-btn" onclick="getCode('<%=tel%>')">获取验证码</button>
+            <button type="button" class="weui-vcode-btn" onclick="getCode('<%=tel%>')">获取验证码</button>
           </div>
         </div>
         <div class="space">该手机已经注册, 请直接登录</div>
       </div>
       <div>
-        <button type="submit" class="weui-btn weui-btn_primary">登录</button>
+        <button class="weui-btn weui-btn_primary" disabled>登录</button>
       </div>
-    </form>
+    </div>
   </div>
   <div id="modal" style="display: none">
     <div class="weui-mask"></div>
@@ -91,7 +106,89 @@
       </div>
     </div>
     <%}%>
+  <div id="toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <p class="weui-toast__content"></p>
+    </div>
+  </div>
       <script src="<%=_src('/js/basic/enter.min.js')%>"></script>
 </body>
 
 </html>
+<script>
+  var status = "<%=status%>";
+  var doctor = "<%=doctor%>";
+  var tel = "<%=tel%>";
+  $(".weui-btn").on('click',function() {
+    let code = $(".input-field input").val()
+    if (code) {
+      if ((/^\d{6}$/).test(code)) {
+        validation(code)
+      } else {
+        toast('请输入正确的6位验证码')
+      }
+    } else {
+      toast('请填写验证码')
+    }
+  })
+
+  $("#code").on('input', function() {
+    let count = $(this).val().length
+    if (count === 6) {
+      $(".weui-btn").attr('disabled',false)
+      $(".weui-btn").css({
+        'background-color': '#35B2F2'
+      })
+    } else {
+      $(".weui-btn").attr('disabled',true)
+      $(".weui-btn").css({
+        'background-color': '#ccc'
+      })
+    }
+  })
+
+  function validation(code){
+    $.ajax({
+      type: 'post',
+      url: `<%=_src('/login/verify')%>?tel=${tel}&status=${status}&doctor=${doctor}`,
+      data: {code:code},
+      success: function(res) {
+        if (res.data && res.data.code === 0) {
+          if (status == 0) {
+            window.location = `<%=_src('/login/success?name=${res.data.name}')%>`
+          } else if (status == 1) {
+            window.location = `<%=_src('/uploadCaseHistory')%>`
+          } else if (status == 2) {
+            window.location = `<%=_src('/EMR')%>`
+          } else if (status == 3) {
+            window.location = `<%=_src('/followUp')%>`
+          } else if (status == 4) {
+            window.location = `<%=_src('/find-doctor')%>?doctor=${doctor}`
+          } else if (status == 5) {
+            window.location = `<%=_src('/authlist')%>`
+          } else if (status == 6) {
+            window.location = `<%=_src('/followfeedback')%>`
+          } else if (status == 7) {
+            window.location = `<%=_src('/family')%>`
+          }
+        } else {
+          toast(res.err)
+        } 
+      },
+      error:function (err) {
+        console.log(err)
+        toast("服务器请求出错")
+      }
+    })
+  }
+
+  function toast(msg) {
+    var $toast = $('#toast');
+    $('#toast p').html(msg)
+    $toast.fadeIn(100);
+    setTimeout(function () {
+        $toast.fadeOut(100);
+    }, 1500);
+  }
+</script>

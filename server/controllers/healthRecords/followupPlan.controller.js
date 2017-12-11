@@ -12,6 +12,8 @@ module.exports = {
         requestTool.getHeader('flupList', data.access_token, `userId=${data.userId}`, (_data) =>{
           if (_data && _data.code === 0 && _data.data.myFlupList.length === 0) {
             res.render('healthRecords/followupPlan',{
+              myFlupList: [],
+              "json": [],
               status: false
             })
           } else if (_data && _data.code === 0 && _data.data.myFlupList.length !== 0 && _data.data.myFlupList.length !== 1) {

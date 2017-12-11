@@ -11,15 +11,15 @@
     </script>
 </head>
 
-<body>
+<body ontouchstart>
 <div class="dc-check-in">
-    <!-- <div class="dc-top">
-        <div class="dc-middle">
-            <span class="dc-num1">1</span><span class="dc-top-title">向医生报到</span>
-            <img class="dc-top-img" src="<%= _src('/image/arrows.png') %>">
-            <span class="dc-num2">2</span><span class="dc-top-title">注册登录</span>
-        </div>
-    </div> -->
+    <div class="navigation">
+      <ul>
+        <li><span>1</span> 注册登录</li>
+        <li>—------></li>
+        <li><span>2</span> 向医生报到</li>
+      </ul>
+    </div>
     <div class="doc-intro">
         <div class="doc-into">
             <div class="doc-img">
@@ -93,7 +93,7 @@
 </div>
 <div id="toast" style="display: none;">
     <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
+    <div class="weui-toast message">
         <p class="weui-toast__content"></p>
     </div>
 </div>
@@ -108,19 +108,26 @@
       </div>
   </div>
 </div>
+<div id="loadingToast" style="display:none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">请求加载中</p>
+    </div>
+</div>
 </body>
 </html>
 <style>
     .weui-cell:before {
         border-top: none;
     }
-    .weui-toast{
+    .message{
         min-height: 0;
         top: 50%;
         width: 80%;
         margin-left: -40%;
     }
-    .weui-toast p{
+    .message p{
         margin:0;
         font-size: 14px;
         padding: 3px 0;
@@ -135,7 +142,7 @@
     }
 
     .dc-middle {
-        width: 70%;
+        width: 90%;
         height: 100%;
         margin: 0 auto;
     }
@@ -252,9 +259,37 @@
     .weui-uploader__bd {
         overflow: inherit;
     }
+    .navigation{
+        padding: 15px 0 0;
+        overflow: hidden;
+      }
+     .navigation ul{
+        list-style: none;
+        overflow: hidden;
+        width: 90%;
+        margin: 0 auto;
+      }
+      .navigation li{
+        float: left;
+        padding:0 10px;
+        color: #35b2f2;
+        font-size: 14px;
+      }
+      .navigation span{
+        text-align: center;
+        width: 24px;
+        display: inline-block;
+        border: 1px solid #35b2f2;
+        border-radius: 12px;
+      }
+      .navigation li:nth-child(3) span{
+        background-color: #35b2f2;
+        color: #fff;
+      }
 </style>
 <script type="text/javascript">
     var url = "<%= url %>"
+    var doctor = "<%=doctor%>"
     var admissionTime = ""
     var doctorId = '<%= doctorId %>'
     var imgUrlList = []
@@ -265,10 +300,10 @@
     var userId = '<%= userId %>'
     var accessToken = '<%= accessToken %>'
 
-    if (userId && accessToken) {
-        $('.dc-top').hide();
-    } else {
+    if (doctor) {
         $('.dc-top').show();
+    } else {
+        $('.dc-top').hide();
     }
 
     ifValidate()
@@ -286,6 +321,10 @@
                     realName = data.data.name
                     $('#userName').val(realName);
                     $('#userName').attr('disabled',true);
+                    $('#userName').css({
+                        'color':'#333',
+                        'opacity': '1'
+                    })
                 } else if (data.code === 403) {
                     weui.alert('请重新登录', reset())
                 } else {
@@ -469,6 +508,7 @@
             toast('请选择就诊日期')
         }
         if (realName !== "" && admissionTime !== ""){
+            $('#loadingToast').fadeIn(100)
             ajax()
         }
     });
@@ -489,7 +529,7 @@
             "userId": userId
         };
         $.ajax({
-            url: `${url}/api/doctorPatient/apply`,
+            url: `${url}api/doctorPatient/apply`,
             type: "POST",
             headers: {
                 'access-token': accessToken,
@@ -499,6 +539,7 @@
             contentType: 'application/json',
             dataType: 'json',
             success: function (data) {
+                $('#loadingToast').fadeOut(100)
                 if (data.code === 0) {
                     $('#iosDialog2').fadeIn(200);
                 } else if (data.code === 403) {
@@ -506,10 +547,11 @@
                         reset()
                     })
                 } else {
-                   toast(data.msg) 
+                   toast(data.msg)
                 }
             },
             error: function () {
+                $('#loadingToast').fadeOut(100)
                 toast('接口请求出错了')
             }
         });

@@ -6,7 +6,6 @@
   <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/assessment/assessment.min.css')%>">
     <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-    <script src="<%=_src('/lib/picker/picker.min.js')%>"></script>
     <script>
     var url = '<%-url%>';
     var pathName = "<%=_src('')%>"//获取当前Url
@@ -64,7 +63,7 @@
     </script>
 </head>
 
-<body>
+<body ontouchstart>
   <p class="risk-top">弗明汉心脏病研究（Framingham Heart Study）名十年心脏病风险评估，是根据胆固醇水平和非胆固醇因素计算个体未来十年冠心病发作几率的方法。</p>
   <div class="showPicker">1 您的性别
     <span id="showSex"></span>
@@ -87,7 +86,7 @@
   <div class="showPicker" style="border-bottom: 1px solid #dcdcdc;">7 您是否服用过降压药
     <span id="showHypotensor"></span>
   </div>
-  <input id="title" type="text" name="title" class="display">
+  <input id="title" type="label" name="title" class="display">
   <div class="account-btn" style="margin-bottom: 20px;">
     <button type="button" onclick="submit()" id="riskbtn" class="weui-btn" disabled style="background:#ccc;">提交</button>
   </div>
@@ -103,285 +102,269 @@
     </div>
   </div>
   <script type="text/javascript">
-  var HDL; //高密度脂蛋白
-  var TC; //总胆固醇
-  var age; //年龄
-  var cure; //是否治疗 0否 1是 
-  var sex; //性别
-  var smoke; //是否吸烟 0否 1是 
-  var systolic; //血压
+    var HDL; //高密度脂蛋白
+    var TC; //总胆固醇
+    var age; //年龄
+    var cure; //是否治疗 0否 1是 
+    var sex; //性别
+    var smoke; //是否吸烟 0否 1是 
+    var systolic; //血压
+    $("#showSex").on('click', function() {
+      weui.picker([
+        {
+          label: '男',
+          value: 0,
+        },{
+          label: '女',
+          value: 1
+        }], {
+          defaultValue: [0],
+         onChange: function (result) {
+             // console.log(result)
+         },
+         onConfirm: function (result) {
+           if (result[0]) {
+            sex = result[0].value
+            $("#showSex").html(result[0].label)
+            ifFull()
+           } 
+         },
+      });
+      
+     })
 
-  var showSex = document.getElementById('showSex');
-  var showAge = document.getElementById('showAge');
-  var showSmoke = document.getElementById('showSmoke');
-  var showCholesterol = document.getElementById('showCholesterol');
-  var showGoodCholesterol = document.getElementById('showGoodCholesterol');
-  var showPressure = document.getElementById('showPressure');
-  var showHypotensor = document.getElementById('showHypotensor');
- 
-
-  var dataSex = [{
-    text: '男',
-    value: 0
-  }, {
-    text: '女',
-    value: 1
-  }];
-
-  var dataAge = [{
-    text: '20-34',
-    value: 0
-  }, {
-    text: '35-39',
-    value: 1
-  }, {
-    text: '40-44',
-    value: 2
-  }, {
-    text: '45-49',
-    value: 3
-  }, {
-    text: '50-54',
-    value: 4
-  }, {
-    text: '55-59',
-    value: 5
-  }, {
-    text: '60-64',
-    value: 6
-  }, {
-    text: '65-69',
-    value: 7
-  }, {
-    text: '70-74',
-    value: 8
-  }, {
-    text: '75-79',
-    value: 9
-  }];
-
-  var dataIsSmoke = [{
-    text: '否',
-    value: 0
-  }, {
-    text: '是',
-    value: 1
-  }];
-
-  var dataCholesterol = [{
-    text: '<4',
-    value: 0
-  }, {
-    text: '4-4.9',
-    value: 1
-  }, {
-    text: '5-5.9',
-    value: 2
-  }, {
-    text: '6-6.9',
-    value: 3
-  }, {
-    text: '≧7',
-    value: 4
-  }];
-
-  var dataTreatment = [{
-    text: '<1',
-    value: 0
-  }, {
-    text: '1-1.29',
-    value: 1
-  }, {
-    text: '1.3-1.59',
-    value: 1
-  }, {
-    text: '≧1.6',
-    value: 1
-  }];
-
-  var dataPressure = [{
-    text: '<120',
-    value: 0
-  }, {
-    text: '120-129',
-    value: 1
-  }, {
-    text: '130-139',
-    value: 2
-  }, {
-    text: '140-159',
-    value: 3
-  }, {
-    text: '160+',
-    value: 4
-  }];
-
-  var dataHypotensor = [{
-    text: '否',
-    value: 0
-  }, {
-    text: '是',
-    value: 1
-  }];
-
-  var pickerSex = new Picker({
-    data: [dataSex],
-    selectedIndex: [-1],
-    title: '您的选择'
-  });
-
-  var pickerAge = new Picker({
-    data: [dataAge],
-    selectedIndex: [-1],
-    title: '您的选择'
-  });
-
-  var pickerIsSmoke = new Picker({
-    data: [dataIsSmoke],
-    selectedIndex: [-1],
-    title: '您的选择'
-  });
-
-  var pickerCholesterol = new Picker({
-    data: [dataCholesterol],
-    selectedIndex: [-1],
-    title: '您的选择'
-  });
-
-  var pickerGoodCholesterol = new Picker({
-    data: [dataTreatment],
-    selectedIndex: [-1],
-    title: '您的选择'
-  });
-
-  var pickerPressure = new Picker({
-    data: [dataPressure],
-    selectedIndex: [-1],
-    title: '您的选择'
-  });
-
-  var pickerHypotensor = new Picker({
-    data: [dataHypotensor],
-    selectedIndex: [-1],
-    title: '您的选择'
-  });
-
-
-  function ifFull() {
-    if (HDL != undefined && TC != undefined && age != undefined && cure != undefined && sex != undefined && smoke != undefined && systolic != undefined) {
-      $('#riskbtn').removeAttr('disabled');
-      $('#riskbtn').css('background', '#35B2F2');
-    }
-  }
-
-  pickerSex.on('picker.select', function(selectedVal, selectedIndex) {
-    showSex.innerText = dataSex[selectedIndex[0]].text;
-    sex = dataSex[selectedIndex].value;
-    ifFull();
-  });
-
-  pickerAge.on('picker.select', function(selectedVal, selectedIndex) {
-    showAge.innerText = dataAge[selectedIndex[0]].text;
-    age = dataAge[selectedIndex].value;
-    ifFull();
-  });
-
-  pickerIsSmoke.on('picker.select', function(selectedVal, selectedIndex) {
-    showSmoke.innerText = dataIsSmoke[selectedIndex[0]].text;
-    smoke = dataIsSmoke[selectedIndex].value;
-    ifFull();
-  });
-
-  pickerCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
-    showCholesterol.innerText = dataCholesterol[selectedIndex[0]].text;
-    TC = dataCholesterol[selectedIndex].value;
-    ifFull();
-  });
-
-  pickerGoodCholesterol.on('picker.select', function(selectedVal, selectedIndex) {
-    showGoodCholesterol.innerText = dataTreatment[selectedIndex[0]].text;
-    HDL = dataTreatment[selectedIndex].value;
-    ifFull();
-  });
-
-  pickerPressure.on('picker.select', function(selectedVal, selectedIndex) {
-    showPressure.innerText = dataPressure[selectedIndex[0]].text;
-    systolic = dataPressure[selectedIndex].value;
-    ifFull();
-  });
-
-  pickerHypotensor.on('picker.select', function(selectedVal, selectedIndex) {
-    showHypotensor.innerText = dataHypotensor[selectedIndex[0]].text;
-    cure = dataHypotensor[selectedIndex].value;
-    ifFull();
-  });
-
-  showSex.addEventListener('click', function() {
-    pickerSex.show();
-  });
-
-  showAge.addEventListener('click', function() {
-    pickerAge.show();
-  });
-
-  showSmoke.addEventListener('click', function() {
-    pickerIsSmoke.show();
-  });
-
-  showCholesterol.addEventListener('click', function() {
-    pickerCholesterol.show();
-  });
-
-  showGoodCholesterol.addEventListener('click', function() {
-    pickerGoodCholesterol.show();
-  });
-
-  showPressure.addEventListener('click', function() {
-    pickerPressure.show();
-  });
-
-  showHypotensor.addEventListener('click', function() {
-    pickerHypotensor.show();
-  });
-  function submit() {
-    var list = {
-      "HDL": HDL,
-      "TC": TC,
-      "age": age,
-      "cure": cure,
-      "sex": sex,
-      "smoke": smoke,
-      "systolic": systolic
-    };
-    $.ajax({
-      url: url,
-      type: "POST",
-      data: JSON.stringify(list),
-      contentType: 'application/json',
-      dataType: 'json',
-      success: function(data) {
-        if (data.code === 0) {
-          window.open(window.location.pathname + "/risk?v=" + (new Date().getTime()), '_self');
-        } else {
-          var msg;
-          if (data.msg) {
-            msg = data.msg;
-          } else {
-            msg = '提交失败！';
+    $("#showAge").on('click', function() {
+      weui.picker([
+        {
+          label: '20-34',
+          value: 0
+        }, {
+          label: '35-39',
+          value: 1
+        }, {
+          label: '40-44',
+          value: 2
+        }, {
+          label: '45-49',
+          value: 3
+        }, {
+          label: '50-54',
+          value: 4
+        }, {
+          label: '55-59',
+          value: 5
+        }, {
+          label: '60-64',
+          value: 6
+        }, {
+          label: '65-69',
+          value: 7
+        }, {
+          label: '70-74',
+          value: 8
+        }, {
+          label: '75-79',
+          value: 9
+        }], {
+         defaultValue: [0],
+         onChange: function (result) {
+             // console.log(result)
+         },
+         onConfirm: function (result) {
+          if (result[0]) {
+            age = result[0].value
+            $("#showAge").html(result[0].label)
+            ifFull()
           }
-          $('#message').text(msg);
+         },
+      });
+     })
+
+    $("#showSmoke").on('click', function() {
+      weui.picker([
+        {
+          label: '否',
+          value: 0
+        }, {
+          label: '是',
+          value: 1
+        }], {
+         defaultValue: [0],
+         onChange: function (result) {
+             // console.log(result)
+         },
+         onConfirm: function (result) {
+          if (result[0]) {
+            smoke = result[0].value
+            $("#showSmoke").html(result[0].label)
+            ifFull()
+          }
+         },
+      });
+     })
+
+    $("#showCholesterol").on('click', function() {
+      weui.picker([
+        {
+          label: '<4',
+          value: 0
+        }, {
+          label: '4-4.9',
+          value: 1
+        }, {
+          label: '5-5.9',
+          value: 2
+        }, {
+          label: '6-6.9',
+          value: 3
+        }, {
+          label: '≧7',
+          value: 4
+        }], {
+         defaultValue: [0],
+         onChange: function (result) {
+             // console.log(result)
+         },
+         onConfirm: function (result) {
+          if (result[0]) {
+            TC = result[0].value
+            $("#showCholesterol").html(result[0].label)
+            ifFull()
+          }
+         },
+      });
+    })
+
+    $("#showGoodCholesterol").on('click', function() {
+      weui.picker([
+        {
+          label: '<1',
+          value: 0
+        }, {
+          label: '1-1.29',
+          value: 1
+        }, {
+          label: '1.3-1.59',
+          value: 1
+        }, {
+          label: '≧1.6',
+          value: 1
+        }], {
+         defaultValue: [0],
+         onChange: function (result) {
+             // console.log(result)
+         },
+         onConfirm: function (result) {
+          if (result[0]) {
+            HDL = result[0].value
+            $("#showGoodCholesterol").html(result[0].label)
+            ifFull()
+          }
+         },
+      });
+    })
+
+    $("#showPressure").on('click', function() {
+      weui.picker([
+        {
+          label: '<120',
+          value: 0
+        }, {
+          label: '120-129',
+          value: 1
+        }, {
+          label: '130-139',
+          value: 2
+        }, {
+          label: '140-159',
+          value: 3
+        }, {
+          label: '160+',
+          value: 4
+        }], {
+         defaultValue: [0],
+         onChange: function (result) {
+             // console.log(result)
+         },
+         onConfirm: function (result) {
+          if (result[0]) {
+            cure = result[0].value
+            $("#showPressure").html(result[0].label)
+            ifFull()
+          }
+         },
+      });
+    })
+
+    $("#showHypotensor").on('click', function() {
+      weui.picker([
+        {
+          label: '否',
+          value: 0
+        }, {
+          label: '是',
+          value: 1
+        }], {
+         defaultValue: [0],
+         onChange: function (result) {
+             // console.log(result)
+         },
+         onConfirm: function (result) {
+          if (result[0]) {
+            systolic = result[0].value
+            $("#showHypotensor").html(result[0].label)
+            ifFull()
+          }
+         },
+      });
+    })
+
+    function ifFull() {
+      if (HDL != undefined && TC != undefined && age != undefined && cure != undefined && sex != undefined && smoke != undefined && systolic != undefined) {
+        $('#riskbtn').removeAttr('disabled');
+        $('#riskbtn').css('background', '#35B2F2');
+      }
+    }
+
+    function submit() {
+      var list = {
+        "HDL": HDL,
+        "TC": TC,
+        "age": age,
+        "cure": cure,
+        "sex": sex,
+        "smoke": smoke,
+        "systolic": systolic
+      };
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: JSON.stringify(list),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(data) {
+          if (data.code === 0) {
+            window.open(window.location.pathname + "/risk?v=" + (new Date().getTime()), '_self');
+          } else {
+            var msg;
+            if (data.msg) {
+              msg = data.msg;
+            } else {
+              msg = '提交失败！';
+            }
+            $('#message').text(msg);
+            $('#modal').css('display', 'block');
+          }
+        },
+        error: function() {
+          $('#message').text('请求失败！');
           $('#modal').css('display', 'block');
         }
-      },
-      error: function() {
-        $('#message').text('请求失败！');
-        $('#modal').css('display', 'block');
-      }
+      });
+    }
+    $('#close').on('click', function() {
+      $('#modal').css('display', 'none');
     });
-  }
-  $('#close').on('click', function() {
-    $('#modal').css('display', 'none');
-  });
   </script>
 </body>
 

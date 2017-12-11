@@ -1,20 +1,3 @@
-$(document).ready(function() {
-  $(".form-container").Validform({
-    tiptype: 3,
-    postonce: true,
-    datatype: {
-      "number": /^\d{6}$/
-    }
-  });
-
-  $('#close').on('click', function() {
-    $('#modal').css('display', 'none');
-  });
-
-  $('#closeerr').on('click', function() {
-    $('#modalerr').css('display', 'none');
-  });
-});
 
 var count = 60;
 var t;

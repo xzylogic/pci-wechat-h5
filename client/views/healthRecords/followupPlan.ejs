@@ -20,13 +20,17 @@
       color: #666;
       text-align: center;
     }
+    .no_follow_up_plan{
+      padding-top:10px;
+      text-align: center;
+    }
   </style>
 </head>
 
-<body>
+<body ontouchstart>
   <div class="follow_up_plan">
     <% if (status === false) { %>
-      <p>暂无医生为您制定随访计划</p>
+      <p class="no_follow_up_plan">暂无医生为您制定随访计划</p>
     <% } else {%>
       <div class="weui-cells" id="follow_up_list">
         <% if (myFlupList.length > 10) { %>

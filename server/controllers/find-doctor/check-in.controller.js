@@ -6,6 +6,7 @@ module.exports = {
 
     checkIn: (req, res) => {
     let doctorId = req.query.doctorId || '';
+    let doctor = req.query.doctor || '';
     let doctorPic = req.query.doctorPic || '';
     let doctorName = req.query.doctorName || '';
     let department = req.query.department || '';
@@ -17,6 +18,7 @@ module.exports = {
       auth.isLogin(req, (data) =>{
         res.render('doctor/check-in',{
             doctorId: doctorId,
+            doctor: doctor,
             doctorPic: doctorPic,
             doctorName: doctorName,
             department: department,

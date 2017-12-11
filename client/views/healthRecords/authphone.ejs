@@ -6,6 +6,7 @@
   <script type="text/javascript">
     var url = "<%=url%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
+    var auth = "<%=auth%>"
   </script>
   <style>
     body{
@@ -58,10 +59,13 @@
     .weui-toast__content{
       margin-top: 10px;
     }
+    .card_number{
+      text-transform: uppercase;
+    }
   </style>
 </head>
 
-<body>
+<body ontouchstart>
   <div class="authphone">
     <div class="authphone_form">
       <div class="weui-cell">
@@ -79,7 +83,7 @@
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">身份证号</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" id="card" type="text" maxlength="18" placeholder="请输入身份证号"/>
+            <input class="weui-input card_number" id="card" type="text" maxlength="18" placeholder="请输入身份证号"/>
         </div>
       </div>
     </div>
@@ -232,6 +236,9 @@ $(document).ready(function(){
     $toast.fadeIn(100);
     setTimeout(function () {
       $toast.fadeOut(100);
+      if (auth === 'false') {
+        window.location.href = "<%=_src('/EMR')%>"
+      }
     }, 2000);
  }
 
@@ -252,7 +259,22 @@ $(document).ready(function(){
         setTimeout(function () {
             $toast.fadeOut(100);
         }, 1500);
+  }
+
+  //底部提交按钮顶上去
+  var oHeight = $(document).height(); //浏览器当前的高度
+
+   $(window).resize(function(){
+ 
+        if($(document).height() < oHeight){
+         
+        $(".authphone_btn").css("display","none");
+    }else{
+         
+        $(".authphone_btn").css("display","block");
     }
+        
+   });
 }) 
 </script>
 </html>

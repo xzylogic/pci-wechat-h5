@@ -11,7 +11,7 @@
     </script>
 </head>
 
-<body>
+<body ontouchstart>
 <div class="page">
     <div class="page__bd">
         <div class="weui-search-bar" id="searchBar">
@@ -35,6 +35,13 @@
             </button>
         </div>
         <div class="weui-cells searchbar-result" style="margin-top: 0" id="searchResult">
+        </div>
+    </div>
+    <div id="loadingToast" style="display:none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-loading weui-icon_toast"></i>
+            <p class="weui-toast__content">数据加载中</p>
         </div>
     </div>
 </div>
@@ -130,6 +137,7 @@
 <script type="text/javascript">
     var url = "<%= url %>"
     var url2 = "<%= url2 %>"
+    var doctor = "<%=doctor%>"
     var userId = '<%= userId %>'
     var keywords = ''
     var hospitalId = 0
@@ -140,11 +148,13 @@
     showHospital();
 
     function showDoctor(keywords, hospitalId) {
+        $('#loadingToast').fadeIn(100)
         $.ajax({
             type: "get",
             url: `${url}api/relation/findDoctor/${userId}`,
             data: {hospitalId: hospitalId, keywords:keywords},
             success: function (data) {
+                $('#loadingToast').fadeOut(100)
                 if (data.code === 0 && data.data && data.data.content.length !== 0) {
                   doctorList = data.data.content;
                   var $searchResult = $('#searchResult')
@@ -179,11 +189,13 @@
               </div>`)
                   }
                 } else {
-                  $('#searchResult').html('<p style="text-align:center; margin-top:20px;">啊，您要找的数据为空哦~</p>')
+                  $('#searchResult').html('<p style="text-align:center; margin-top:50px;">啊，您要找的数据为空哦~</p>')
                 } 
             },
             error: function (err) {
+                $('#loadingToast').fadeOut(100)
                 console.log(err);
+                $('#searchResult').html('<p style="text-align:center; margin-top:50px;">啊，服务器请求出错了，请稍后再试~</p>')
             }
         });
     };
@@ -240,10 +252,10 @@
             $searchClear = $('#searchClear'),
             $searchCancel = $('#searchCancel');
 
-
         function cancelSearch() {
             $searchBar.removeClass('weui-search-bar_focusing');
             $searchText.show();
+            $searchResult.show();
             $('#searchResult').html('');
             showDoctor('', hospitalId);
         }
@@ -254,7 +266,7 @@
         });
         $searchInput
             .on('blur', function () {
-                if (!this.value.length) cancelSearch();
+                if(!this.value.length) cancelSearch();
             })
             .on('input', function () {
                 if (this.value.length) {
@@ -295,7 +307,7 @@
         let id  = $(this).attr('id')
         let data = doctorList[id]
         if ($(this).html() === '报到') {
-            window.location.href = `<%=_src('/find-doctor/check-in')%>?doctorId=${data.doctorId}&&doctorPic=${data.doctorPic}&&doctorName=${data.doctorName}&&department=${data.department}&&hospitalName=${data.hospitalName}&&doctorTitle=${data.doctorTitle}`
+            window.location.href = `<%=_src('/find-doctor/check-in')%>?doctor=${doctor}&doctorId=${data.doctorId}&doctorPic=${data.doctorPic}&doctorName=${data.doctorName}&department=${data.department}&hospitalName=${data.hospitalName}&doctorTitle=${data.doctorTitle}`
         }
     });
 

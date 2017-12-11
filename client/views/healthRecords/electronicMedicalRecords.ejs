@@ -11,6 +11,12 @@
       background: #ebebeb;
       color: #666;
     }
+    .weui-cells:after, .weui-cells:before{
+      z-index: 0;
+    }
+    .weui-cell:before{
+      z-index: 0;
+    }
     .binding_security{
       font-size: 12px;
       text-align: center;
@@ -131,7 +137,7 @@
   </style>
 </head>
 
-<body>
+<body ontouchstart>
   <div class="EMR">
     <% if (status === false) { %>
       <p>您的电子病历尚未生成，系统将尽快处理，请耐心等待(若您未在任何医院就诊，则此处无病历生成） 

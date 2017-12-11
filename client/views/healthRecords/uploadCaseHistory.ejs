@@ -44,6 +44,24 @@
     .weui-btn_primary:not(.weui-btn_disabled):active{
       background-color: #6fc8f6;
     }
+    .weui-uploader__file{
+      position: relative;
+      float: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      width: 79px;
+      height: 79px;
+      background: no-repeat 50%;
+      background-size: cover;
+    }
+    .weui-uploader__file i{
+      position: absolute;
+      right: -12px;
+      top: -10px;
+      z-index: 10;
+      width: 30px;
+      height: 30px;
+    }
     .error{
       color: #da322e;
       font-size: 14px;
@@ -55,7 +73,7 @@
   </style>
 </head>
 
-<body>
+<body ontouchstart>
   <div class="uploadCaseHistory">
     <div class="weui-cell weui-cell_access checkDate">
       <div class="weui-cell__bd">
@@ -69,13 +87,11 @@
                <div class="weui-uploader">
                    <div class="weui-uploader__hd">
                        <p class="weui-uploader__title">上传图片</p>
-                       <div class="weui-uploader__info"><span id="uploadCount">0</span>/9</div>
+                       <div class="weui-uploader__info"><span id="number">0</span>/9</div>
                    </div>
                    <div class="weui-uploader__bd">
                        <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                       <div class="weui-uploader__input-box">
-                         <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>
-                      </div>                   
+                       <div class="weui-uploader__input-box add"></div>                   
                    </div>
                </div>
            </div>
@@ -104,31 +120,24 @@
 </body>
 <script>
 $(document).ready(function(){
-  // 判断手机类型
-  var u = navigator.userAgent;
-  if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-    $("#uploaderInput").attr("capture","camera");
-  } else if (u.indexOf('iPhone') > -1) {
-    //苹果手机
-  } else if (u.indexOf('Windows Phone') > -1) {
-    //winphone手机
-  }
-  // 获取七牛token和domain
-  var domain;
-  var token;
-  $.ajax({
-    type: 'get',
-    url: `${qiniuUrl}api/qiniu/auth`,
-    success: function (res) {
-      if (res && res.code === 0) {
-        domain = res.data.domain
-        token = res.data.token
-      }
-    },
-    error: function (error) {
-      console.log(error)
-    }
-  })
+
+  $('.confirmDate').html(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+  // // 获取七牛token和domain
+  // var domain;
+  // var token;
+  // $.ajax({
+  //   type: 'get',
+  //   url: `${qiniuUrl}api/qiniu/auth`,
+  //   success: function (res) {
+  //     if (res && res.code === 0) {
+  //       domain = res.data.domain
+  //       token = res.data.token
+  //     }
+  //   },
+  //   error: function (error) {
+  //     console.log(error)
+  //   }
+  // })
 
   $(".checkDate").on('click',function () {
     let Y = new Date().getFullYear();
@@ -147,159 +156,116 @@ $(document).ready(function(){
     });
   })
 
-  /* 图片手动上传 */
+  var count = 0;
+  var number = 0;
+  var imglist = [];
   var uploadCustomFileList = [];
-  var picUrlList = [];
 
-  // 这里是简单的调用，其余api请参考文档
-  var uploadCount = 0;
-  weui.uploader('#uploader', {
-     url: 'http://upload.qiniup.com/',
-     auto: false,
-     type: 'file',
-     fileVal: 'file',
-     compress: {
-         width: 1600,
-         height: 1600,
-         quality: .8
-     },
-     onBeforeQueued: function(files) {
-         // `this` 是轮询到的文件, `files` 是所有文件
-
-         if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
-             weui.alert('请上传图片');
-             return false; // 阻止文件添加
-         }
-         if(this.size > 10 * 1024 * 1024){
-             weui.alert('请上传不超过10M的图片');
-             return false;
-         }
-         if (files.length > 9) { // 防止一下子选择过多文件
-             weui.alert('最多只能上传9张图片，请重新选择');
-             return false;
-         }
-         if (uploadCount + 1 > 9) {
-             weui.alert('最多只能上传9张图片');
-             return false;
-         }
-
-         ++uploadCount;
-         $('#uploadCount').text(uploadCount);
-
-         // return true; // 阻止默认行为，不插入预览图的框架
-     },
-     onQueued: function(){
-         uploadCustomFileList.push(this);
-         // console.log(this.status); // 文件的状态：'ready', 'progress', 'success', 'fail'
-         // console.log(this.base64); // 如果是base64上传，file.base64可以获得文件的base64
-
-         // this.upload(); // 如果是手动上传，这里可以通过调用upload来实现；也可以用它来实现重传。
-         // this.stop(); // 中断上传
-
-         // return true; // 阻止默认行为，不显示预览图的图像
-     },
-     onBeforeSend: function(data, headers){
-         $.extend(data, { token: token }); // 可以扩展此对象来控制上传参数
-         // $.extend(headers, { Origin: 'http://127.0.0.1' }); // 可以扩展此对象来控制上传头部
-
-         // return false; // 阻止文件上传
-     },
-     onProgress: function(procent){
-         // return true; // 阻止默认行为，不使用默认的进度显示
-     },
-     onSuccess: function (ret) {
-          picUrlList.push(`${domain}${ret.key}`)
-          if (picUrlList.length === uploadCount) {
-            ajax(picUrlList)
-           }
-         // return true; // 阻止默认行为，不使用默认的成功态
-     },
-     onError: function(err){
-      console.log(err)
-         // return true; // 阻止默认行为，不使用默认的失败态
-     }
-  });
-
-  // 手动上传按钮
-  document.getElementById("uploaderCustomBtn").addEventListener('click', function(){
-    if ($('.confirmDate').text() !== ''){
-      $(".error").css({'display': 'none'})
-      uploadCustomFileList.forEach(function(file){
-          file.upload();
-      });
-    } else {
-      $(".error").css({'display': 'block'})
-      $(".error").html('请选择检查时间')
-    }
-  });
-
-  // 缩略图预览
-  $('#uploaderFiles').on('click', '.weui-uploader__file', function(e){
-      var target = e.target;
-      
-      while(!target.classList.contains('weui-uploader__file') && target){
-          target = target.parentNode;
+  function ajax(imglist) {
+    $.ajax({
+      url: pathName +'/uploadimg',
+      type: 'post',
+      data: JSON.stringify(imglist),
+      success: function (msg) {
+        console.log(msg);
+      },
+      error: function (err) {
+        alert(err)
+        console.log(err)
       }
-      if(!target) return;
+    })
+  }
 
-      var url = target.getAttribute('style') || '';
-
-      var id = target.getAttribute('data-id');
-
-      if(url){
-          url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '');
-      }
-      console.log(url)
-      var gallery = weui.gallery(url, {
-          onDelete: function(){
-              weui.confirm('确定删除该图片？', function(){
-                --uploadCount;
-                $('#uploadCount').text(uploadCount);
-                  var index;
-                  for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
-                      var file = uploadCustomFileList[i];
-                      if(file.id == id){
-                          index = i;
-                          break;
-                      }
-                  }
-                  if(index !== undefined) uploadCustomFileList.splice(index, 1);
-
-                  target.parentNode.remove();
-                  gallery.hide();
-              });
-          }
-      });
-  });
-  $("#uploaderFiles").on('click', '.delete', function(e){
-    var id = e.target.getAttribute('delete-id');
-    weui.confirm('确定删除该图片？', function(){
-      --uploadCount;
-      $('#uploadCount').text(uploadCount);
-        var index;
-        for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
-            var file = uploadCustomFileList[i];
-            if(file.id == id){
-                index = i;
-                break;
+  $('.weui-uploader__input-box').on('click', function () {
+    wx.chooseImage({
+        count: 9, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+          var localIds = res.localIds;
+          for (let i = 0; i < localIds.length; i++) {
+            uploadCustomFileList.push({id: count + i, url: localIds[i]});
+            $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><i class="weui-icon-cancel delete"></i><img class="img-responsive" style="width:79px;height:79px;" src="${localIds[i]}"></li>`)
+            number++;
+            if (number >= 9) {
+              $(".add").fadeOut(100)
+              break;
             }
+          }
+          count = count + localIds.length;
+          
+          $("#number").text(number)
         }
-        if(index !== undefined) uploadCustomFileList.splice(index, 1);
-
-        e.target.parentNode.remove();
     });
   });
 
-  $("body").on('click', '.click_img', function() {
-    $(".image_close").slideDown(300).delay(3000).slideUp(300)
-    $(".weui-gallery__opr").slideDown(300).delay(3000).slideUp(300)
+
+  $("#uploaderCustomBtn").on('click', function(){
+    let urlList = [];
+    uploadCustomFileList.forEach(function(file){
+      urlList.push(file.url)
+      if (urlList.length === number) {
+        syncUpload(urlList);
+      }
+    });
+  })
+
+  $("#uploaderFiles").on('click', '.delete', function(e){
+    var id = $(this).parent().attr('id')
+    weui.confirm('确定删除该图片？', function(){
+      --number;
+      $('#number').text(number);
+      if (number < 9) {
+        $(".add").fadeIn(100)
+      }
+      var index;
+      for (let i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+        var file = uploadCustomFileList[i];
+        if(file.id == id){
+          index = i;
+          break;
+        }
+      }
+      if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+      e.target.parentNode.remove();
+    });
   });
+
+var syncUpload = function(localIds){
+    var localId = localIds.pop();
+    wx.uploadImage({
+
+        localId: localId,
+
+        isShowProgressTips: 1,
+
+        success: function (res) {
+
+            var serverId = res.serverId; // 返回图片的服务器端ID
+            imglist.push(serverId)
+            if (imglist.length === number) {
+              ajax(imglist)
+            }
+            //其他对serverId做处理的代码
+
+            if(localIds.length > 0){
+                syncUpload(localIds);
+            }
+        }
+    });
+};
+
+
 
   $('#dialogs').on('click', '.weui-dialog__btn', function(){
     $(this).parents('.js_dialog').fadeOut(200);
     wx.closeWindow();
   });
 })
+
+
+
 // 提交数据
 function ajax(picUrlList) {
   let data = {

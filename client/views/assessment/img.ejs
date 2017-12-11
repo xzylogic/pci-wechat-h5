@@ -7,13 +7,25 @@
   <% include ../layout/layout %>
   <style>
     .weui-uploader__file{
+      position: relative;
       float: left;
-      margin-right: 9px;
-      margin-bottom: 9px;
+      margin-right: 10px;
+      margin-bottom: 10px;
       width: 79px;
       height: 79px;
       background: no-repeat 50%;
       background-size: cover;
+    }
+    .weui-uploader__file i{
+      position: absolute;
+      right: -12px;
+      top: -10px;
+      z-index: 10;
+      width: 30px;
+      height: 30px;
+    }
+    .weui-uploader__bd{
+      overflow: inherit;
     }
   </style>
   <script type="text/javascript">
@@ -44,109 +56,128 @@
   </script>
 </head>
 
-<body style="background-color:#f6f6f6">
+<body style="background-color:#f6f6f6" ontouchstart>
   <div class="weui-cells weui-cells_form">
       <div class="weui-cell">
           <div class="weui-cell__bd">
               <div class="weui-uploader">
                   <div class="weui-uploader__hd">
                       <p class="weui-uploader__title">图片上传</p>
-                      <div class="weui-uploader__info">0/2</div>
+                      <div class="weui-uploader__info"><span id="number">0</span>/9</div>
                   </div>
                   <div class="weui-uploader__bd">
                       <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                      <div class="weui-uploader__input-box" onclick="uploadImg()"></div>
+                      <div class="weui-uploader__input-box add"></div>
                   </div>
               </div>
           </div>
+      </div>
+      <div class="page__bd page__bd_spacing upload_img">
+        <a href="javascript:;" class="weui-btn weui-btn_primary" id="uploaderCustomBtn">确定上传</a>
       </div>
   </div>
 </body>
 <script>
   var count = 0;
-  function uploadImg() {
-    wx.ready(function(){
-      wx.chooseImage({
-          count: 9, // 默认9
-          sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-          sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-          success: function (res) {
-           var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-           for (let i = 0; i < localIds.length; i++) {
-              $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><img class="img-responsive" width="100%" src="${localIds[i]}"></li>`) 
-              window.setTimeout(serverImg(localIds[i]), 100)
-           }
-           count = count + localIds.length;
-          }
-      });
-    });
-  }
-  function serverImg(data) {
-    wx.uploadImage({
-        localId: data.toString(), // 需要上传的图片的本地ID，由chooseImage接口获得
-        isShowProgressTips: 1, // 默认为1，显示进度提示
-        success: function (res) {
-            var serverId = res.serverId; // 返回图片的服务器端ID
-            ajax(serverId)
-        }
-    });
-  }
-  // 预览图片
-   $('#uploaderFiles').on("click", "li", function(event) {//绑定图片点击事件
-            var thisimg = $(this).children().attr('src');
-            var imglist = $('#uploaderFiles');
-            var srcs = new Array();
-            for (let i =0; i < imglist.length; i++) {
-            
-                srcs.push(imglist.eq(i).attr('src'));
-            
-            }
-            
-      
-            wx.ready(function(){
-                wx.previewImage({
-                  current: 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=Sb3Y66lyJYWUvBDjhzq15VkxclhReXQ1RkeJp0v8ZqJoZ6CRHlfoFs3B1ejJiHEfEqvjKgAf5P_kbiFXsUxbUwRb52NZytZfe9rcxgazLpCeWPnYnOyQ5EK9KAlKOQqdSWJgADAIMZ&media_id=iaXXlJ2r9adMON-8tMP4sOjhYyfe6s9xdcU3kl86Z5aAS7xGrCMkVkAoleLw0eHg', // 当前显示图片的http链接
-                  urls: ['https://api.weixin.qq.com/cgi-bin/media/get?access_token=Sb3Y66lyJYWUvBDjhzq15VkxclhReXQ1RkeJp0v8ZqJoZ6CRHlfoFs3B1ejJiHEfEqvjKgAf5P_kbiFXsUxbUwRb52NZytZfe9rcxgazLpCeWPnYnOyQ5EK9KAlKOQqdSWJgADAIMZ&media_id=iaXXlJ2r9adMON-8tMP4sOjhYyfe6s9xdcU3kl86Z5aAS7xGrCMkVkAoleLw0eHg'] // 需要预览的图片http链接列表
-                });
-            });   
-    }); 
-  // function downloadImage(serverId) {
-  //   wx.downloadImage({
-  //       serverId: serverId, // 需要下载的图片的服务器端ID，由uploadImage接口获得
-  //       isShowProgressTips: 1, // 默认为1，显示进度提示
-  //       success: function (res) {
-  //           var localId = res.localId; // 返回图片下载后的本地ID
-  //           getLocalImgData(localId)
-  //       }
-  //   });
-  // }
-  // function getLocalImgData(localId) {
-  //   wx.getLocalImgData({
-  //       localId: '' + localId, // 图片的localID
-  //       success: function (res) {
-  //         var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-  //          // for (let i = 0; i < localData.length; i++) {
-  //          //  $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><img class="img-responsive" width="100%" src="${localData[i]}"></li>`)
-  //          // }
-  //          console.log(localData)
-  //          count = count + localId.length; 
-  //       }
-  //   });
-  // }
+  var number = 0;
+  var imglist = [];
+  var uploadCustomFileList = [];
 
-  function ajax(serverId) {
+  function ajax(imglist) {
     $.ajax({
       url: pathName +'/uploadimg',
-      type: 'get',
-      data: {media_id: serverId},
+      type: 'post',
+      data: JSON.stringify(imglist),
       success: function (msg) {
-        console.log(msg.url);
+        console.log(msg);
       },
       error: function (err) {
+        alert(err)
         console.log(err)
       }
     })
   }
+
+  $('.weui-uploader__input-box').on('click', function () {
+    wx.chooseImage({
+        count: 9, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+          var localIds = res.localIds;
+          for (let i = 0; i < localIds.length; i++) {
+            uploadCustomFileList.push({id: count + i, url: localIds[i]});
+            $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><i class="weui-icon-cancel delete"></i><img class="img-responsive" style="width:79px;height:79px;" src="${localIds[i]}"></li>`)
+            number++;
+            if (number >= 9) {
+              $(".add").fadeOut(100)
+              break;
+            }
+          }
+          count = count + localIds.length;
+          
+          $("#number").text(number)
+        }
+    });
+  });
+
+
+  $("#uploaderCustomBtn").on('click', function(){
+    let urlList = [];
+    uploadCustomFileList.forEach(function(file){
+      urlList.push(file.url)
+      if (urlList.length === number) {
+        syncUpload(urlList);
+      }
+    });
+  })
+
+  $("#uploaderFiles").on('click', '.delete', function(e){
+    var id = $(this).parent().attr('id')
+    weui.confirm('确定删除该图片？', function(){
+      --number;
+      $('#number').text(number);
+      if (number < 9) {
+        $(".add").fadeIn(100)
+      }
+      var index;
+      for (let i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+        var file = uploadCustomFileList[i];
+        if(file.id == id){
+          index = i;
+          break;
+        }
+      }
+      if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+      e.target.parentNode.remove();
+    });
+  });
+
+var syncUpload = function(localIds){
+    var localId = localIds.pop();
+    wx.uploadImage({
+
+        localId: localId,
+
+        isShowProgressTips: 1,
+
+        success: function (res) {
+
+            var serverId = res.serverId; // 返回图片的服务器端ID
+            imglist.push(serverId)
+            if (imglist.length === number) {
+              ajax(imglist)
+            }
+            //其他对serverId做处理的代码
+
+            if(localIds.length > 0){
+                syncUpload(localIds);
+            }
+        }
+    });
+};
+
   
 </script>
 </html>

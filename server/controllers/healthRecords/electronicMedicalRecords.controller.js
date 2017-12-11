@@ -13,7 +13,7 @@ module.exports = {
         // 已登录验证是否实名认证
         requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
           if (_data.code === 0 && _data.data && _data.data.status === 1) {
-            requestTool.getHealthClient(`${global.config.healthServer}record/history/list/${data.userId}?form=1`, '', (_res) => {
+            requestTool.getHealthClient(`${global.config.healthServer}record/history/list/${data.userId}?from=1`, '', (_res) => {
               // console.log(_res.data.content)
               if (_res.code === 0 && _res.data.content.length !== 0) {
                 // 已实名认证跳转到电子病历页面
@@ -42,7 +42,7 @@ module.exports = {
             res.redirect(`${global.config.root}/login?status=2`);
           } else {
             // 未认证跳转到实名认证页面
-            res.redirect(`${global.config.root}/authlist`);
+            res.redirect(`${global.config.root}/authlist?auth=false`);
           }
         }, (err) =>{
           res.render('error', {
@@ -69,7 +69,7 @@ module.exports = {
         requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
           if (_data.code === 0 && _data.data && _data.data.status === 1) {
             name = _data.data.name
-            card = _data.data.card
+            card = _data.data.idCard
             if (name && name.length === 2) {
               name = name.substring(0, 1) + "*"
             }

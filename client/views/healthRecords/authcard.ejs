@@ -7,6 +7,7 @@
   <script type="text/javascript">
     var url = "<%=url%>" //获取接口地址
     var access_token = "<%=access_token%>" //获取access_token
+    var userId = "<%=userId%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
   <style>
@@ -56,22 +57,25 @@
     .card_sample_img img{
       width: 200px;
     }
+    .card_number{
+      text-transform: uppercase;
+    }
   </style>
 </head>
 
-<body id="authcard">
+<body ontouchstart id="authcard">
   <div class="authcard">
     <div class="authphone_form">
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" id="name" type="text" placeholder="请输入姓名" />
+            <input class="weui-input" id="name" type="text" placeholder="请输入姓名"/>
         </div>
       </div>
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">身份证号</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" id="card" type="text" maxlength="18" placeholder="请输入身份证号"/>
+            <input class="weui-input card_number" id="card" type="text" maxlength="18" placeholder="请输入身份证号"/>
         </div>
       </div>
       <div class="weui-cells weui-cells_form" id="uploader">
@@ -170,7 +174,7 @@ $(document).ready(function(){
   //验证身份证
   function testCard(card) {
     if (card) {
-      if ((/(^\d{15}$)|(^\d{17}([0-9]|X)$)/).test(card)) {
+      if ((/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/).test(card)) {
         return true;
       } else {
         $(".authphone_footer_error").html('*请输入正确的身份证号码');
@@ -283,7 +287,7 @@ $(document).ready(function(){
                   }
                   if(index !== undefined) uploadCustomFileList.splice(index, 1);
 
-                  target.remove();
+                  target.parentNode.remove();
                   gallery.hide();
               });
           }
@@ -329,7 +333,7 @@ $(document).ready(function(){
     var formData = new FormData();
     formData.append('name', name);
     formData.append('card', card);
-    formData.append('userId', 68);
+    formData.append('userId', userId);
     formData.append('file', uploadCustomFileList[0])
     $.ajax({
       type: 'post',
@@ -367,6 +371,22 @@ $(document).ready(function(){
     $(".weui-gallery__opr").slideDown(600).delay(3000).slideUp(600)
   })
 
-  }) 
+  //底部提交按钮顶上去
+  var oHeight = $(document).height(); //浏览器当前的高度
+
+   $(window).resize(function(){
+ 
+        if($(document).height() < oHeight){
+         
+        $(".authphone_footer").css("display","none");
+    }else{
+         
+        $(".authphone_footer").css("display","block");
+    }
+        
+   });
+
+
+}) 
 </script>
 </html>
