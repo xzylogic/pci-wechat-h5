@@ -21,11 +21,12 @@
         width: 90%;
         margin: 0 auto;
       }
-      .navigation li{
-        float: left;
-        padding-right: 10px;
+      .navigation{
+        width: 100%;
+        margin: 0 auto 0;
         color: #35b2f2;
         font-size: 14px;
+        text-align: center;
       }
       .navigation span{
         text-align: center;
@@ -33,10 +34,6 @@
         display: inline-block;
         border: 1px solid #35b2f2;
         border-radius: 12px;
-      }
-      .navigation li:nth-child(1) span{
-        background-color: #35b2f2;
-        color: #fff;
       }
       .weui-toast{
         min-height: 0;
@@ -53,16 +50,14 @@
 </head>
 
 <body ontouchstart>
-  <div class="container">
-    <% if (doctor === 'doctor') { %>
-    <div class="navigation">
-      <ul>
-        <li><span>1</span> 注册登录</li>
-        <li>—------></li>
-        <li><span>2</span> 向医生报到</li>
-      </ul>
+  <% if (doctor === 'doctor') { %>
+    <div class="weui-flex navigation">
+        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span style="color: #fff;background: #35b2f2;">1</span> 注册登录</div></div>
+        <div  style="text-align: center;"><div class="placeholder">—------></div></div>
+        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span>2</span> 向医生报到</div></div>
     </div>
-    <% } %>
+  <% } %>
+  <div class="container">
     <div class="form-container">
       <div class="input-field">
         <div class="weui-cell input-code">
@@ -71,7 +66,7 @@
             <input type="tel" name="code" id="code" maxlength="6" placeholder="请输入短信验证码">
           </div>
           <div class="weui-cell__hd">
-            <button type="button" class="weui-vcode-btn" onclick="getCode('<%=tel%>')">获取验证码</button>
+            <button id="getcode" type="button" class="weui-vcode-btn" onclick="getCode('<%=tel%>')">获取验证码</button>
           </div>
         </div>
         <div class="space">该手机已经注册, 请直接登录</div>
@@ -92,34 +87,28 @@
       </div>
     </div>
   </div>
-  <% if (errorMessage) {%>
-    <div id="modalerr">
-      <div class="weui-mask"></div>
-      <div class="weui-dialog">
-        <div class="weui-dialog__hd"><strong class="weui-dialog__title">错误提示</strong></div>
-        <div class="weui-dialog__bd">
-          <%=errorMessage%>
-        </div>
-        <div class="weui-dialog__ft">
-          <a id="closeerr" href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
-        </div>
-      </div>
-    </div>
-    <%}%>
   <div id="toast" style="display: none;">
     <div class="weui-mask_transparent"></div>
     <div class="weui-toast">
         <p class="weui-toast__content"></p>
     </div>
   </div>
-      <script src="<%=_src('/js/basic/enter.min.js')%>"></script>
 </body>
 
 </html>
 <script>
-  var status = "<%=status%>";
-  var doctor = "<%=doctor%>";
-  var tel = "<%=tel%>";
+var status = "<%=status%>";
+var doctor = "<%=doctor%>";
+var tel = "<%=tel%>";
+$(document).ready(function() {
+  $(".form-container").Validform({
+    tiptype: 3,
+    postonce: true,
+    datatype: {
+      "phone": /^1[3|4|5|7|8][0-9]\d{8}$/
+    }
+  });
+
   $(".weui-btn").on('click',function() {
     let code = $(".input-field input").val()
     if (code) {
@@ -148,47 +137,82 @@
     }
   })
 
-  function validation(code){
-    $.ajax({
-      type: 'post',
-      url: `<%=_src('/login/verify')%>?tel=${tel}&status=${status}&doctor=${doctor}`,
-      data: {code:code},
-      success: function(res) {
-        if (res.data && res.data.code === 0) {
-          if (status == 0) {
-            window.location = `<%=_src('/login/success?name=${res.data.name}')%>`
-          } else if (status == 1) {
-            window.location = `<%=_src('/uploadCaseHistory')%>`
-          } else if (status == 2) {
-            window.location = `<%=_src('/EMR')%>`
-          } else if (status == 3) {
-            window.location = `<%=_src('/followUp')%>`
-          } else if (status == 4) {
-            window.location = `<%=_src('/find-doctor')%>?doctor=${doctor}`
-          } else if (status == 5) {
-            window.location = `<%=_src('/authlist')%>`
-          } else if (status == 6) {
-            window.location = `<%=_src('/followfeedback')%>`
-          } else if (status == 7) {
-            window.location = `<%=_src('/family')%>`
-          }
-        } else {
-          toast(res.err)
-        } 
-      },
-      error:function (err) {
-        console.log(err)
-        toast("服务器请求出错")
-      }
-    })
-  }
+  $('#close').on('click', function() {
+    $('#modal').css('display', 'none');
+  });
+});
 
-  function toast(msg) {
-    var $toast = $('#toast');
-    $('#toast p').html(msg)
-    $toast.fadeIn(100);
-    setTimeout(function () {
-        $toast.fadeOut(100);
-    }, 1500);
+var count = 60;
+var t;
+
+function getCode(tel) {
+  timedCount();
+  $.get(window.location.pathname + "/getVerifyCode?tel=" + tel, function(result) {
+    if (result.code === 0) {
+      $('#message').text(result.data);
+      $('#modal').css('display', 'block');
+    } else {
+      var errormsg = JSON.parse(result) && JSON.parse(result).msg || '获取验证码失败';
+      $('#message').text(errormsg);
+      $('#modal').css('display', 'block');
+    }
+  });
+}
+
+function timedCount() {
+  $('#getcode').attr('disabled', 'true');
+  $('#getcode').text(count + '秒后重新获取');
+  count--;
+  t = setTimeout("timedCount()", 1000);
+  if (count < 0) {
+    count = 60;
+    $('#getcode').text('获取验证码');
+    $('#getcode').removeAttr('disabled');
+    clearTimeout(t);
   }
+}
+
+function validation(code){
+  $.ajax({
+    type: 'post',
+    url: `<%=_src('/login/verify')%>?tel=${tel}&status=${status}&doctor=${doctor}`,
+    data: {code:code},
+    success: function(res) {
+      if (res.data && res.data.code === 0) {
+        if (status == 0) {
+          window.location = `<%=_src('/login/success?name=${res.data.name}')%>`
+        } else if (status == 1) {
+          window.location = `<%=_src('/uploadCaseHistory')%>`
+        } else if (status == 2) {
+          window.location = `<%=_src('/EMR')%>`
+        } else if (status == 3) {
+          window.location = `<%=_src('/followUp')%>`
+        } else if (status == 4) {
+          window.location = `<%=_src('/find-doctor')%>?doctor=${doctor}`
+        } else if (status == 5) {
+          window.location = `<%=_src('/authlist')%>`
+        } else if (status == 6) {
+          window.location = `<%=_src('/followfeedback')%>`
+        } else if (status == 7) {
+          window.location = `<%=_src('/family')%>`
+        }
+      } else {
+        toast(res.err)
+      } 
+    },
+    error:function (err) {
+      console.log(err)
+      toast("服务器请求出错")
+    }
+  })
+}
+
+function toast(msg) {
+  var $toast = $('#toast');
+  $('#toast p').html(msg)
+  $toast.fadeIn(100);
+  setTimeout(function () {
+      $toast.fadeOut(100);
+  }, 1500);
+}
 </script>

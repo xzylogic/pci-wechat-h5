@@ -14,6 +14,12 @@
       background: #ebebeb;
       color: #666;
     }
+    .weui-cells:after, .weui-cells:before{
+      z-index: 0;
+    }
+    .weui-cell:before{
+      z-index: 0;
+    }
     .accomplish{
       padding: 0 15px;
       margin: 15px 0;
@@ -169,24 +175,12 @@ $(document).ready(function(){
         $('#audit_toast').fadeOut(100);
         if (data && data.code === 0) {
           certificationByToast()
-        } else if ( data && data.code === 1000) {
-          authenticationFailedToast()
-          $(".error").css({
-            'display': 'block'
-          })
-          $(".error").html(data.msg || '医保卡格式错误，请重新输入')
-        } else if (data && data.code === -1) {
-          authenticationFailedToast()
-          $(".error").css({
-            'display': 'block'
-          })
-          $(".error").html(data.msg || '无效卡号')
         } else {
           authenticationFailedToast()
           $(".error").css({
             'display': 'block'
           })
-          $(".error").html('未知错误')
+          $(".error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败。')
         }
       },
       error: function (err) {

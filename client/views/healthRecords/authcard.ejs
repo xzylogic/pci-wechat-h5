@@ -4,6 +4,7 @@
   <title>实名认证</title>
   <% include ../layout/layout %>
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
+  <script src="<%=_src('/lib/flexible/rem.min.js')%>"></script>
   <script type="text/javascript">
     var url = "<%=url%>" //获取接口地址
     var access_token = "<%=access_token%>" //获取access_token
@@ -15,8 +16,21 @@
       background: #ebebeb;
       color: #666;
     }
+    .weui-cells:after, .weui-cells:before{
+      z-index: 0;
+    }
+    .weui-cell:before{
+      z-index: 0;
+    }
+    .weui-gallery{
+      font-size: 0.35rem;
+    }
     .weui-cells{
       margin-top: 0;
+      font-size: 0.35rem;
+    }
+    .weui-cell{
+      font-size: 0.35rem;
     }
     .weui-btn_primary:not(.weui-btn_disabled):active{
       background-color: #6fc8f6;
@@ -28,13 +42,14 @@
       width: 100%;
     }
     .authphone_footer_error{
-      padding:10px 15px;
+      padding:0 0.375rem;
       text-align: center;
-      font-size: 14px;
+      font-size: 0.3rem;
       color: #DA322E;
     }
     .authphone_btn a{
       background:#35B2F2;
+      font-size: 0.35rem;
     }
     .authphone_form{
       background:#fff;
@@ -46,7 +61,7 @@
       border: 0;
     }
     .card_sample{
-      margin-top: 10px;
+      margin-top: 0.25rem;
     }
     .weui-uploader__bd{
       overflow: initial;
@@ -55,10 +70,28 @@
       text-align: center;
     }
     .card_sample_img img{
-      width: 200px;
+      width: 5.0rem;
     }
     .card_number{
       text-transform: uppercase;
+    }
+    .weui-toast{
+        min-height: 0;
+        top: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-left: -1.25rem;
+        margin-top: -1.25rem;
+    }
+    .weui-toast p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
+    }
+    .weui-icon_toast.weui-loading{
+      margin: 0.2rem 0 0;
+      width: 0.8rem;
+      height: 0.8rem;
     }
   </style>
 </head>
@@ -87,7 +120,7 @@
                    </div>
                    <div class="weui-uploader__bd">
                        <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                       <div class="weui-uploader__input-box">
+                       <div class="weui-uploader__input-box add">
                          <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>
                       </div>                   
                    </div>
@@ -127,6 +160,13 @@
                   <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
               </div>
           </div>
+      </div>
+    </div>
+    <div id="audit_toast" style="display: none;">
+      <div class="weui-mask_transparent"></div>
+      <div class="weui-toast">
+          <i class="weui-loading weui-icon_toast"></i>
+          <p class="weui-toast__content">服务器请求中</p>
       </div>
     </div>
   </div>
@@ -228,6 +268,7 @@ $(document).ready(function(){
          // return true; // 阻止默认行为，不插入预览图的框架
      },
      onQueued: function(){
+        $(".add").fadeOut(0)
          uploadCustomFileList.push(this);
          // console.log(this.status); // 文件的状态：'ready', 'progress', 'success', 'fail'
          // console.log(this.base64); // 如果是base64上传，file.base64可以获得文件的base64
@@ -277,6 +318,7 @@ $(document).ready(function(){
           onDelete: function(){
               weui.confirm('确定删除该图片？', function(){
                   --uploadCount;
+                  $(".add").fadeIn(0)
                   var index;
                   for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
                       var file = uploadCustomFileList[i];
@@ -298,6 +340,7 @@ $(document).ready(function(){
     var id = e.target.getAttribute('delete-id');
     weui.confirm('确定删除该图片？', function(){
       --uploadCount;
+      $(".add").fadeIn(0)
         var index;
         for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
             var file = uploadCustomFileList[i];
@@ -330,6 +373,7 @@ $(document).ready(function(){
 
    //提交请求
  function authcard(name, card) {
+    auditToast()
     var formData = new FormData();
     formData.append('name', name);
     formData.append('card', card);
@@ -345,6 +389,7 @@ $(document).ready(function(){
       processData: false,
       contentType: false,
       success: function (res) {
+        $('#audit_toast').fadeOut(100);
         if (res && res.code === 0) {
           $('#iosDialog2').fadeIn(200);
         } else if (res && res.code === 403) {
@@ -352,14 +397,21 @@ $(document).ready(function(){
             reset();
           })
         } else {
-          $(".authphone_footer_error").html(res.msg);
+          $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
         }
       },
       error: function (error) {
+        $('#audit_toast').fadeOut(100);
         $(".authphone_footer_error").html('服务器请求出错~请稍后再试');
       }
     })
   };
+
+   function auditToast() {
+      var $toast = $('#audit_toast');
+      if ($toast.css('display') != 'none') return;
+      $toast.fadeIn(100);
+   }
 
   $('#dialogs').on('click', '.weui-dialog__btn', function(){
     $(this).parents('.js_dialog').fadeOut(200);

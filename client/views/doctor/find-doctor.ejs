@@ -301,6 +301,7 @@
 
     $("#showHospital").on('click', function() {
         weui.picker(hospitalList, {
+            defaultValue: [0],
             onConfirm: function (result) {
                 hospitalId = result[0].id
                 $("#showPicker span").html(result[0].name)

@@ -16,6 +16,12 @@
       background: #ebebeb;
       color: #666;
     }
+    .weui-cells:after, .weui-cells:before{
+      z-index: 0;
+    }
+    .weui-cell:before{
+      z-index: 0;
+    }
     .weui-cell{
       background: #fff;
       border-bottom: 1px solid #ccc;
@@ -43,6 +49,17 @@
     }
     .weui-btn_primary:not(.weui-btn_disabled):active{
       background-color: #6fc8f6;
+    }
+    .toast{
+        min-height: 0;
+        top: 80%;
+        width: 80%;
+        margin-left: -40%;
+    }
+    .toast p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
     }
     .weui-uploader__file{
       position: relative;
@@ -116,28 +133,27 @@
           </div>
       </div>
     </div>
+    <div id="toast" style="display: none;">
+      <div class="weui-mask_transparent"></div>
+      <div class="weui-toast toast" >
+          <p class="weui-toast__content"></p>
+      </div>
+    </div>
   </div>
 </body>
 <script>
 $(document).ready(function(){
 
   $('.confirmDate').html(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
-  // // 获取七牛token和domain
-  // var domain;
-  // var token;
-  // $.ajax({
-  //   type: 'get',
-  //   url: `${qiniuUrl}api/qiniu/auth`,
-  //   success: function (res) {
-  //     if (res && res.code === 0) {
-  //       domain = res.data.domain
-  //       token = res.data.token
-  //     }
-  //   },
-  //   error: function (error) {
-  //     console.log(error)
-  //   }
-  // })
+
+  function toast(msg) {
+    var $toast = $('#toast');
+    $('#toast p').html(msg)
+    $toast.fadeIn(100);
+    setTimeout(function () {
+        $toast.fadeOut(100);
+    }, 1500);
+  }
 
   $(".checkDate").on('click',function () {
     let Y = new Date().getFullYear();
@@ -161,16 +177,19 @@ $(document).ready(function(){
   var imglist = [];
   var uploadCustomFileList = [];
 
-  function ajax(imglist) {
+  function upload(imglist) {
     $.ajax({
-      url: pathName +'/uploadimg',
+      url: "<%=_src('/uploadimg')%>",
       type: 'post',
       data: JSON.stringify(imglist),
       success: function (msg) {
-        console.log(msg);
+        if (msg.code === 0) {
+          ajax(msg.imgurl)
+        } else {
+          toast('图片上传失败，请稍后重试~')
+        }
       },
       error: function (err) {
-        alert(err)
         console.log(err)
       }
     })
@@ -202,12 +221,16 @@ $(document).ready(function(){
 
   $("#uploaderCustomBtn").on('click', function(){
     let urlList = [];
-    uploadCustomFileList.forEach(function(file){
-      urlList.push(file.url)
-      if (urlList.length === number) {
-        syncUpload(urlList);
-      }
-    });
+    if (number === 0) {
+      toast('请选择图片')
+    } else {
+      uploadCustomFileList.forEach(function(file){
+        urlList.push(file.url)
+        if (urlList.length === number) {
+          syncUpload(urlList);
+        }
+      });
+    }
   })
 
   $("#uploaderFiles").on('click', '.delete', function(e){
@@ -245,7 +268,7 @@ var syncUpload = function(localIds){
             var serverId = res.serverId; // 返回图片的服务器端ID
             imglist.push(serverId)
             if (imglist.length === number) {
-              ajax(imglist)
+              upload(imglist)
             }
             //其他对serverId做处理的代码
 

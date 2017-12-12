@@ -5,7 +5,7 @@ var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
 
-const mac = new qiniu.auth.digest.Mac('-2XbyF-pdeF2-GzHjwFaH9NpS0hPdokr5u0b_jsB', '-Lo30ImxO3qNoEJrwjXJn0N_oSw4cusqNl1Cz1O6');
+const mac = new qiniu.auth.digest.Mac('0FXtIZmQY4LIOvxLEj3waLbNWhz9U66S-ahMnCfi', 'qPRpHcCr4MjykNJqXDo7cZXG_NGWCRkc00iifwRo');
 var config = new qiniu.conf.Config();
 var bucketManager = new qiniu.rs.BucketManager(mac, config);
 
@@ -78,23 +78,26 @@ module.exports = {
     req.addListener('end', () => {
       let data = JSON.parse(postData);
       var url;
-      console.log(postData)
       var imgUrl = [];
       var randomName;
+      console.log(postData)
       for (let i = 0; i < data.length; i++) {
         randomName = 'image'+Date.now()+ String(Math.random()).substring(3)+'.jpg';
         if (token) {
           url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${token}&media_id=${data[i]}`
-          bucketManager.fetch(url, 'baoxiu', randomName, function(err, respBody, respInfo) {
+          bucketManager.fetch(url, 'fw-pci', randomName, function(err, respBody, respInfo) {
             if (err) {
-              console.log(err);
+              res.send({
+                code: -1,
+                err: err
+              })
               //throw err;
             } else {
               if (respInfo.statusCode == 200) {
-                imgUrl.push('http://oyf5a8fu2.bkt.clouddn.com/' + respBody.key); //生成图片的可访问url
+                imgUrl.push('http://qn.qcxin.com/' + respBody.key); //生成图片的可访问url
                 if (imgUrl.length === data.length){
-                  console.log(imgUrl)
                   res.send({
+                    code: 0,
                     imgurl: imgUrl
                   })
                 }

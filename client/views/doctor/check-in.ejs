@@ -13,12 +13,10 @@
 
 <body ontouchstart>
 <div class="dc-check-in">
-    <div class="navigation">
-      <ul>
-        <li><span>1</span> 注册登录</li>
-        <li>—------></li>
-        <li><span>2</span> 向医生报到</li>
-      </ul>
+    <div class="weui-flex navigation">
+        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span>1</span> 注册登录</div></div>
+        <div style="text-align: center;"><div class="placeholder">—------></div></div>
+        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span style="color: #fff;background: #35b2f2;">2</span> 向医生报到</div></div>
     </div>
     <div class="doc-intro">
         <div class="doc-into">
@@ -67,13 +65,11 @@
                 <div class="weui-uploader">
                     <div class="weui-uploader__hd">
                         <p class="weui-uploader__title" style="font-size: 14px;color: #ccc;">添加病历出院小结等照片</p>
-                        <div class="weui-uploader__info"><span id="uploadCount">0</span>/9</div>
+                        <div class="weui-uploader__info"><span id="number">0</span>/9</div>
                     </div>
                     <div class="weui-uploader__bd">
                         <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                        <div class="weui-uploader__input-box">
-                            <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*"
-                                   multiple/>
+                        <div class="weui-uploader__input-box add">
                         </div>
                     </div>
                 </div>
@@ -108,18 +104,17 @@
       </div>
   </div>
 </div>
-<div id="loadingToast" style="display:none;">
-    <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
-        <i class="weui-loading weui-icon_toast"></i>
-        <p class="weui-toast__content">请求加载中</p>
-    </div>
-</div>
 </body>
 </html>
 <style>
     .weui-cell:before {
         border-top: none;
+    }
+    .weui-cells:after, .weui-cells:before{
+      z-index: 0;
+    }
+    .weui-cell:before{
+      z-index: 0;
     }
     .message{
         min-height: 0;
@@ -260,51 +255,48 @@
         overflow: inherit;
     }
     .navigation{
-        padding: 10px 0;
-        overflow: hidden;
-      }
-     .navigation ul{
-        list-style: none;
-        overflow: hidden;
-        width: 90%;
-        margin: 0 auto;
-      }
-      .navigation li{
-        float: left;
-        padding:0 10px;
-        color: #35b2f2;
-        font-size: 14px;
-      }
-      .navigation span{
-        text-align: center;
-        width: 24px;
-        display: inline-block;
-        border: 1px solid #35b2f2;
-        border-radius: 12px;
-      }
-
-    @media screen and (max-width: 320px) {
-        .navigation span {
-            width: 18px;
-            border-radius: 18px;
-            font-size: 12px;
-        }
-        .navigation li{
-            font-size: 12px;
-        }
+      width: 100%;
+      margin: 10px auto 0;
+      color: #35b2f2;
+      font-size: 14px;
+      text-align: center;
     }
-      .navigation li:nth-child(3) span{
-        background-color: #35b2f2;
-        color: #fff;
-      }
+    .navigation span{
+      text-align: center;
+      width: 24px;
+      display: inline-block;
+      border: 1px solid #35b2f2;
+      border-radius: 12px;
+    }
+    .weui-uploader__file{
+      position: relative;
+      float: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      width: 79px;
+      height: 79px;
+      background: no-repeat 50%;
+      background-size: cover;
+    }
+    .weui-uploader__file i{
+      position: absolute;
+      right: -12px;
+      top: -10px;
+      z-index: 10;
+      width: 30px;
+      height: 30px;
+    }
 </style>
 <script type="text/javascript">
     var url = "<%= url %>"
     var doctor = "<%=doctor%>"
     var admissionTime = ""
     var doctorId = '<%= doctorId %>'
-    var imgUrlList = []
-    var uploadCustomFileList = []
+    var imgUrlList = []  // 七牛返回的图片地址列表
+    var count = 0; // 插入的li标签ID
+    var number = 0; // 图片的数量
+    var imglist = []; // 微信返回的图片的服务器端ID集合
+    var uploadCustomFileList = [];  // 选择的图片集合
     var message = ""
     var messageNum = 0
     var realName = ""
@@ -312,9 +304,9 @@
     var accessToken = '<%= accessToken %>'
 
     if (doctor) {
-        $('.dc-top').show();
+        $('.navigation').show();
     } else {
-        $('.dc-top').hide();
+        $('.navigation').hide();
     }
 
     ifValidate()
@@ -328,7 +320,7 @@
             data: {userId: userId},
             url: `${url}api/idCardValidates/getNameAndValidateIdx`,
             success: function (data) {
-                if (data.code === 0 && data.data && data.data.name) {
+                if (data.code === 0 && data.data && data.data.status === 1) {
                     realName = data.data.name
                     $('#userName').val(realName);
                     $('#userName').attr('disabled',true);
@@ -348,6 +340,94 @@
         });
     };
 
+  function upload(imglist) {
+    $.ajax({
+      url: "<%=_src('/uploadimg')%>",
+      type: 'post',
+      data: JSON.stringify(imglist),
+      success: function (msg) {
+        if (msg.code === 0) {
+          imgUrlList = msg.imgurl
+          ajax()
+        } else {
+          toast('图片上传失败，请稍后重试~')
+        }
+      },
+      error: function (err) {
+        console.log(err)
+      }
+    })
+  }
+
+  $('.weui-uploader__input-box').on('click', function () {
+    wx.chooseImage({
+        count: 9, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+          var localIds = res.localIds;
+          for (let i = 0; i < localIds.length; i++) {
+            uploadCustomFileList.push({id: count + i, url: localIds[i]});
+            $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><i class="weui-icon-cancel delete"></i><img class="img-responsive" style="width:79px;height:79px;" src="${localIds[i]}"></li>`)
+            number++;
+            if (number >= 9) {
+              $(".add").fadeOut(100)
+              break;
+            }
+          }
+          count = count + localIds.length;
+          
+          $("#number").text(number)
+        }
+    });
+  });
+
+  $("#uploaderFiles").on('click', '.delete', function(e){
+    var id = $(this).parent().attr('id')
+    weui.confirm('确定删除该图片？', function(){
+      --number;
+      $('#number').text(number);
+      if (number < 9) {
+        $(".add").fadeIn(100)
+      }
+      var index;
+      for (let i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+        var file = uploadCustomFileList[i];
+        if(file.id == id){
+          index = i;
+          break;
+        }
+      }
+      if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+      e.target.parentNode.remove();
+    });
+  });
+
+  var syncUpload = function(localIds){
+      var localId = localIds.pop();
+      wx.uploadImage({
+
+          localId: localId,
+
+          isShowProgressTips: 1,
+
+          success: function (res) {
+
+              var serverId = res.serverId; // 返回图片的服务器端ID
+              imglist.push(serverId)
+              if (imglist.length === number) {
+                upload(imglist)
+              }
+              //其他对serverId做处理的代码
+
+              if(localIds.length > 0){
+                  syncUpload(localIds);
+              }
+          }
+      });
+  };
+
     // token过期，重新登录
     function reset() {
        $.ajax({
@@ -363,23 +443,6 @@
             }
         });
     }
-
-    // 获取七牛token和domain
-    var domain;
-    var token;
-    $.ajax({
-        type: 'get',
-        url: `<%= urlQiniu %>`,
-        success: function (res) {
-            if (res && res.code === 0) {
-                domain = res.data.domain
-                token = res.data.token
-            }
-        },
-        error: function (error) {
-            console.log(error)
-        }
-    })
 
     //真实姓名
     $('#userName').on("input", function () {
@@ -408,95 +471,6 @@
         }
     })
 
-    //上传图片
-    /* 图片手动上传 */
-    // 这里是简单的调用，其余api请参考文档
-    var uploadCount = 0;
-    weui.uploader('#uploader', {
-        url: 'http://upload.qiniup.com/',
-        auto: false,
-        type: 'file',
-        fileVal: 'file',
-        compress: {
-            width: 1600,
-            height: 1600,
-            quality: .8
-        },
-        onBeforeQueued: function (files) {
-            // `this` 是轮询到的文件, `files` 是所有文件
-
-            if (["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0) {
-                weui.alert('请上传图片');
-                return false; // 阻止文件添加
-            }
-            if (this.size > 10 * 1024 * 1024) {
-                weui.alert('请上传不超过10M的图片');
-                return false;
-            }
-            if (files.length > 9) { // 防止一下子选择过多文件
-                weui.alert('最多只能上传9张图片，请重新选择');
-                return false;
-            }
-            if (uploadCount + 1 > 9) {
-                $(".weui-uploader__input-box").hide();
-                weui.alert('最多只能上传9张图片');
-                return false;
-            }
-            if (uploadCount > 8 || files.length > 8) {
-                $(".weui-uploader__input-box").hide();
-            }
-
-            ++uploadCount;
-            $('#uploadCount').text(uploadCount);
-
-        },
-        onQueued: function () {
-            uploadCustomFileList.push(this);
-        },
-        onBeforeSend: function (data, headers) {
-            $.extend(data, {token: token}); // 可以扩展此对象来控制上传参数
-        },
-        onSuccess: function (ret) {
-            imgUrlList.push(`${domain}${ret.key}`)
-        },
-        onError: function (err) {
-            console.log(err)
-        }
-    });
-
-    // 手动上传按钮
-    document.getElementById("uploaderCustomBtn").addEventListener('click', function () {
-        if (realName !== "" && admissionTime !== ""){
-            uploadCustomFileList.forEach(function (file) {
-                file.upload();
-            });
-        }
-    });
-    // 删除图片
-    $("#uploaderFiles").on('click', '.delete', function (e) {
-        var id = e.target.getAttribute('delete-id');
-        weui.confirm('确定删除该图片？', function () {
-            --uploadCount;
-            $('#uploadCount').text(uploadCount);
-            var index;
-            for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
-                var file = uploadCustomFileList[i];
-                if (file.id == id) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index !== undefined) uploadCustomFileList.splice(index, 1);
-
-            e.target.parentNode.remove();
-
-            if (uploadCount + 1 < 10) {
-                $(".weui-uploader__input-box").show();
-            }
-
-        });
-    });
-
     $(function () {
         $('.weui-switch-cp__box').on('click', function () {
             let isCheck = $("#switchCP").prop("checked");
@@ -519,8 +493,17 @@
             toast('请选择就诊日期')
         }
         if (realName !== "" && admissionTime !== ""){
-            $('#loadingToast').fadeIn(100)
-            ajax()
+            let urlList = [];
+            if (number === 0) {
+              ajax()
+            } else {
+              uploadCustomFileList.forEach(function(file){
+                urlList.push(file.url)
+                if (urlList.length === number) {
+                  syncUpload(urlList);
+                }
+              });
+            }
         }
     });
 
@@ -550,7 +533,6 @@
             contentType: 'application/json',
             dataType: 'json',
             success: function (data) {
-                $('#loadingToast').fadeOut(100)
                 if (data.code === 0) {
                     $('#iosDialog2').fadeIn(200);
                 } else if (data.code === 403) {
@@ -562,7 +544,6 @@
                 }
             },
             error: function () {
-                $('#loadingToast').fadeOut(100)
                 toast('接口请求出错了')
             }
         });
