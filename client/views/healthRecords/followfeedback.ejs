@@ -11,13 +11,13 @@
       background: #ebebeb;
       color: #666;
     }
-    .weui-toast{
+    #toast .weui-toast{
         min-height: 0;
         top: 50%;
         width: 80%;
         margin-left: -40%;
     }
-    .weui-toast p{
+    #toast .weui-toast p{
         margin:0;
         font-size: 14px;
         padding: 3px 0;
@@ -93,6 +93,13 @@
             <p class="weui-toast__content"></p>
         </div>
     </div>
+    <div id="audit_toast" style="display: none;">
+      <div class="weui-mask_transparent"></div>
+      <div class="weui-toast" style="top:50%;margin-top: -3.8em;">
+          <i class="weui-loading weui-icon_toast"></i>
+          <p class="weui-toast__content">服务器请求中</p>
+      </div>
+    </div>
   </div>
 </body>
 <script>
@@ -121,6 +128,7 @@ $(document).ready(function(){
     }
   });
   $('.follow_feedback_confirm').on('click', function() {
+    auditToast()
     let $review = $(".review")
     if ($review) {
       $(".review").each(function() {
@@ -132,7 +140,7 @@ $(document).ready(function(){
       feedbackTimes: feedbackTimes,
       flupFeedbackId:flupFeedbackId,
       items:items,
-      otherRemindId: otherRemindId
+      otherRemindId: otherRemind
     }
     $.ajax({
       type: 'post',
@@ -144,23 +152,24 @@ $(document).ready(function(){
       processData: false,
       contentType: 'application/json;charset=UTF-8',
       success: function (res) {
-          if (res.code === 0) {
-            weui.alert(`${dn}XXX医生已收到您的随访反馈，为了您的健康，请坚持按时随访`, function(){
-              wx.closeWindow()
-            })
-          } else if (res.code === 403) {
-            weui.alert('请重新登录', function() {
-              reset();
-            })
-          } else {
-             toast(data.msg)
-          }
+        $('#audit_toast').fadeOut(100);
+        if (res.code === 0) {
+          weui.alert(`${dn}医生已收到您的随访反馈，为了您的健康，请坚持按时随访`, function(){
+            wx.closeWindow()
+          })
+        } else if (res.code === 403) {
+          weui.alert('请重新登录', function() {
+            reset();
+          })
+        } else {
+           toast(data.msg)
+        }
       },
       error: function () {
-          toast('接口请求出错了')
+        $('#audit_toast').fadeOut(100);
+        toast('接口请求出错了')
       }
     });
-    
   })
 })
 // token过期，重新登录
@@ -178,6 +187,13 @@ function reset() {
         }
     });
 }
+
+function auditToast() {
+  var $toast = $('#audit_toast');
+  if ($toast.css('display') != 'none') return;
+  $toast.fadeIn(100);
+}
+
 function toast(msg) {
     var $toast = $('#toast');
     $('#toast p').html(msg)

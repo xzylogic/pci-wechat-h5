@@ -28,7 +28,7 @@
         <div class="weui-cell__bd">
             <p>计划开始时间</p>
         </div>
-        <div class="weui-cell__ft"><%=flupDetail.planDate%></div>
+        <div class="weui-cell__ft"><%=Y%>-<%=M%>-<%=D%></div>
       </div>
       <div class="weui-cells">
         <div class="weui-cell">
@@ -44,24 +44,52 @@
       <% for (let i = 0; i < flupDetail.flupList.length; i++) { %>
         <div class="cycle">
           <div class="weui-cell">
-              <div class="weui-cell__bd">
-                <% if (i === 0) {%>
+              <% if (i === 0) {%>
+                <div class="weui-cell__bd">
                   <p>一个月后</p>
+                </div>
+                <% if (M+1 > 12) {%>
+                  <div class="weui-cell__ft"><%=Y+1%>-<%=1%>-<%=D%></div>
+                <% } else {%>
+                  <div class="weui-cell__ft"><%=Y%>-<%=M+1%>-<%=D%></div>
                 <% } %>
-                <% if (i === 1) {%>
+              <% } %>
+              <% if (i === 1) {%>
+                <div class="weui-cell__bd">
                   <p>三个月后</p>
+                </div>
+                <% if (M+3 > 12) {%>
+                  <div class="weui-cell__ft"><%=Y+1%>-<%=M-9%>-<%=D%></div>
+                <% } else {%>
+                  <div class="weui-cell__ft"><%=Y%>-<%=M+3%>-<%=D%></div>
                 <% } %>
-                <% if (i === 2) {%>
+              <% } %>
+              <% if (i === 2) {%>
+                <div class="weui-cell__bd">
                   <p>六个月后</p>
+                </div>
+                <% if (M+6 > 12) {%>
+                  <div class="weui-cell__ft"><%=Y+1%>-<%=M-6%>-<%=D%></div>
+                <% } else {%>
+                  <div class="weui-cell__ft"><%=Y%>-<%=M+6%>-<%=D%></div>
                 <% } %>
-                <% if (i === 3) {%>
+              <% } %>
+              <% if (i === 3) {%>
+                <div class="weui-cell__bd">
                   <p>九个月后</p>
+                </div>
+                <% if (M+9 > 12) {%>
+                  <div class="weui-cell__ft"><%=Y+1%>-<%=M-3%>-<%=D%></div>
+                <% } else {%>
+                  <div class="weui-cell__ft"><%=Y%>-<%=M+9%>-<%=D%></div>
                 <% } %>
-                <% if (i === 4) {%>
+              <% } %>
+              <% if (i === 4) {%>
+                <div class="weui-cell__bd">
                   <p>十二个月后</p>
-                <% } %>
-              </div>
-              <div class="weui-cell__ft">2016/05/27</div>
+                </div>
+                <div class="weui-cell__ft"><%=Y+1%>-<%=M%>-<%=D%></div>
+              <% } %> 
           </div>
             <% for (let j = 0; j < flupDetail.flupList[i].length; j++) { %>
               <div class="weui-cell">

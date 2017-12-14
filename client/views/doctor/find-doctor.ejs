@@ -4,8 +4,6 @@
 <head>
     <title>找医生</title>
     <% include ../layout/layout %>
-    <link rel="stylesheet" href="<%= _src('/css/basic/basic.min.css') %>">
-    <script src="<%= _src('/lib/validform/Validform_v5.3.2_min.js') %>"></script>
     <script type="text/javascript">
       var share = new share("<%=_src('')%>") //jssdk分享页面
     </script>
@@ -13,7 +11,7 @@
 
 <body ontouchstart>
 <div class="page">
-    <div class="page__bd">
+    <div class="page__bd weui-cell_access">
         <div class="weui-search-bar" id="searchBar">
             <form class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
@@ -29,14 +27,15 @@
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn" style="font-size: 14px;" id="searchCancel">取消</a>
         </div>
-        <div class="show-hospital" id="showHospital">
-            <button class="btn-hospital" href="javascript:;" id="showPicker">
+        <div class="show-hospital weui-cell_access" id="showHospital">
+            <a class="btn-hospital" href="javascript:;" id="showPicker">
                 <span>全部医院</span><img class="img-down" src="<%= _src('/image/arrow-down.png') %>">
-            </button>
+            </a>
         </div>
         <div class="weui-cells searchbar-result" style="margin-top: 0" id="searchResult">
         </div>
     </div>
+    <div class="error"></div>
     <div id="loadingToast" style="display:none;">
         <div class="weui-mask_transparent"></div>
         <div class="weui-toast">
@@ -66,7 +65,7 @@
         height: 100%;
         font-size: 16px;
         border: none;
-        border-radius: 0
+        border-radius: 0;
     }
 
     .img-down {
@@ -86,7 +85,6 @@
             height: 90px;
         }
     }
-
 
     .doctor-img {
         width: 17%;
@@ -140,6 +138,14 @@
         color: #ccc;
         border: 1px solid #ccc;
     }
+    .error{
+        display: none;
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        top:50%;
+        margin-left: -25%;
+    }
 </style>
 <script type="text/javascript">
     var url = "<%= url %>"
@@ -163,6 +169,7 @@
             success: function (data) {
                 $('#loadingToast').fadeOut(100)
                 if (data.code === 0 && data.data && data.data.content.length !== 0) {
+                  $('.error').css('display', 'none')
                   doctorList = data.data.content;
                   var $searchResult = $('#searchResult')
                   for (var i = 0; i < doctorList.length; i++) {
@@ -196,13 +203,14 @@
               </div>`)
                   }
                 } else {
-                  $('#searchResult').html('<p style="text-align:center; margin-top:50px;">啊，您要找的数据为空哦~</p>')
+                  $('.error').css('display', 'block')
+                  $('.error').html('啊，您要找的数据为空哦')
                 } 
             },
             error: function (err) {
+                $('.error').css('display', 'block')
                 $('#loadingToast').fadeOut(100)
-                console.log(err);
-                $('#searchResult').html('<p style="text-align:center; margin-top:50px;">啊，服务器请求出错了，请稍后再试~</p>')
+                $('.error').html('啊，服务器请求出错了，请稍后再试~')
             }
         });
     };
