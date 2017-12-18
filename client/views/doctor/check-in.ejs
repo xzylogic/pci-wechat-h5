@@ -88,10 +88,17 @@
     <button class="weui-btn weui-btn_primary check-btn " id="uploaderCustomBtn">立即申请</button>
 </div>
 <div id="toast" style="display: none;">
-    <div class="weui-mask_transparent"></div>
-    <div class="weui-toast message">
-        <p class="weui-toast__content"></p>
-    </div>
+  <div class="weui-mask_transparent"></div>
+  <div class="weui-toast message">
+      <p class="weui-toast__content"></p>
+  </div>
+</div>
+<div id="audit_toast" style="display: none;">
+  <div class="weui-mask_transparent"></div>
+  <div class="weui-toast">
+      <i class="weui-loading weui-icon_toast"></i>
+      <p class="weui-toast__content">服务器请求中</p>
+  </div>
 </div>
 <div id="dialogs">
   <div class="js_dialog" id="iosDialog2" style="display: none;">
@@ -286,6 +293,9 @@
       width: 30px;
       height: 30px;
     }
+    .weui-btn_primary:not(.weui-btn_disabled):active{
+      background: #57bff4;
+    }
 </style>
 <script type="text/javascript">
     var url = "<%= url %>"
@@ -446,18 +456,14 @@
 
     //真实姓名
     $('#userName').on("input", function () {
-        if (this.value.length) {
-            realName = this.value;
-        }
+      realName = this.value;
     });
 
     //就诊日期
     $('#userDate').on("input", function () {
-        if (this.value.length) {
-            admissionTime = this.value;
-            admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "/")));
-            admissionTime = admissionTime.getTime();
-        }
+      admissionTime = this.value;
+      admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "/")));
+      admissionTime = admissionTime.getTime();
     });
 
     //申请描述
@@ -488,14 +494,13 @@
     $('#uploaderCustomBtn').on('click', function () {
         if (realName == "") {
             toast('请填写真实姓名')
-        }
-        if (admissionTime == "") {
+        } else if (!admissionTime) {
             toast('请选择就诊日期')
-        }
-        if (realName !== "" && admissionTime !== ""){
+        } else {
             let urlList = [];
             if (number === 0) {
               ajax()
+              $("#audit_toast").fadeIn(100)
             } else {
               uploadCustomFileList.forEach(function(file){
                 urlList.push(file.url)
@@ -533,18 +538,20 @@
             contentType: 'application/json',
             dataType: 'json',
             success: function (data) {
-                if (data.code === 0) {
-                    $('#iosDialog2').fadeIn(200);
-                } else if (data.code === 403) {
-                    weui.alert('请重新登录',function(){
-                        reset()
-                    })
-                } else {
-                   toast(data.msg)
-                }
+              $("#audit_toast").fadeOut()
+              if (data.code === 0) {
+                $('#iosDialog2').fadeIn(200);
+              } else if (data.code === 403) {
+                weui.alert('请重新登录',function(){
+                  reset()
+                })
+              } else {
+                 toast(data.msg)
+              }
             },
             error: function () {
-                toast('接口请求出错了')
+              $("#audit_toast").fadeOut()
+              toast('服务器请求出错了')
             }
         });
     }

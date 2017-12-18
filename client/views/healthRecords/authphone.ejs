@@ -242,7 +242,7 @@ $(document).ready(function(){
     $toast.fadeIn(100);
     setTimeout(function () {
       $toast.fadeOut(100);
-      if (auth === 'false') {
+      if (auth == 'false') {
         window.location.href = "<%=_src('/EMR')%>"
       }
     }, 2000);

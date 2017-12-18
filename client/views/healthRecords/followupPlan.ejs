@@ -30,7 +30,17 @@
 <body ontouchstart>
   <div class="follow_up_plan">
     <% if (status === false) { %>
-      <p class="no_follow_up_plan">暂无医生为您制定随访计划</p>
+      <div id="dialogs2">
+        <div class="js_dialog" id="iosDialog2" style="display: block;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__bd">暂无医生为您制定随访计划</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+                </div>
+            </div>
+        </div>
+      </div>
     <% } else {%>
       <div class="weui-cells" id="follow_up_list">
         <% if (myFlupList.length > 10) { %>
@@ -96,8 +106,12 @@ $(document).ready(function(){
             </a>`)
       }
     }
-    
-  })
+  });
+  
+  $('#iosDialog2').on('click', '.weui-dialog__btn', function(){
+    $('#dialogs2').fadeOut(0);
+    wx.closeWindow();
+  });
 })
 </script>
 </html>

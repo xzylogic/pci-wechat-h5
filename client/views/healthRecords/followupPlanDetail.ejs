@@ -41,7 +41,7 @@
       </div>
     </div>
     <div class="follow_up_cycle">
-      <% for (let i = 0; i < flupDetail.flupList.length; i++) { %>
+      <% for (let i = 0; i < flupDetail.feedbacks.length; i++) { %>
         <div class="cycle">
           <div class="weui-cell">
               <% if (i === 0) {%>
@@ -91,12 +91,14 @@
                 <div class="weui-cell__ft"><%=Y+1%>-<%=M%>-<%=D%></div>
               <% } %> 
           </div>
-            <% for (let j = 0; j < flupDetail.flupList[i].length; j++) { %>
+            <% for (let j = 0; j < flupDetail.feedbacks[i].plan.length; j++) { %>
               <div class="weui-cell">
                   <div class="weui-cell__bd">
-                      <p><%=flupDetail.flupList[i][j]%></p>
+                      <p><%=flupDetail.feedbacks[i].plan[j].name%></p>
                   </div>
-                  <div class="weui-cell__ft"></div>
+                  <% if (flupDetail.feedbacks[i].plan[j].status == true) {%>
+                   <div class="weui-cell__ft">已复查</div>
+                  <% } %>
               </div>
             <% } %>
         </div>

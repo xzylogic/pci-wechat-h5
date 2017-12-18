@@ -64,15 +64,35 @@ module.exports = {
             userId: data.userId
           }
           requestTool.postHeader('flupDetail', data.access_token, postData, (_data) =>{
+            let date = _data.data.planDate.split('-');
+            let feedbacks;
             if (_data && _data.code === 0 && _data.data) {
-              let date = _data.data.planDate.split('-');
-              console.log(date)
-              res.render('healthRecords/followupPlanDetail',{
-                flupDetail: _data.data,
-                Y: Number(date[0]),
-                M: Number(date[1]),
-                D: Number(date[2])
-              })
+              if (_data.data.feedbacks && _data.data.feedbacks.length !== 0) {
+                feedbacks = _data.data.feedbacks
+                for (let i = 0; i < feedbacks.length; i++) {
+                  let a = new Set(feedbacks[i].plan);
+                  let b = new Set(feedbacks[i].item);
+                  let intersectionSet = new Set([...a].filter(x => b.has(x))); // ES6求交集a>b
+                  let differenceABSet = new Set([...a].filter(x => !b.has(x))); // ES6求差集a>b
+                  feedbacks[i].plan = []
+                  intersectionSet.forEach(function(obj){
+                    feedbacks[i].plan.push({name:obj, status:true})
+                  })
+                  differenceABSet.forEach(function(obj){
+                    feedbacks[i].plan.push({name:obj, status:false})
+                  })
+                }
+                res.render('healthRecords/followupPlanDetail',{
+                  flupDetail: _data.data,
+                  Y: Number(date[0]),
+                  M: Number(date[1]),
+                  D: Number(date[2])
+                })
+              } else {
+                res.render('error', {
+                  message: '请求错误'
+                });
+              }
             } else if (_data && _data.code === 403) {
               res.clearCookie('accessToken');
               res.clearCookie('userId');

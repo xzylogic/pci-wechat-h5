@@ -7,9 +7,12 @@ module.exports = {
   // 实名认证列表页面
 	getAuthList: (req, res) => {
 		let url = requestTool.setAuthUrl('/authlist', '');
+    let authList = req.query.auth || '';
 		auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) =>{
-        res.render('healthRecords/authlist')
+        res.render('healthRecords/authlist',{
+          auth: authList
+        })
       },() =>{
         res.redirect(`${global.config.root}/login?status=5`);
       })
