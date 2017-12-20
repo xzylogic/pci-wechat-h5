@@ -134,7 +134,7 @@ module.exports = {
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
         if (feedbackTimes == 0) {
-          requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
+          requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/17`, data.access_token, '', (_data) =>{
             if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item && !_data.data.firstPushStatus) {
               let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
               res.render('healthRecords/followfeedback',{
@@ -167,6 +167,7 @@ module.exports = {
         } else if (feedbackTimes == 1) {
           requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
             if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item && !_data.data.secondPushStatus) {
+              let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
               let a = new Set(_data.data.plan);
               let b = new Set(_data.data.item);
               let differenceABSet = new Set([...a].filter(x => !b.has(x)));
@@ -179,6 +180,7 @@ module.exports = {
                 item: _data.data.item,
                 otherRemind: otherRemind,
                 feedbackTimes: feedbackTimes,
+                firstPushTime: firstPushTime,
                 flupFeedbackId: fbId,
                 dn: dn,
                 url: global.config.userServer,
