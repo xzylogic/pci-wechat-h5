@@ -5,7 +5,7 @@ var auth = require('../common/auth');
 module.exports = {
 
   findDoctor: (req, res) => {
-    auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
+    // auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
     let url = requestTool.setAuthUrl('/find-doctor');
     let doctor = req.query.doctor || '';
     auth.getOpenId(req, res, url, (openId) => {
