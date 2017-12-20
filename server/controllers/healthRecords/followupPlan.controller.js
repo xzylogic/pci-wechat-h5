@@ -2,6 +2,7 @@
 
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
+var moment = require("moment"); 
 
 module.exports = {
   // 随访计划列表
@@ -130,19 +131,20 @@ module.exports = {
     let feedbackTimes = req.query.feedbackTimes || '';
     let dn = req.query.dn || '';
     let url = requestTool.setAuthUrl('/followfeedback', '');
-    console.log(querystring.parse(dn))
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
         if (feedbackTimes == 0) {
           requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
             if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item && !_data.data.firstPushStatus) {
+              let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
               res.render('healthRecords/followfeedback',{
                 plan: _data.data.plan,
                 item: _data.data.item,
                 otherRemind: otherRemind,
                 feedbackTimes: feedbackTimes,
                 flupFeedbackId: fbId,
-                dn: querystring.parse(dn),
+                firstPushTime: firstPushTime,
+                dn: dn,
                 url: global.config.userServer,
                 access_token: data.access_token
               })

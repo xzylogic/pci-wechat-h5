@@ -12,7 +12,7 @@ var auth = {};
  * @return {[type]}             []
  */
 auth.setCookies = (res, key, value) => {
-  res.cookie(key, value, { maxAge: 7200000, httpOnly: true, signed: true });
+  res.cookie(key, value, { maxAge: 720000, httpOnly: true, signed: true });
 }
 
 /**
@@ -24,17 +24,6 @@ auth.setCookies = (res, key, value) => {
  */
 auth.setUserCookies = (res, key, value) => {
   res.cookie(key, value, { maxAge: 2592000000, httpOnly: true, signed: true });
-}
-
-/**
- * 存储加密的jsapi_ticket
- * @param  {[type]} res         [response]
- * @param  {[type]} openId      [openId]
- * @param  {[type]} accessToken [accessToken]
- * @return {[type]}             []
- */
-auth.setJsCookies = (res, key, value) => {
-  res.cookie(key, value, { maxAge: 7200000, httpOnly: true, signed: true });
 }
 
 /**

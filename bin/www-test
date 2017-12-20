@@ -4,9 +4,9 @@ global.config = {
   userServer: 'http://116.62.122.69/pci-user/',
   healthServer: 'http://116.62.122.69/pro-health/',
   server: 'http://116.62.122.69/pci-micro/',
-  domain: 'http://116.62.122.69:3000',
+  domain: 'http://www.wangbing.ren',
   root: '/pci-wechat',
-  filedir: '/root/pci-wechat/pci-wechat-h5',
+  filedir: '/home/admin/webapp/pci-wechat-h5',
   appId: 'wxee8d9fc7f496d8b1',
   secret:'4ee061a42331ea76af1430e02e4f6fbe'
 }
@@ -18,7 +18,7 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
 /**

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>全程心管家</title>
+    <title>向医生报到</title>
     <% include ../layout/layout %>
     <link rel="stylesheet" href="<%= _src('/css/basic/basic.min.css') %>">
     <script src="<%= _src('/lib/validform/Validform_v5.3.2_min.js') %>"></script>
@@ -15,7 +15,7 @@
 <div class="dc-check-in">
     <div class="weui-flex navigation">
         <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span>1</span> 注册登录</div></div>
-        <div style="text-align: center;"><div class="placeholder">—------></div></div>
+        <div style="text-align: center;"><div class="placeholder">-------></div></div>
         <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span style="color: #fff;background: #35b2f2;">2</span> 向医生报到</div></div>
     </div>
     <div class="doc-intro">
@@ -36,26 +36,23 @@
         <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label" style="color: #333;">真实姓名</label></div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="text" pattern="" maxlength="10" style="color: #999;" id="userName"
+                <input class="weui-input" type="text" pattern="" maxlength="10" style="color: #666;text-align: right" id="userName"
                        placeholder="请填写"/>
             </div>
         </div>
-        <div class="weui-cell" style="border-top: 1px solid #ececec;">
-            <div class="weui-cell__hd"><label for="" class="weui-label" style="color: #333;">就诊日期</label></div>
-            <div class="weui-cell__bd">
-                <input class="weui-input" type="date" value="" placeholder="请选择" id="userDate" style="color: #999;"/>
-            </div>
+        <div class="weui-cell weui-cell_access js_item" id="userDate" style="border-top: 1px solid #ececec;">
+            <div class="weui-cell__bd"><label for="" class="weui-label" style="color: #333;">就诊日期</label></div>
+            <div class="weui-cell__ft confirmDate">请选择</div>
         </div>
     </div>
     <div class="patient-introduce">
-        <div class="weui-cells__title" style="font-size: 14px;color: #666;">申请描述</div>
+        <div class="weui-cells__title" style="font-size: 14px;color: #333;">申请描述</div>
         <div class="weui-cells weui-cells_form"
              style="border-radius: 4px;border-left: 1px solid #ececec;border-right: 1px solid #ececec;">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <textarea class="weui-textarea" style="font-size: 14px;color: #999;" id="userIntroduce"
-                              placeholder="请简单描述自己的就诊情况。例如：我是XXX，从2017年10月20日住进瑞金医院1508号床，10月25日进行了PCI手术。"
-                              rows="3" maxlength="100"></textarea>
+                              rows="4" maxlength="100"></textarea>
                     <div class="weui-textarea-counter"><span>0</span>/100</div>
                 </div>
             </div>
@@ -64,7 +61,7 @@
             <div class="weui-cell__bd">
                 <div class="weui-uploader">
                     <div class="weui-uploader__hd">
-                        <p class="weui-uploader__title" style="font-size: 14px;color: #ccc;">添加病历出院小结等照片</p>
+                        <p class="weui-uploader__title" style="font-size: 14px;color: #333;">添加病历出院小结等照片</p>
                         <div class="weui-uploader__info"><span id="number">0</span>/9</div>
                     </div>
                     <div class="weui-uploader__bd">
@@ -114,6 +111,9 @@
 </body>
 </html>
 <style>
+    #userIntroduce::-webkit-input-placeholder{
+      color: #ccc;
+    }
     .weui-cell:before {
         border-top: none;
     }
@@ -253,9 +253,10 @@
     }
 
     .check-btn {
-        margin: 20px 0;
-        border-radius: 5px;
         background-color: #35B2F2;
+    }
+    .weui-btn{
+      border-radius: 0;
     }
 
     .weui-uploader__bd {
@@ -318,6 +319,22 @@
     } else {
         $('.navigation').hide();
     }
+    // placeholder换行
+    var placeholder = '请简单描述自己的就诊情况。\n例如：\n我是XXX，从2017年10月20日住进瑞金医院1508号床，10月25日进行了PCI手术。';
+    $('textarea').val(placeholder);
+    $('textarea').focus(function() {
+      if ($(this).val() == placeholder) {
+        $(this).val('');
+        $(this).css('color',"#333")
+      }
+    });
+
+    $('textarea').blur(function() {
+      if ($(this).val() == '') {
+        $(this).val(placeholder);
+        $(this).css('color',"#999")
+      }
+    });
 
     ifValidate()
 
@@ -460,10 +477,26 @@
     });
 
     //就诊日期
-    $('#userDate').on("input", function () {
-      admissionTime = this.value;
-      admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "/")));
-      admissionTime = admissionTime.getTime();
+    $('#userDate').on("click", function () {
+      let Y = new Date().getFullYear();
+      let M = new Date().getMonth() + 1;
+      let D = new Date().getDate();
+      weui.datePicker({
+         start: 1949, // 从今天开始
+         end: new Date(),
+         depth: 2,
+         defaultValue: [Y,M,D],
+         onChange: function(result){
+             // console.log(result);
+         },
+         onConfirm: function(result){
+            $(".confirmDate").html(`${result[0].value}-${result[1].value}`)
+            admissionTime = `${result[0].value}-${result[1].value}`;
+            admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "-")));
+            admissionTime = admissionTime.getTime();
+         },
+         id: 'datePicker'
+      });
     });
 
     //申请描述
@@ -500,7 +533,6 @@
             let urlList = [];
             if (number === 0) {
               ajax()
-              $("#audit_toast").fadeIn(100)
             } else {
               uploadCustomFileList.forEach(function(file){
                 urlList.push(file.url)
@@ -519,6 +551,7 @@
 
     //立即申请
     function ajax() {
+        $("#audit_toast").fadeIn(0)
         var dto = {
             "admissionTime": admissionTime,
             "doctorId": doctorId,
