@@ -124,11 +124,10 @@ requestTool.getStatistics = function(key, param, call, error) {
 }
 
 //获取access_token
-requestTool.getAccessToken = function(param, call, error) {
+requestTool.getAccessToken = function(call, error) {
   superagent
-    .get('https://api.weixin.qq.com/cgi-bin/token')
+    .get(BASE_URL + 'api/micro/accessToken')
     .set('Content-Type', 'application/json')
-    .query(param)
     .end(function(err, sres) {
       if (err) {
         error(err);

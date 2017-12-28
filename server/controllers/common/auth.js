@@ -12,7 +12,7 @@ var auth = {};
  * @return {[type]}             []
  */
 auth.setCookies = (res, key, value) => {
-  res.cookie(key, value, { maxAge: 720000, httpOnly: true, signed: true });
+  res.cookie(key, value, { maxAge: 7200000, httpOnly: true, signed: true });
 }
 
 /**
@@ -62,12 +62,12 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
   console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
   let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
   let code = req.query.code || ''; // 微信返回code
+  let state = req.query.state || '';
   if (openId) {
     call(openId);
   } else if (code) {
     console.log(`[${new Date()}] Request Code: ${code}`);
     auth.getToken(res, code, (data) => {
-        console.log(data)
         console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
         auth.setCookies(res, 'pci_secret', data.openid);
         call(data.openid);
@@ -120,13 +120,14 @@ auth.getFatherOpenId = (req, res, redirectUrl, call) => {
   console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
   let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
   let code = req.query.code || ''; // 微信返回code
+  let state = req.query.state || '';
   if (openId) {
-    call(openId);
+    call(state);
   } else if (code) {
     auth.getTokenCopy(res, code, (data) => {
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
-      call(data.openid);
+      call(state);
     });
   } else {
     console.log(`[${new Date()}] Redirect Url: ${redirectUrl}`);

@@ -39,6 +39,9 @@
           font-size: 14px;
           padding: 3px 0;
       }
+      .weui-btn_primary:not(.weui-btn_disabled):active{
+        background-color: #ccc; 
+      }
     </style>
 </head>
 
@@ -96,8 +99,9 @@
   }
   var status = "<%=status%>";
   var doctor = "<%=doctor%>";
+  var Dotel = "<%=Dotel%>";
   $(".weui-btn").on('click',function() {
-    let tel = $(".input-field input").val()
+    var tel = $(".input-field input").val()
     if (tel) {
       if ((/^1[3|5|7|8][0-9]{9}$/).test(tel)) {
         validation(tel)
@@ -109,7 +113,7 @@
     }
   })
   $("#tel").on('input', function() {
-    let count = $(this).val().length
+    var count = $(this).val().length
     if (count === 11) {
       $(".weui-btn").attr('disabled',false)
       $(".weui-btn").css({
@@ -140,9 +144,9 @@
       data: tel,
       success: function(res) {
         if (res.result && res.result.code === 0 && res.result.data === false) {
-          window.location = `<%=_src('/login/enter')%>?tel=${tel}&status=${status}&doctor=${doctor}`
+          window.location.href = "<%=_src('/login/enter')%>?tel=" + tel + "&status=" + status + "&doctor=" + doctor + "&Dotel=" + Dotel;
         } else if(res.result && res.result.code === 0 && res.result.data === true) {
-          window.location = `<%=_src('/register')%>?tel=${tel}&status=${status}&doctor=${doctor}`
+          window.location.href = "<%=_src('/register')%>?tel=" + tel + "&status=" + status + "&doctor=" + doctor + "&Dotel=" + Dotel;
         } else {
           toast(res.err)
         }

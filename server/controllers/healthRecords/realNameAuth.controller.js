@@ -6,6 +6,7 @@ var auth = require('../common/auth');
 module.exports = {
   // 实名认证列表页面
 	getAuthList: (req, res) => {
+    auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
 		let url = requestTool.setAuthUrl('/authlist', '');
     let authList = req.query.auth || '';
 		auth.getOpenId(req, res, url, (openId) => {

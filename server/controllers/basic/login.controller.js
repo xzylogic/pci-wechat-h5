@@ -8,14 +8,15 @@ module.exports = {
 
   // 登录入口页面
   // 登录4种status状态
-  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5实名认证 6随访反馈 7家庭账号
+  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5实名认证 6随访反馈 7家庭账号 8向医生报到
   getLogin: (req, res) => {
     // 测试写死cookie数据
     // auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
     // auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     // res.clearCookie('pci_secret');
     let status = req.query.status || 0; // status状态数据
-    let doctor = req.query.doctor || ''; // 向医生报到
+    let doctor = req.query.doctor || ''; // 找医生
+    let Dotel = req.query.Dotel || ''; //向医生报到
     let url = requestTool.setAuthUrl('/login', status); // 重定向url
     let userId = req.signedCookies.userId || '';
     let accessToken = req.signedCookies.accessToken || '';
@@ -37,6 +38,7 @@ module.exports = {
         res.render('basic/login', {
           status: status,
           doctor: doctor,
+          Dotel: Dotel,
           errorMessage: ''
         });
       }
@@ -47,7 +49,8 @@ module.exports = {
   getLoginEnter: (req, res) => {
     let tel = req.query.tel || '';
     let errorMessage = req.query.errorMessage || '';
-    let doctor = req.query.doctor || ''; // 向医生报到 
+    let doctor = req.query.doctor || ''; // 找医生 
+    let Dotel = req.query.Dotel || ''; //向医生报到
     let status = req.query.status || ''; // status状态数据
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
 
@@ -56,6 +59,7 @@ module.exports = {
         postUrl: `/login/verify?tel=${tel}&status=${status}`,
         errorMessage: errorMessage,
         tel: tel,
+        Dotel: Dotel,
         status: status,
         doctor:doctor
       });
@@ -69,15 +73,16 @@ module.exports = {
     let tel = req.query.tel || '';
     let errorMessage = req.query.errorMessage || '';
     let status = req.query.status || ''; // status状态数据
-    let doctor = req.query.doctor || ''; // 向医生报到
+    let doctor = req.query.doctor || ''; // 找医生
+    let Dotel = req.query.Dotel || ''; //向医生报到
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-
     if (openId) {
       res.render('basic/login-register', {
         postUrl: `/register?tel=${tel}&status=${status}`,
         status: status,
         errorMessage: errorMessage,
         tel: tel,
+        Dotel: Dotel,
         doctor:doctor
       });
     } else {

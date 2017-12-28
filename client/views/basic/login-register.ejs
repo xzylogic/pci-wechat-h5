@@ -2,11 +2,12 @@
 <html lang="en">
 
 <head>
-  <% if (doctor === 'doctor') { %>
-    <title>向医生报到</title>
-  <% } else {%>
-    <title>注册</title>
-  <% } %>  <% include ../layout/layout %>
+    <% if (doctor === 'doctor') { %>
+      <title>向医生报到</title>
+    <% } else {%>
+      <title>注册</title>
+    <% } %>
+    <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
     <style>
@@ -24,17 +25,20 @@
         border: 1px solid #35b2f2;
         border-radius: 12px;
       }
-      .weui-toast{
+      .toast{
         min-height: 0;
         top: 50%;
         width: 80%;
         margin-left: -40%;
     }
-    .weui-toast p{
+    .toast p{
         margin:0;
         font-size: 14px;
         padding: 3px 0;
     }
+    .weui-btn_primary:not(.weui-btn_disabled):active{
+        background-color: #ccc; 
+      }
     </style>
 </head>
 
@@ -99,212 +103,218 @@
   </div>
   <div id="toast" style="display: none;">
     <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
+    <div class="weui-toast toast">
         <p class="weui-toast__content"></p>
     </div>
   </div>
-  <% if (errorMessage) {%>
-    <div id="modalerr">
-      <div class="weui-mask"></div>
-      <div class="weui-dialog">
-        <div class="weui-dialog__hd"><strong class="weui-dialog__title">错误提示</strong></div>
-        <div class="weui-dialog__bd">
-          <%=errorMessage%>
-        </div>
-        <div class="weui-dialog__ft">
-          <a id="closeerr" href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
-        </div>
-      </div>
+  <div id="audit_toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">请求中</p>
     </div>
-    <%}%>
+  </div>
 </body>
 </html>
 <script>
-var status = "<%=status%>";
-var doctor = "<%=doctor%>";
-var tel = "<%=tel%>";
+  var share = new share("<%= _src('') %>") //jssdk分享页面
+  var status = "<%=status%>";
+  var doctor = "<%=doctor%>";
+  var tel = "<%=tel%>";
+  var Dotel = "<%=Dotel%>";
 
-$(document).ready(function() {
-  $(".form-container").Validform({
-    tiptype: 3,
-    postonce: true,
-    datatype: {
-      "number": /^\d{6}$/
-    }
-  });
-
-  $(".weui-btn").on('click', function() {
-    let code = $("#code").val(),
-        password = $("#password").val(),
-        again_password = $("#again_password").val();
-    if (testCode(code) === true && testPassword(password) === true) {
-      if (password === again_password) {
-        register(code, password)
-      } else {
-        toast('两次输入密码不一致，请重新输入')
+  $(document).ready(function() {
+    $(".form-container").Validform({
+      tiptype: 3,
+      postonce: true,
+      datatype: {
+        "number": /^\d{6}$/
       }
-    }
+    });
 
-  })
-
-  $("#code").on('input', function() {
-    let code = $("#code").val().length
-    let password = $("#password").val().length
-    let again_password = $("#again_password").val().length
-    if (code === 6 && password >= 6 && again_password >= 6) {
-      $(".weui-btn").attr('disabled',false)
-      $(".weui-btn").css({
-        'background-color': '#35B2F2'
-      })
-    } else {
-      $(".weui-btn").attr('disabled',true)
-      $(".weui-btn").css({
-        'background-color': '#ccc'
-      })
-    }
-  })
-
-  $("#password").on('input', function() {
-    let code = $("#code").val().length
-    let password = $("#password").val().length
-    let again_password = $("#again_password").val().length
-    if (code === 6 && password >= 6 && again_password >= 6) {
-      $(".weui-btn").attr('disabled',false)
-      $(".weui-btn").css({
-        'background-color': '#35B2F2'
-      })
-    } else {
-      $(".weui-btn").attr('disabled',true)
-      $(".weui-btn").css({
-        'background-color': '#ccc'
-      })
-    }
-  })
-
-  $("#again_password").on('input', function() {
-    let code = $("#code").val().length
-    let password = $("#password").val().length
-    let again_password = $("#again_password").val().length
-    if (code === 6 && password >= 6 && again_password >= 6) {
-      $(".weui-btn").attr('disabled',false)
-      $(".weui-btn").css({
-        'background-color': '#35B2F2'
-      })
-    } else {
-      $(".weui-btn").attr('disabled',true)
-      $(".weui-btn").css({
-        'background-color': '#ccc'
-      })
-    }
-  })
-
-  $('#close').on('click', function() {
-    $('#modal').css('display', 'none');
-  });
-
-  $('#closeerr').on('click', function() {
-    $('#modalerr').css('display', 'none');
-  });
-});
-
-var count = 60;
-var t;
-
-function getCode(tel) {
-  timedCount();
-  $.get(window.location.pathname + "/getVerifyCode?tel=" + tel, function(result) {
-    if (result.code === 0) {
-      $('#message').text(result.data);
-      $('#modal').css('display', 'block');
-    } else {
-      var errormsg = JSON.parse(result) && JSON.parse(result).msg || '获取验证码失败';
-      $('#message').text(errormsg);
-      $('#modal').css('display', 'block');
-    }
-  });
-}
-
-function timedCount() {
-  $('#getcode').attr('disabled', 'true');
-  $('#getcode').text(count + '秒后重新获取');
-  count--;
-  t = setTimeout("timedCount()", 1000);
-  if (count < 0) {
-    count = 60;
-    $('#getcode').text('获取验证码');
-    $('#getcode').removeAttr('disabled');
-    clearTimeout(t);
-  }
-}
-  
-// 验证验证码
-function testCode(code) {
-  if (code) {
-    if ((/^\d{6}$/).test(code)) {
-      return true;
-    } else {
-      toast('请输入正确的6位短信验证码')
-    }
-  } else {
-    toast('请输入验证码！')
-  }
-};
-
-// 验证密码
-function testPassword(password) {
-  if (password) {
-    if ((/^[A-Za-z0-9]{6,15}$/).test(password)) {
-      return true;
-    } else {
-      toast('密码范围在6~15位之间！')
-    }
-  } else {
-    toast('请输入密码！')
-  }
-};
-
-function register(code,password) {
-  $.ajax({
-    type: 'post',
-    url: `<%=_src('/register')%>?tel=${tel}&status=${status}&doctor=${doctor}`,
-    data: {code:code,password:password},
-    success: function(res) {
-      if (res.data && res.data.code === 0) {
-        if (status == 0) {
-          window.location = `<%=_src('/login/success?name=${res.data.name}')%>`
-        } else if (status == 1) {
-          window.location = `<%=_src('/uploadCaseHistory')%>`
-        } else if (status == 2) {
-          window.location = `<%=_src('/EMR')%>`
-        } else if (status == 3) {
-          window.location = `<%=_src('/followUp')%>`
-        } else if (status == 4) {
-          window.location = `<%=_src('/find-doctor')%>?doctor=${doctor}`
-        } else if (status == 5) {
-          window.location = `<%=_src('/authlist')%>`
-        } else if (status == 6) {
-          window.location = `<%=_src('/followfeedback')%>`
-        } else if (status == 7) {
-          window.location = `<%=_src('/family')%>`
+    $(".weui-btn").on('click', function() {
+      var code = $("#code").val(),
+          password = $("#password").val(),
+          again_password = $("#again_password").val();
+      if (testCode(code) === true && testPassword(password) === true) {
+        if (password === again_password) {
+          register(code, password)
+        } else {
+          toast('两次输入密码不一致，请重新输入')
         }
+      }
+
+    })
+
+    $("#code").on('input', function() {
+      var code = $("#code").val().length
+      var password = $("#password").val().length
+      var again_password = $("#again_password").val().length
+      if (code === 6 && password >= 6 && again_password >= 6) {
+        $(".weui-btn").attr('disabled',false)
+        $(".weui-btn").css({
+          'background-color': '#35B2F2'
+        })
       } else {
-        toast(res.err)
-      } 
-    },
-    error:function (err) {
-      console.log(err)
-      toast("服务器请求出错")
+        $(".weui-btn").attr('disabled',true)
+        $(".weui-btn").css({
+          'background-color': '#ccc'
+        })
+      }
+    })
+
+    $("#password").on('input', function() {
+      var code = $("#code").val().length
+      var password = $("#password").val().length
+      var again_password = $("#again_password").val().length
+      if (code === 6 && password >= 6 && again_password >= 6) {
+        $(".weui-btn").attr('disabled',false)
+        $(".weui-btn").css({
+          'background-color': '#35B2F2'
+        })
+      } else {
+        $(".weui-btn").attr('disabled',true)
+        $(".weui-btn").css({
+          'background-color': '#ccc'
+        })
+      }
+    })
+
+    $("#again_password").on('input', function() {
+      var code = $("#code").val().length
+      var password = $("#password").val().length
+      var again_password = $("#again_password").val().length
+      if (code === 6 && password >= 6 && again_password >= 6) {
+        $(".weui-btn").attr('disabled',false)
+        $(".weui-btn").css({
+          'background-color': '#35B2F2'
+        })
+      } else {
+        $(".weui-btn").attr('disabled',true)
+        $(".weui-btn").css({
+          'background-color': '#ccc'
+        })
+      }
+    })
+
+    $('#close').on('click', function() {
+      $('#modal').css('display', 'none');
+    });
+
+    $('#closeerr').on('click', function() {
+      $('#modalerr').css('display', 'none');
+    });
+  });
+
+  var count = 60;
+  var t;
+
+  function getCode(tel) {
+    timedCount();
+    $.get(window.location.pathname + "/getVerifyCode?tel=" + tel, function(result) {
+      if (result.code === 0) {
+        $('#message').text(result.data);
+        $('#modal').css('display', 'block');
+      } else {
+        var errormsg = JSON.parse(result) && JSON.parse(result).msg || '获取验证码失败';
+        $('#message').text(errormsg);
+        $('#modal').css('display', 'block');
+      }
+    });
+  }
+
+  function timedCount() {
+    $('#getcode').attr('disabled', 'true');
+    $('#getcode').text(count + '秒后重新获取');
+    count--;
+    t = setTimeout("timedCount()", 1000);
+    if (count < 0) {
+      count = 60;
+      $('#getcode').text('获取验证码');
+      $('#getcode').removeAttr('disabled');
+      clearTimeout(t);
     }
-  })
-}
+  }
+    
+  // 验证验证码
+  function testCode(code) {
+    if (code) {
+      if ((/^\d{6}$/).test(code)) {
+        return true;
+      } else {
+        toast('请输入正确的6位短信验证码')
+      }
+    } else {
+      toast('请输入验证码！')
+    }
+  };
 
+  // 验证密码
+  function testPassword(password) {
+    if (password) {
+      if ((/^[A-Za-z0-9]{6,15}$/).test(password)) {
+        return true;
+      } else {
+        toast('密码范围在6~15位之间！')
+      }
+    } else {
+      toast('请输入密码！')
+    }
+  };
 
-function toast(msg) {
-  var $toast = $('#toast');
-  $('#toast p').html(msg)
-  $toast.fadeIn(100);
-  setTimeout(function () {
-      $toast.fadeOut(100);
-  }, 1500);
-}
+  function register(code,password) {
+    auditToast()
+    $.ajax({
+      type: 'post',
+      url: "<%=_src('/register')%>?tel=" + tel + "&status=" + status+ "&doctor=" + doctor,
+      data: {code:code,password:password},
+      success: function(res) {
+        $('#audit_toast').fadeOut(0)
+        if (res.data && res.data.code === 0) {
+          if (status == 0) {
+            window.location = "<%=_src('/login/success')%>?name=" + res.data.name
+          } else if (status == 1) {
+            window.location = "<%=_src('/uploadCaseHistory')%>"
+          } else if (status == 2) {
+            window.location = "<%=_src('/EMR')%>"
+          } else if (status == 3) {
+            window.location = "<%=_src('/followUp')%>"
+          } else if (status == 4) {
+            window.location = "<%=_src('/find-doctor')%>?doctor=" + doctor
+          } else if (status == 5) {
+            window.location = "<%=_src('/authlist')%>"
+          } else if (status == 6) {
+            window.location = "<%=_src('/followfeedback')%>"
+          } else if (status == 7) {
+            window.location = "<%=_src('/family')%>"
+          } else if (status == 8) {
+            window.location = "<%=_src('/find-doctor')%>?tel=" + Dotel
+          }
+        } else {
+          toast(res.err)
+        } 
+      },
+      error:function (err) {
+        console.log(err)
+        $('#audit_toast').fadeOut(0)
+        toast("服务器请求出错")
+      }
+    })
+  }
+
+   // 请求中
+ function auditToast() {
+    var $toast = $('#audit_toast');
+    if ($toast.css('display') != 'none') return;
+    $toast.fadeIn(100);
+ }
+
+  function toast(msg) {
+    var $toast = $('#toast');
+    $('#toast p').html(msg)
+    $toast.fadeIn(100);
+    setTimeout(function () {
+        $toast.fadeOut(100);
+    }, 1500);
+  }
 </script>

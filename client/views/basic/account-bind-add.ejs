@@ -46,13 +46,21 @@
   <%}%>
   <div id="toast" style="display: none;">
     <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
+    <div class="weui-toast toast">
       <p class="weui-toast__content" id="toastMessage"></p>
+    </div>
+  </div>
+  <div id="audit_toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">申请中</p>
     </div>
   </div>
 </body>
 </html>
 <script>
+  var share = new share("<%= _src('') %>") //jssdk分享页面
   $(document).ready(function() {
     $(".account-container").Validform({
       tiptype: 3,
@@ -112,18 +120,21 @@
   }
 
   function familyAdd(targetTel,targetCall) {
+    auditToast()
     $.ajax({
       type: 'post',
-      url: `${window.location.pathname}`,
+      url: window.location.pathname,
       data: {targetTel: targetTel, targetCall:targetCall},
       success: function(res) {
+        $('#audit_toast').fadeOut(0)
         if (res.code === 0) {
-          window.location = `<%=_src('/family')%>`
+          window.location.href = "<%=_src('/family')%>"
         } else {
           toast(res.msg)
         }
       },
       error:function (err) {
+        $('#audit_toast').fadeOut(0)
         toast('服务器请求出错了，请稍后再试')
       }
     })
@@ -141,6 +152,13 @@
         $toast.fadeOut(100);
     }, 1500);
   }
+
+     // 请求中
+ function auditToast() {
+    var $toast = $('#audit_toast');
+    if ($toast.css('display') != 'none') return;
+    $toast.fadeIn(100);
+ }
 
   function closeToast() {
     $('#toast').css('display', 'none');

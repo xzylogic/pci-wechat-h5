@@ -3,6 +3,7 @@
 var querystring = require('querystring');
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
+var moment = require("moment"); 
 
 module.exports = {
   // 电子病历
@@ -14,14 +15,23 @@ module.exports = {
         requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
           if (_data.code === 0 && _data.data && _data.data.status === 1) {
             requestTool.getHealthClient(`${global.config.healthServer}record/history/list/${data.userId}?from=1`, '', (_res) => {
-              // console.log(_res.data.content)
-              if (_res.code === 0 && _res.data.content.length !== 0) {
+              if (_res.code === 0 && _res.data.content.length != 0) {
                 // 已实名认证跳转到电子病历页面
-                res.render('healthRecords/electronicMedicalRecords', {
-                  data: _res.data.content,
-                  status: true
+                let content = _res.data.content
+                for (let i = 0; i < content.length; i++) {
+                  let date = content[i].checkDate.substring(0,10).replace(/-/g,'/');
+                  content[i].dateSize = new Date(date).getTime()
+                }
+                content.sort(function(a, b){
+                  return b.dateSize - a.dateSize
                 })
-              } else if (_res.code === 0 && _res.data.content.length === 0) {
+                res.render('healthRecords/electronicMedicalRecords', {
+                  data: content,
+                  status: true,
+                  medicareCard: _data.data.medicareCard,
+                  auth: false
+                })
+              } else if (_res.code === 0 && _res.data.content.length == 0) {
                 res.render('healthRecords/electronicMedicalRecords', {
                   status: false
                 })
@@ -40,6 +50,10 @@ module.exports = {
             res.clearCookie('accessToken');
             res.clearCookie('userId');
             res.redirect(`${global.config.root}/login?status=2`);
+          } else if (_data.code === 0 && _data.data && _data.data.status === 2) {
+            res.render('healthRecords/electronicMedicalRecords', {
+              auth: true
+            })
           } else {
             // 未认证跳转到实名认证页面
             res.redirect(`${global.config.root}/authlist?auth=false`);

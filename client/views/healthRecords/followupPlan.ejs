@@ -44,7 +44,7 @@
     <% } else {%>
       <div class="weui-cells" id="follow_up_list">
         <% if (myFlupList.length > 10) { %>
-          <% for (let i = 0; i < 10; i++) { %>
+          <% for (var i = 0; i < 10; i++) { %>
             <a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%><%=myFlupList[i].doctorId%>">
               <div class="weui-cell__bd">
                   <p><%=myFlupList[i].planDate%></p>
@@ -55,7 +55,7 @@
             </a>
           <% } %>
         <% } else { %>
-          <% for (let i = 0; i < myFlupList.length; i++) { %>
+          <% for (var i = 0; i < myFlupList.length; i++) { %>
             <a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%><%=myFlupList[i].doctorId%>">
               <div class="weui-cell__bd">
                   <p><%=myFlupList[i].planDate%></p>
@@ -83,27 +83,13 @@ $(document).ready(function(){
   var count = 9;
   $("#load_more").on('click', function() {
     if (list.length - count >= 10){
-      for (let i = 0; i < 10; i++) {
-        followList.append(`<a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%>${list[i+count].doctorId}">
-              <div class="weui-cell__bd">
-                  <p>${list[i+count].planDate}</p>
-              </div>
-              <div class="weui-cell__ft">
-                ${list[i+count].name}
-              </div>
-            </a>`)
+      for (var i = 0; i < 10; i++) {
+        followList.append("<a class='weui-cell weui-cell_access' href='<%=_src('/followUpDetail?doctorId=')%>'" + list[(i+count)].doctorId + "><div class='weui-cell__bd'><p>" + list[(i+count)].planDate + "</p></div><div class='weui-cell__ft'>" + list[(i+count)].name + "</div></a>")
       }
       count = count + 10;
     } else {
-      for (let i = 0; i < list.length; i++) {
-        followList.append(`<a class="weui-cell weui-cell_access" href="<%=_src('/followUpDetail?doctorId=')%>${list[i+count].doctorId}">
-              <div class="weui-cell__bd">
-                  <p>${list[i+count].planDate}</p>
-              </div>
-              <div class="weui-cell__ft">
-                ${list[i+count].name}
-              </div>
-            </a>`)
+      for (var i = 0; i < list.length; i++) {
+        followList.append("<a class='weui-cell weui-cell_access' href='<%=_src('/followUpDetail?doctorId=')%>'" + list[i+count].doctorId + "><div class='weui-cell__bd'><p>" + list[i+count].planDate + "</p></div><div class='weui-cell__ft'>" + list[i+count].name + "</div></a>")
       }
     }
   });

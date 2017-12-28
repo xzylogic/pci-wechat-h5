@@ -66,7 +66,7 @@
         <div class="weui-cell__ft"><%=firstPushTime%></div>
       </div>
       <div class="weui-cells weui-cells_checkbox">
-      <% for (let i = 0; i < plan.length; i++) { %>
+      <% for (var i = 0; i < plan.length; i++) { %>
         <label class="weui-cell weui-check__label">
             <div class="weui-cell__hd">
                 <input type="checkbox" class="weui-check" name="checkbox" value="<%=plan[i]%>"/>
@@ -78,7 +78,7 @@
         </label>
       <% } %>
       <% if (item.length !== 0) { %>
-        <% for (let i = 0; i < item.length; i++) { %>
+        <% for (var i = 0; i < item.length; i++) { %>
           <p style="display: none;" class="review"><%=item[i]%></p>
         <% } %>
       <% } %>
@@ -112,15 +112,14 @@ var feedbackTimes = "<%=feedbackTimes%>";
 var flupFeedbackId = "<%=flupFeedbackId%>";
 var dn = "<%=dn%>";
 $(document).ready(function(){
-  
   $(".weui-check").on('click', function() {
-    let checked = $(this).prop('checked')
+    var checked = $(this).prop('checked')
     if (checked === true) {
       $(this).attr('checked', true)
       items.push($(this).val())
     } else {
       $(this).attr('checked', false)
-      for (let i = 0; i < items.length; i++) {
+      for (var i = 0; i < items.length; i++) {
         if ($(this).val() == items[i]) {
           items.splice(i, 1)
         }
@@ -129,13 +128,13 @@ $(document).ready(function(){
   });
   $('.follow_feedback_confirm').on('click', function() {
     auditToast()
-    let $review = $(".review")
+    var $review = $(".review")
     if ($review) {
       $(".review").each(function() {
         items.push($(this).text())
       })
     }
-    let data = {
+    var data = {
       feedbackStatus: true,
       feedbackTimes: feedbackTimes,
       flupFeedbackId:flupFeedbackId,
@@ -144,7 +143,7 @@ $(document).ready(function(){
     }
     $.ajax({
       type: 'post',
-      url: `${url}api/doctorPatient/flup/feedback/update`,
+      url: url + "api/doctorPatient/flup/feedback/update",
       headers:{
         'access-token': accessToken
       },
@@ -154,7 +153,7 @@ $(document).ready(function(){
       success: function (res) {
         $('#audit_toast').fadeOut(100);
         if (res.code === 0) {
-          weui.alert(`${dn}医生已收到您的随访反馈，为了您的健康，请坚持按时随访`, function(){
+          weui.alert(dn + "医生已收到您的随访反馈，为了您的健康，请坚持按时随访", function(){
             wx.closeWindow()
           })
         } else if (res.code === 403) {
@@ -179,7 +178,7 @@ function reset() {
         url: "<%=_src('')%>/reset",
         success: function(msg){
           if (msg.code === 0) {
-              window.location.href = `<%=_src('')%>/login?status=6`
+              window.location.href = "<%=_src('')%>/login?status=6"
           }
         },
         error:function(err){

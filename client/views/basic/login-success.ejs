@@ -3,7 +3,7 @@
 
 <head>
   <title>登录成功通知</title>
-  <% include ../layout/layout-none %>
+  <% include ../layout/layout %>
 </head>
 
 <body ontouchstart style="color: #666">
@@ -17,5 +17,7 @@
     </section>
   </article>
 </body>
-
+<script>
+  var share = new share("<%= _src('') %>") //jssdk分享页面
+</script>
 </html>

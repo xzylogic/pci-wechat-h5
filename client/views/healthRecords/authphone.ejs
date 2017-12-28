@@ -195,7 +195,7 @@ $(document).ready(function(){
     auditToast()
     $.ajax({
       type: 'POST',
-      url: `${url}api/ipd/validateCardNum`,
+      url: url + "api/ipd/validateCardNum",
       data:JSON.stringify({mobileNum: phone, name:name, idCard:card}),
       processData: false,
       contentType: 'application/json',

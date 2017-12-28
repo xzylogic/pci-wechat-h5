@@ -345,7 +345,7 @@
                 'access-token': accessToken
             },
             data: {userId: userId},
-            url: `${url}api/idCardValidates/getNameAndValidateIdx`,
+            url: url + "api/idCardValidates/getNameAndValidateIdx",
             success: function (data) {
                 if (data.code === 0 && data.data && data.data.status === 1) {
                     realName = data.data.name
@@ -393,9 +393,9 @@
         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
         success: function (res) {
           var localIds = res.localIds;
-          for (let i = 0; i < localIds.length; i++) {
+          for (var i = 0; i < localIds.length; i++) {
             uploadCustomFileList.push({id: count + i, url: localIds[i]});
-            $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><i class="weui-icon-cancel delete"></i><img class="img-responsive" style="width:79px;height:79px;" src="${localIds[i]}"></li>`)
+            $("#uploaderFiles").append("<li class='weui-uploader__file image' id=" + (count+i) + "><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src=" + localIds[i] + "></li>")
             number++;
             if (number >= 9) {
               $(".add").fadeOut(100)
@@ -418,15 +418,16 @@
         $(".add").fadeIn(100)
       }
       var index;
-      for (let i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+      for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
         var file = uploadCustomFileList[i];
         if(file.id == id){
           index = i;
           break;
         }
       }
-      if(index !== undefined) uploadCustomFileList.splice(index, 1);
-
+      if(index !== undefined) {
+        uploadCustomFileList.splice(index, 1);
+      }
       e.target.parentNode.remove();
     });
   });
@@ -462,7 +463,7 @@
             url: "<%=_src('')%>/reset",
             success: function(msg){
               if (msg.code === 0) {
-                  window.location.href = `<%=_src('')%>/login?status=4`
+                  window.location.href = "<%=_src('')%>/login?status=4"
               }
             },
             error:function(err){
@@ -478,9 +479,9 @@
 
     //就诊日期
     $('#userDate').on("click", function () {
-      let Y = new Date().getFullYear();
-      let M = new Date().getMonth() + 1;
-      let D = new Date().getDate();
+      var Y = new Date().getFullYear();
+      var M = new Date().getMonth() + 1;
+      var D = new Date().getDate();
       weui.datePicker({
          start: 1949, // 从今天开始
          end: new Date(),
@@ -490,8 +491,8 @@
              // console.log(result);
          },
          onConfirm: function(result){
-            $(".confirmDate").html(`${result[0].value}-${result[1].value}`)
-            admissionTime = `${result[0].value}-${result[1].value}`;
+            $(".confirmDate").html(result[0].value + '-' + result[1].value)
+            admissionTime = result[0].value + '-' + result[1].value;
             admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "-")));
             admissionTime = admissionTime.getTime();
          },
@@ -512,7 +513,7 @@
 
     $(function () {
         $('.weui-switch-cp__box').on('click', function () {
-            let isCheck = $("#switchCP").prop("checked");
+            var isCheck = $("#switchCP").prop("checked");
             if (isCheck == false) {
                 $("#uploaderCustomBtn").removeAttr("disabled");
                 $(".weui-btn_primary").css('cssText', 'background-color:##35B2F2 !important; color:#fff !important');
@@ -530,7 +531,7 @@
         } else if (!admissionTime) {
             toast('请选择就诊日期')
         } else {
-            let urlList = [];
+            var urlList = [];
             if (number === 0) {
               ajax()
             } else {
@@ -561,7 +562,7 @@
             "userId": userId
         };
         $.ajax({
-            url: `${url}api/doctorPatient/apply`,
+            url: url + "api/doctorPatient/apply",
             type: "POST",
             headers: {
                 'access-token': accessToken,

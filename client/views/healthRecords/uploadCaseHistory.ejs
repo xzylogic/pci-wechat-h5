@@ -6,9 +6,6 @@
   <title>上传病历</title>
   <% include ../layout/layout %>
   <script type="text/javascript">
-    var qiniuUrl = "<%=qiniuUrl%>" //获取七牛接口域名
-    var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
-    var userId = "<%=userId%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
   <style>
@@ -142,9 +139,13 @@
   </div>
 </body>
 <script>
+var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
+var url = "<%=url%>" //获取接口
+var userId = "<%=userId%>"
+var access_token = "<%=access_token%>" //获取access_token
 $(document).ready(function(){
 
-  $('.confirmDate').html(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+  $('.confirmDate').html(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate())
 
   function toast(msg) {
     var $toast = $('#toast');
@@ -156,9 +157,9 @@ $(document).ready(function(){
   }
 
   $(".checkDate").on('click',function () {
-    let Y = new Date().getFullYear();
-    let M = new Date().getMonth() + 1;
-    let D = new Date().getDate();
+    var Y = new Date().getFullYear();
+    var M = new Date().getMonth() + 1;
+    var D = new Date().getDate();
     weui.datePicker({
         start: 1990,
         end: new Date().getFullYear(),
@@ -167,7 +168,7 @@ $(document).ready(function(){
           
         },
         onConfirm: function (result) {
-          $('.confirmDate').html(`${result[0].value}-${result[1].value}-${result[2].value}`)
+          $('.confirmDate').html(result[0].value + '-' + result[1].value + '-' + result[2].value)
         }
     });
   })
@@ -202,9 +203,9 @@ $(document).ready(function(){
         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
         success: function (res) {
           var localIds = res.localIds;
-          for (let i = 0; i < localIds.length; i++) {
+          for (var i = 0; i < localIds.length; i++) {
             uploadCustomFileList.push({id: count + i, url: localIds[i]});
-            $("#uploaderFiles").append(`<li class="weui-uploader__file image" id="${count+i}"><i class="weui-icon-cancel delete"></i><img class="img-responsive" style="width:79px;height:79px;" src="${localIds[i]}"></li>`)
+            $("#uploaderFiles").append("<li class='weui-uploader__file image' id='" + (count+i) + "'><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src='" + localIds[i] + "'></li>")
             number++;
             if (number >= 9) {
               $(".add").fadeOut(100)
@@ -220,7 +221,7 @@ $(document).ready(function(){
 
 
   $("#uploaderCustomBtn").on('click', function(){
-    let urlList = [];
+    var urlList = [];
     if (number === 0) {
       toast('请选择图片')
     } else {
@@ -242,7 +243,7 @@ $(document).ready(function(){
         $(".add").fadeIn(100)
       }
       var index;
-      for (let i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+      for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
         var file = uploadCustomFileList[i];
         if(file.id == id){
           index = i;
@@ -291,14 +292,14 @@ var syncUpload = function(localIds){
 
 // 提交数据
 function ajax(picUrlList) {
-  let data = {
+  var data = {
     imgUrlList: picUrlList,
     checkDate: $('.confirmDate').text(),
     userId: userId
   }
   $.ajax({
     type: 'post',
-    url: `${healthUrl}record/photo/upload`,
+    url: healthUrl + "record/photo/upload",
     headers:{
       'healthClient': 'pci'
     },
@@ -307,6 +308,9 @@ function ajax(picUrlList) {
     contentType: 'application/json;charset=UTF-8',
     success: function (success) {
       if ( success && success.code === 0) {
+        if (success.data.isFirst == true) {
+          saveIntegral()
+        }
         $('#iosDialog2').fadeIn(200);
       } else {
         $(".error").css({'display': 'block'})
@@ -317,6 +321,23 @@ function ajax(picUrlList) {
       console.log(error);
     }
   })
+
+  //增加积分
+  function saveIntegral() {
+    $.ajax({
+      type: 'post',
+      url: url + "api/integralDetail/saveIntegral?userId=" + userId + "&type=2",
+      headers:{
+        'access-token': access_token
+      },
+      success: function (success) {
+        console.log(success);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    })
+  }
 }
   
 </script>

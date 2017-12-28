@@ -7,7 +7,7 @@
   <% } else {%>
     <title>登录</title>
   <% } %>
-  <% include ../layout/layout %>
+    <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
     <style>
@@ -35,17 +35,20 @@
         border: 1px solid #35b2f2;
         border-radius: 12px;
       }
-      .weui-toast{
+      .toast{
         min-height: 0;
         top: 50%;
         width: 80%;
         margin-left: -40%;
     }
-    .weui-toast p{
+    .toast p{
         margin:0;
         font-size: 14px;
         padding: 3px 0;
     }
+    .weui-btn_primary:not(.weui-btn_disabled):active{
+        background-color: #ccc; 
+      }
     </style>
 </head>
 
@@ -89,7 +92,7 @@
   </div>
   <div id="toast" style="display: none;">
     <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
+    <div class="weui-toast toast">
         <p class="weui-toast__content"></p>
     </div>
   </div>
@@ -97,10 +100,15 @@
 
 </html>
 <script>
+
+var share = new share("<%= _src('') %>") //jssdk分享页面
 var status = "<%=status%>";
 var doctor = "<%=doctor%>";
 var tel = "<%=tel%>";
+var Dotel = "<%=Dotel%>";
+
 $(document).ready(function() {
+
   $(".form-container").Validform({
     tiptype: 3,
     postonce: true,
@@ -110,7 +118,7 @@ $(document).ready(function() {
   });
 
   $(".weui-btn").on('click',function() {
-    let code = $(".input-field input").val()
+    var code = $(".input-field input").val()
     if (code) {
       if ((/^\d{6}$/).test(code)) {
         validation(code)
@@ -121,9 +129,9 @@ $(document).ready(function() {
       toast('请填写验证码')
     }
   })
-
   $("#code").on('input', function() {
-    let count = $(this).val().length
+    var count = $(this).val().length
+
     if (count === 6) {
       $(".weui-btn").attr('disabled',false)
       $(".weui-btn").css({
@@ -175,26 +183,28 @@ function timedCount() {
 function validation(code){
   $.ajax({
     type: 'post',
-    url: `<%=_src('/login/verify')%>?tel=${tel}&status=${status}&doctor=${doctor}`,
+    url: "<%=_src('/login/verify')%>?tel=" + tel + "&status=" + status + "&doctor=" + doctor,
     data: {code:code},
     success: function(res) {
       if (res.data && res.data.code === 0) {
         if (status == 0) {
-          window.location = `<%=_src('/login/success?name=${res.data.name}')%>`
+          window.location = "<%=_src('/login/success')%>?name="+ res.data.name
         } else if (status == 1) {
-          window.location = `<%=_src('/uploadCaseHistory')%>`
+          window.location = "<%=_src('/uploadCaseHistory')%>"
         } else if (status == 2) {
-          window.location = `<%=_src('/EMR')%>`
+          window.location = "<%=_src('/EMR')%>"
         } else if (status == 3) {
-          window.location = `<%=_src('/followUp')%>`
+          window.location = "<%=_src('/followUp')%>"
         } else if (status == 4) {
-          window.location = `<%=_src('/find-doctor')%>?doctor=${doctor}`
+          window.location = "<%=_src('/find-doctor')%>?doctor=" + doctor
         } else if (status == 5) {
-          window.location = `<%=_src('/authlist')%>`
+          window.location = "<%=_src('/authlist')%>"
         } else if (status == 6) {
-          window.location = `<%=_src('/followfeedback')%>`
+          window.location = "<%=_src('/followfeedback')%>"
         } else if (status == 7) {
-          window.location = `<%=_src('/family')%>`
+          window.location = "<%=_src('/family')%>"
+        } else if (status == 8) {
+          window.location = "<%=_src('/find-doctor/check-in')%>?tel=" + Dotel
         }
       } else {
         toast(res.err)
@@ -206,6 +216,7 @@ function validation(code){
     }
   })
 }
+
 
 function toast(msg) {
   var $toast = $('#toast');

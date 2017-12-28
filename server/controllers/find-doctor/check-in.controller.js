@@ -4,7 +4,7 @@ var auth = require('../common/auth');
 
 module.exports = {
 
-    checkIn: (req, res) => {
+  checkIn: (req, res) => {
     let doctorId = req.query.doctorId || '';
     let doctor = req.query.doctor || '';
     let doctorPic = req.query.doctorPic || '';
@@ -12,13 +12,13 @@ module.exports = {
     let department = req.query.department || '';
     let doctorTitle = req.query.doctorTitle || '';
     let hospitalName = req.query.hospitalName || '';
-    let tel = req.query.tel || '';
-    let url = requestTool.setAuthInfoUrl('/find-doctor/check-in', '');
+    let Dotel = req.query.tel || '';
+    let url = requestTool.setAuthUrl('/find-doctor/check-in', Dotel);
     let urlQiniu = `${global.config.server}api/qiniu/auth`;
-    auth.getOpenId(req, res, url, (openId) => {
+    auth.getFatherOpenId(req, res, url, (state) => {
       auth.isLogin(req, (data) =>{
-        if (tel) {
-           requestTool.getHeader('doctorInfo', data.access_token, `phone=${tel}`, (_res) => {
+        if (Dotel) {
+           requestTool.getHeader('doctorInfo', data.access_token, `phone=${Dotel}`, (_res) => {
               if (_res.code === 0 && _res.data) {
                 res.render('doctor/check-in',{
                     doctorId: _res.data.doctorId || '',
@@ -55,7 +55,7 @@ module.exports = {
           });
         }
       },() =>{
-        res.redirect(`${global.config.root}/login?status=4`);
+        res.redirect(`${global.config.root}/login?status=8&&Dotel=${state}`);
       })
-    });
-}}
+    })
+  }}

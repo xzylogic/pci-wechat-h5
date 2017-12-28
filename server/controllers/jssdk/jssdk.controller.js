@@ -17,28 +17,28 @@ module.exports = {
   getSignature: (req,res) => {
     var url = req.query.url || '';
     var date = new Date().getTime();
-    var accdata = {};
+    // var accdata = {};
     var jsapidata = {};
-    accdata.grant_type ="client_credential";
-    accdata.appid = global.config.appId;
-    accdata.secret = global.config.secret;
+    // accdata.grant_type ="client_credential";
+    // accdata.appid = global.config.appId;
+    // accdata.secret = global.config.secret;
     jsapidata.type = "jsapi";
     jsapidata.access_token = "";
-    files.readFile(req, res, 'access_token', (token) => {
-      files.readFile(req, res, 'jsapi_ticket', (ticket) => {
-        if (Number(ticket.date) + 7000000 > date) {
-          let signature = sign(ticket.jsapi_ticket,url); //签名算法
-          res.send({
-            appId:global.config.appId,
-            nonceStr:signature.nonceStr,
-            timestamp:signature.timestamp,
-            signature:signature.signature,
-          })
-        } else {
-          requestTool.getAccessToken(accdata,(_data) => {
-            files.writtenFile("access_token", _data.access_token);
-            jsapidata.access_token = _data.access_token;
-            requestTool.getJsapiTicket(jsapidata,(_res) =>{
+    files.readFile(req, res, 'jsapi_ticket', (ticket) => {
+      if (Number(ticket.date) + 7000000 > date) {
+        let signature = sign(ticket.jsapi_ticket,url); //签名算法
+        res.send({
+          appId:global.config.appId,
+          nonceStr:signature.nonceStr,
+          timestamp:signature.timestamp,
+          signature:signature.signature,
+        })
+      } else {
+        requestTool.getAccessToken((_data) => {
+          files.writtenFile("access_token", _data.data);
+          jsapidata.access_token = _data.data;
+          requestTool.getJsapiTicket(jsapidata,(_res) =>{
+            if (_res.ticket) {
               files.writtenFile("jsapi_ticket", _res.ticket);
               let signature = sign(_res.ticket,url); //签名算法
               res.send({
@@ -47,14 +47,18 @@ module.exports = {
                 timestamp:signature.timestamp,
                 signature:signature.signature,
               })
-            }, err =>{
-                res.send("请求jsapi_ticket失败");
-            })
-          },err =>{
-              res.send("请求access_token失败");
+            } else {
+              res.send({
+                msg: 'access_token过期或无效'
+              })
+            }
+          }, err =>{
+              res.send("请求jsapi_ticket失败");
           })
-        }
-      })
+        },err =>{
+            res.send("请求access_token失败");
+        })
+      }
     }) 
   },
 
@@ -66,11 +70,6 @@ module.exports = {
       code: 0
     })
   },
-
-  getImg: (req, res) => {
-    res.render('assessment/img')
-  },
-
    // 上传图片
   uploadImg: (req, res) => {
     let postData = '';
@@ -82,10 +81,11 @@ module.exports = {
     req.addListener('end', () => {
       let data = JSON.parse(postData);
       var imgUrl = [];
-      files.readFile(req, res, 'access_token', (token) => {
+      requestTool.getAccessToken((_data) => {
+        var access_token = _data.data
         for (let i = 0; i < data.length; i++) {
           let randomName = 'image'+Date.now()+ String(Math.random()).substring(3)+'.jpg';
-          let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${token.access_token}&media_id=${data[i]}`
+          let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${access_token}&media_id=${data[i]}`
           bucketManager.fetch(url, 'fw-pci', randomName, function(err, respBody, respInfo) {
             if (err) {
               res.send({
@@ -109,6 +109,8 @@ module.exports = {
             }
           });
         }
+      },err =>{
+        console.log("请求access_token失败");
       })
     })
   },

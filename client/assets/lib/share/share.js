@@ -23,9 +23,9 @@ function share(pathName){
     // 分享给朋友
       wx.onMenuShareAppMessage({
           title: '全程心管家', // 分享标题
-          desc: `全程心管家，健康你我他`, // 分享描述
-          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图标
+          desc: "携手全程心管家，共享健康心生活", // 分享描述
+          link: pathName + "/share", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: pathName + "/image/assessment/331506325982_.pic_hd.jpg", // 分享图标
           success: function () { 
               // 用户确认分享后执行的回调函数
           },
@@ -36,8 +36,8 @@ function share(pathName){
       // 分享到朋友圈
       wx.onMenuShareTimeline({
           title: '全程心管家', // 分享标题
-          link: `${pathName}/share`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: `${pathName}/image/assessment/331506325982_.pic_hd.jpg`, // 分享图
+          link: pathName + "/share", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: pathName + "/image/assessment/331506325982_.pic_hd.jpg", // 分享图
           success: function () { 
               // 用户确认分享后执行的回调函数
           },

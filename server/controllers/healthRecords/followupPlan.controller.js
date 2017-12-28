@@ -55,6 +55,7 @@ module.exports = {
 	},
   // 随访计划详情
   getfollowupPlanDetail: (req, res) => {
+
     let url = requestTool.setAuthUrl('/followUpDetail', '');
     let doctorId = req.query.doctorId || '';
     auth.getOpenId(req, res, url, (openId) => {
@@ -130,91 +131,84 @@ module.exports = {
     let otherRemind = req.query.otherRemind || '';
     let feedbackTimes = req.query.feedbackTimes || '';
     let dn = req.query.dn || '';
-    let url = requestTool.setAuthUrl('/followfeedback', '');
-    auth.getOpenId(req, res, url, (openId) => {
-      auth.isLogin(req, (data) => {
-        if (feedbackTimes == 0) {
-          requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/17`, data.access_token, '', (_data) =>{
-            if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item && !_data.data.firstPushStatus) {
-              let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
-              res.render('healthRecords/followfeedback',{
-                plan: _data.data.plan,
-                item: _data.data.item,
-                otherRemind: otherRemind,
-                feedbackTimes: feedbackTimes,
-                flupFeedbackId: fbId,
-                firstPushTime: firstPushTime,
-                dn: dn,
-                url: global.config.userServer,
-                access_token: data.access_token
-              })
-            } else if (_data.code === 0 && _data.data && _data.data.firstPushStatus) {
-                res.redirect(`${global.config.root}/followfailure`);
-            } else if (_data.code === 403) {
-              res.clearCookie('accessToken');
-              res.clearCookie('userId');
-              res.redirect(`${global.config.root}/login?status=6`);
-            } else {
-              res.render('error', {
-                message: _data.msg || '未知错误'
-              });
-            }
-          }, (error) => {
+    auth.isLogin(req, (data) => {
+      if (feedbackTimes == 0) {
+        requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
+          if (_data.code === 0 && _data.data && _data.data.firstPushStatus == true || _data.data.firstPushStatus == false) {
+              res.redirect(`${global.config.root}/followfailure`);
+          } else if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item) {
+            let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
+            res.render('healthRecords/followfeedback',{
+              plan: _data.data.plan,
+              item: _data.data.item,
+              otherRemind: otherRemind,
+              feedbackTimes: feedbackTimes,
+              flupFeedbackId: fbId,
+              firstPushTime: firstPushTime,
+              dn: dn,
+              url: global.config.userServer,
+              access_token: data.access_token
+            })
+          }else if (_data.code === 403) {
+            res.clearCookie('accessToken');
+            res.clearCookie('userId');
+            res.redirect(`${global.config.root}/login?status=6`);
+          } else {
             res.render('error', {
-              message: error
+              message: _data.msg || '未知错误'
             });
-          })
-        } else if (feedbackTimes == 1) {
-          requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
-            if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item && !_data.data.secondPushStatus) {
-              let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
-              let a = new Set(_data.data.plan);
-              let b = new Set(_data.data.item);
-              let differenceABSet = new Set([...a].filter(x => !b.has(x)));
-              let plan = [];
-              differenceABSet.forEach(function(obj){
-                plan.push(obj)
-              })
-              res.render('healthRecords/followfeedback',{
-                plan: plan,
-                item: _data.data.item,
-                otherRemind: otherRemind,
-                feedbackTimes: feedbackTimes,
-                firstPushTime: firstPushTime,
-                flupFeedbackId: fbId,
-                dn: dn,
-                url: global.config.userServer,
-                access_token: data.access_token
-              })
-            } else if (_data.code === 0 && _data.data && _data.data.secondPushStatus) {
-                res.redirect(`${global.config.root}/followfailure`);
-            } else if (_data.code === 403) {
-              res.clearCookie('accessToken');
-              res.clearCookie('userId');
-              res.redirect(`${global.config.root}/login?status=6`);
-            } else {
-              res.render('error', {
-                message: _data.msg || '请求错误'
-              });
-            }
-          }, (error) => {
-            res.render('error', {
-              message: error
-            });
-          })
-        } else {
+          }
+        }, (error) => {
           res.render('error', {
-            message: '请求错误'
+            message: '请求出错了'
           });
-        }
-      }, () => {
-        // 未登录跳转登录页面
-        res.redirect(`${global.config.root}/login?status=6`);
-      });
-    }, (err) => {
-      res.render('error', {
-        message: err
-      });
+        })
+      } else if (feedbackTimes == 1) {
+        requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
+          if (_data.code === 0 && _data.data && _data.data.secondPushStatus == true || _data.data.secondPushStatus == false) {
+              res.redirect(`${global.config.root}/followfailure`);
+          } else if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item) {
+            let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
+            let a = new Set(_data.data.plan);
+            let b = new Set(_data.data.item);
+            let differenceABSet = new Set([...a].filter(x => !b.has(x)));
+            let plan = [];
+            differenceABSet.forEach(function(obj){
+              plan.push(obj)
+            })
+            res.render('healthRecords/followfeedback',{
+              plan: plan,
+              item: _data.data.item,
+              otherRemind: otherRemind,
+              feedbackTimes: feedbackTimes,
+              firstPushTime: firstPushTime,
+              flupFeedbackId: fbId,
+              dn: dn,
+              url: global.config.userServer,
+              access_token: data.access_token
+            })
+          } else if (_data.code === 403) {
+            res.clearCookie('accessToken');
+            res.clearCookie('userId');
+            res.redirect(`${global.config.root}/login?status=6`);
+          } else {
+            res.render('error', {
+              message: _data.msg || '请求错误'
+            });
+          }
+        }, (error) => {
+          res.render('error', {
+            message: error
+          });
+        })
+      } else {
+        res.render('error', {
+          message: '请求错误'
+        });
+      }
+    }, () => {
+      // 未登录跳转登录页面
+      res.redirect(`${global.config.root}/login?status=6`);
     });
   },
 
