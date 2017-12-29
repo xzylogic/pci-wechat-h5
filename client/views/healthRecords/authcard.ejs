@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>实名认证</title>
+  <% include ../layout/layout %>
+  <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
+  <script src="<%=_src('/lib/flexible/rem.min.js')%>"></script>
+  <script type="text/javascript">
+    var url = "<%=url%>" //获取接口地址
+    var access_token = "<%=access_token%>" //获取access_token
+    var userId = "<%=userId%>"
+    var share = new share("<%=_src('')%>") //jssdk分享页面
+  </script>
+  <style>
+    body{
+      background: #ebebeb;
+      color: #666;
+    }
+    .weui-cells:after, .weui-cells:before{
+      z-index: 0;
+    }
+    .weui-cell:before{
+      z-index: 0;
+    }
+    .weui-gallery{
+      font-size: 0.35rem;
+    }
+    .weui-cells{
+      margin-top: 0;
+      font-size: 0.35rem;
+    }
+    .weui-cell{
+      font-size: 0.35rem;
+    }
+    .weui-btn_primary:not(.weui-btn_disabled):active{
+      background-color: #6fc8f6;
+    }
+    .authphone_footer{
+      position: fixed;
+      left: 0;
+      bottom:0;
+      width: 100%;
+    }
+    .authphone_footer_error{
+      padding:0 0.375rem;
+      text-align: left;
+      font-size: 0.3rem;
+      color: #DA322E;
+    }
+    .authphone_btn a{
+      background:#35B2F2;
+      font-size: 0.35rem;
+    }
+    .authphone_form{
+      background:#fff;
+    }
+    .weui-btn{
+      border-radius: 0;
+    }
+    .weui-btn:after{
+      border: 0;
+    }
+    .card_sample{
+      margin-top: 0.25rem;
+    }
+    .weui-uploader__bd{
+      overflow: initial;
+    }
+    .card_sample_img{
+      text-align: center;
+    }
+    .card_sample_img img{
+      width: 5.0rem;
+    }
+    .card_number{
+      text-transform: uppercase;
+    }
+    .weui-toast{
+        min-height: 0;
+        top: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-left: -1.25rem;
+        margin-top: -1.25rem;
+    }
+    .weui-toast p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
+    }
+    .weui-icon_toast.weui-loading{
+      margin: 0.2rem 0 0;
+      width: 0.8rem;
+      height: 0.8rem;
+    }
+    .weui-uploader__input-box{
+      float: none;
+      margin: 0 auto;
+    }
+    .weui-uploader__file{
+      float: none;
+      margin: 0 auto;
+      position: relative;
+    }
+    #uploaderFiles li{
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body ontouchstart id="authcard">
+  <div class="authcard">
+    <div class="authphone_form">
+      <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" id="name" type="text" placeholder="请输入姓名"/>
+        </div>
+      </div>
+      <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">身份证号</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input card_number" id="card" type="text" maxlength="18" placeholder="请输入身份证号"/>
+        </div>
+      </div>
+      <div class="weui-cells weui-cells_form" id="uploader">
+        <div class="weui-cell">
+           <div class="weui-cell__bd">
+               <div class="weui-uploader">
+                   <div class="weui-uploader__hd">
+                       <p class="weui-uploader__title">身份证图片</p>
+                   </div>
+                   <div class="weui-uploader__bd">
+                       <ul class="weui-uploader__files" id="uploaderFiles"></ul>
+                       <div class="weui-uploader__input-box add">
+                         <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>
+                      </div>                   
+                   </div>
+               </div>
+           </div>
+        </div>
+      </div>
+    </div>
+    <div class="weui-cells weui-cells_form card_sample">
+      <div class="weui-cell">
+         <div class="weui-cell__bd">
+             <div class="weui-uploader">
+                 <div class="weui-uploader__hd">
+                     <p class="weui-uploader__title">标准身份证照片示例</p>
+                 </div>
+                 <div class="weui-uploader__bd card_sample_img">
+                     <img src="<%=_src('/image/realNameAuth/@3x身份证照片示例.png')%>" alt="">                   
+                 </div>
+             </div>
+         </div>
+      </div>
+    </div>
+    <div class="authphone_footer">
+      <div class="authphone_footer_error">
+        *实名信息方便医生确认您的身份，将被严格保密。仅医患双方可见
+      </div>
+      <div class="page__bd page__bd_spacing authphone_btn">
+        <a href="javascript:;" class="weui-btn weui-btn_primary" id="authphone_btn">申请实名认证</a>
+      </div>
+    </div>
+    <div id="dialogs">
+      <div class="js_dialog" id="iosDialog2" style="display: none;">
+          <div class="weui-mask"></div>
+          <div class="weui-dialog">
+              <div class="weui-dialog__bd">您的实名认证已提交，请耐心等待确认通知。</div>
+              <div class="weui-dialog__ft">
+                  <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div id="audit_toast" style="display: none;">
+      <div class="weui-mask_transparent"></div>
+      <div class="weui-toast">
+          <i class="weui-loading weui-icon_toast"></i>
+          <p class="weui-toast__content">服务器请求中</p>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+$(document).ready(function(){
+
+  // 判断手机类型
+  var u = navigator.userAgent;
+  if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+    $("#uploaderInput").attr("capture","camera");
+  } else if (u.indexOf('iPhone') > -1) {
+    //苹果手机
+  } else if (u.indexOf('Windows Phone') > -1) {
+    //winphone手机
+  }
+
+  /* 图片手动上传 */
+  var uploadCustomFileList = [];
+   // 申请认证
+  $("#authphone_btn").on('click',function() {
+    var name = $("#name").val(),
+        card = $("#card").val();
+    if (testName(name) === true && testCard(card) === true && testiamge()) {
+      authcard(name, card);
+    }   
+  });
+
+  // 验证姓名
+  function testName(name) {
+    if (name) {
+      if ((/^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/).test(name)) {
+        return true;
+      } else {
+        $(".authphone_footer_error").css('text-align','center')
+        $(".authphone_footer_error").html('*请填写正确的姓名');
+      }
+    } else {
+      $(".authphone_footer_error").css('text-align','center')
+      $(".authphone_footer_error").html('*请输入姓名');
+    }
+  };
+
+  //验证身份证
+  function testCard(card) {
+    if (card) {
+      if ((/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/).test(card)) {
+        return true;
+      } else {
+        $(".authphone_footer_error").css('text-align','center')
+        $(".authphone_footer_error").html('*请输入正确的身份证号码');
+      }
+    } else {
+      $(".authphone_footer_error").css('text-align','center')
+      $(".authphone_footer_error").html('*请输入身份证号码');
+    }
+  };
+
+  // 验证图片是否选择
+  function testiamge() {
+    if (uploadCustomFileList.length !== 0) {
+      return true
+    } else {
+      $(".authphone_footer_error").css('text-align','center')
+      $(".authphone_footer_error").html('*请选择上传图片');
+    }
+  }
+
+  // 这里是简单的调用，其余api请参考文档
+  var uploadCount = 0;
+  weui.uploader('#uploader', {
+     url: 'http://10.2.97.46:3000/pci-wechat/authcardapi',
+     auto: false,
+     type: 'file',
+     fileVal: 'fileVal',
+     compress: {
+         width: 1600,
+         height: 1600,
+         quality: .8
+     },
+     onBeforeQueued: function(files) {
+         // `this` 是轮询到的文件, `files` 是所有文件
+
+         if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
+             weui.alert('请上传图片');
+             return false; // 阻止文件添加
+         }
+         if(this.size > 10 * 1024 * 1024){
+             weui.alert('请上传不超过10M的图片');
+             return false;
+         }
+         if (files.length > 1) { // 防止一下子选择过多文件
+             weui.alert('最多只能上传1张图片，请重新选择');
+             return false;
+         }
+         if (uploadCount + 1 > 1) {
+             weui.alert('最多只能上传1张图片');
+             return false;
+         }
+         ++uploadCount;
+         // return true; // 阻止默认行为，不插入预览图的框架
+     },
+     onQueued: function(){
+        $(".add").fadeOut(0)
+         uploadCustomFileList.push(this);
+         // console.log(this.status); // 文件的状态：'ready', 'progress', 'success', 'fail'
+         // console.log(this.base64); // 如果是base64上传，file.base64可以获得文件的base64
+
+         // this.upload(); // 如果是手动上传，这里可以通过调用upload来实现；也可以用它来实现重传。
+         // this.stop(); // 中断上传
+
+         // return true; // 阻止默认行为，不显示预览图的图像
+     },
+     onBeforeSend: function(data, headers){
+         console.log(this, data, headers);
+         // $.extend(data, { test: 1 }); // 可以扩展此对象来控制上传参数
+         // $.extend(headers, { Origin: 'http://127.0.0.1' }); // 可以扩展此对象来控制上传头部
+
+         // return false; // 阻止文件上传
+     },
+     onProgress: function(procent){
+         console.log(this, procent);
+         // return true; // 阻止默认行为，不使用默认的进度显示
+     },
+     onSuccess: function (ret) {
+         console.log(this, ret);
+         // return true; // 阻止默认行为，不使用默认的成功态
+     },
+     onError: function(err){
+         console.log(this, err);
+         // return true; // 阻止默认行为，不使用默认的失败态
+     }
+  });
+
+  // 缩略图预览
+  $('#uploaderFiles').on('click', '.weui-uploader__file', function(e){
+      var target = e.target;
+
+      while(!target.classList.contains('weui-uploader__file') && target){
+          target = target.parentNode;
+      }
+      if(!target) return;
+
+      var url = target.getAttribute('style') || '';
+      var id = target.getAttribute('data-id');
+
+      if(url){
+          url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '');
+      }
+      var gallery = weui.gallery(url, {
+          onDelete: function(){
+              weui.confirm('确定删除该图片？', function(){
+                  --uploadCount;
+                  $(".add").fadeIn(0)
+                  var index;
+                  for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+                      var file = uploadCustomFileList[i];
+                      if(file.id == id){
+                          index = i;
+                          break;
+                      }
+                  }
+                  if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+                  target.parentNode.remove();
+                  gallery.hide();
+              });
+          }
+      });
+  });
+
+  $("#uploaderFiles").on('click', '.delete', function(e){
+    var event = e || window.event;
+    if(event.stopPropagation){
+      event.stopPropagation();
+    } else {
+      e.cancelBubble = true;
+    }
+    var id = e.target.getAttribute('delete-id');
+    weui.confirm('确定删除该图片？', function(){
+      --uploadCount;
+      $(".add").fadeIn(0)
+        var index;
+        for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+            var file = uploadCustomFileList[i];
+            if(file.id == id){
+                index = i;
+                break;
+            }
+        }
+        if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+        e.target.parentNode.remove();
+    });
+  });
+
+  // token过期，重新登录
+  function reset() {
+    $.ajax({
+      type: "get",
+      url: "<%=_src('')%>/reset",
+      success: function(msg){
+        if (msg.code === 0) {
+            window.location.href = `<%=_src('')%>/login?status=5`
+        }
+      },
+      error:function(err){
+        console.log(err);
+      }
+    });
+  }
+
+   //提交请求
+ function authcard(name, card) {
+    auditToast()
+    var formData = new FormData();
+    formData.append('name', name);
+    formData.append('card', card);
+    formData.append('userId', userId);
+    formData.append('file', uploadCustomFileList[0])
+    $.ajax({
+      type: 'post',
+      url: url + "api/idCardValidates/validate",
+      headers: {
+        'access-token': access_token
+      },
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        $('#audit_toast').fadeOut(100);
+        if (res && res.code === 0) {
+          $('#iosDialog2').fadeIn(200);
+        } else if (res && res.code === 403) {
+          weui.alert('请重新登录', function(){
+            reset();
+          })
+        } else {
+          $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
+        }
+      },
+      error: function (error) {
+        console.log(error)
+        $('#audit_toast').fadeOut(100);
+        $(".authphone_footer_error").css('text-align','center')
+        $(".authphone_footer_error").html('服务器请求出错~请稍后再试');
+      }
+    })
+  };
+
+   function auditToast() {
+      var $toast = $('#audit_toast');
+      if ($toast.css('display') != 'none') return;
+      $toast.fadeIn(100);
+   }
+
+  $('#dialogs').on('click', '.weui-dialog__btn', function(){
+    $(this).parents('.js_dialog').fadeOut(200);
+    wx.closeWindow();
+  });
+
+  $(document).on('click', '.click_img', function() {
+    $(".image_close").slideDown(600).delay(3000).slideUp(600)
+    $(".weui-gallery__opr").slideDown(600).delay(3000).slideUp(600)
+  })
+
+  //底部提交按钮顶上去
+  var oHeight = $(document).height(); //浏览器当前的高度
+
+   $(window).resize(function(){
+ 
+        if($(document).height() < oHeight){
+         
+        $(".authphone_footer").css("display","none");
+    }else{
+         
+        $(".authphone_footer").css("display","block");
+    }
+        
+   });
+
+
+}) 
+</script>
+</html>

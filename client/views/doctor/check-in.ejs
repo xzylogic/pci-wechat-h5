@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>向医生报到</title>
+    <% include ../layout/layout %>
+    <link rel="stylesheet" href="<%= _src('/css/basic/basic.min.css') %>">
+    <script src="<%= _src('/lib/validform/Validform_v5.3.2_min.js') %>"></script>
+    <script type="text/javascript">
+      var share = new share("<%=_src('')%>") //jssdk分享页面
+    </script>
+</head>
+
+<body ontouchstart>
+<div class="dc-check-in">
+    <div class="weui-flex navigation">
+        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span>1</span> 注册登录</div></div>
+        <div style="text-align: center;"><div class="placeholder">-------></div></div>
+        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span style="color: #fff;background: #35b2f2;">2</span> 向医生报到</div></div>
+    </div>
+    <div class="doc-intro">
+        <div class="doc-into">
+            <div class="doc-img">
+                <img class="doc-pic" src="<%= doctorPic %>"></div>
+            <div class="doc-content">
+                <p class="doc-name"><%= doctorName %></p>
+                <p class="doc-title"><%= department %> <%= doctorTitle %></p>
+                <p class="doc-hospital"><%= hospitalName %></p>
+            </div>
+        </div>
+        <div class="doc-tipe">
+            <p>患者你好！我是<%= doctorName %>医生，若您曾在我这就诊过，请完整填写个人信息。如有出院小结等资料，请一并拍照上传！</p>
+        </div>
+    </div>
+    <div class="patient">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label" style="color: #333;">真实姓名</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" pattern="" maxlength="10" style="color: #666;text-align: right" id="userName"
+                       placeholder="请填写"/>
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_access js_item" id="userDate" style="border-top: 1px solid #ececec;">
+            <div class="weui-cell__bd"><label for="" class="weui-label" style="color: #333;">就诊日期</label></div>
+            <div class="weui-cell__ft confirmDate">请选择</div>
+        </div>
+    </div>
+    <div class="patient-introduce">
+        <div class="weui-cells__title" style="font-size: 14px;color: #333;">申请描述</div>
+        <div class="weui-cells weui-cells_form"
+             style="border-radius: 4px;border-left: 1px solid #ececec;border-right: 1px solid #ececec;">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <textarea class="weui-textarea" style="font-size: 14px;color: #999;" id="userIntroduce"
+                              rows="4" maxlength="100"></textarea>
+                    <div class="weui-textarea-counter"><span>0</span>/100</div>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cell" id="uploader">
+            <div class="weui-cell__bd">
+                <div class="weui-uploader">
+                    <div class="weui-uploader__hd">
+                        <p class="weui-uploader__title" style="font-size: 14px;color: #333;">添加病历出院小结等照片</p>
+                        <div class="weui-uploader__info"><span id="number">0</span>/9</div>
+                    </div>
+                    <div class="weui-uploader__bd">
+                        <ul class="weui-uploader__files" id="uploaderFiles"></ul>
+                        <div class="weui-uploader__input-box add">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_switch patient-btn">
+        <div class="weui-cell__bd">允许医生查看我的全部病例</div>
+        <div class="weui-cell__ft">
+            <label for="switchCP" class="weui-switch-cp">
+                <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked"/>
+                <div class="weui-switch-cp__box"></div>
+            </label>
+        </div>
+    </div>
+    <button class="weui-btn weui-btn_primary check-btn " id="uploaderCustomBtn">立即申请</button>
+</div>
+<div id="toast" style="display: none;">
+  <div class="weui-mask_transparent"></div>
+  <div class="weui-toast message">
+      <p class="weui-toast__content"></p>
+  </div>
+</div>
+<div id="audit_toast" style="display: none;">
+  <div class="weui-mask_transparent"></div>
+  <div class="weui-toast">
+      <i class="weui-loading weui-icon_toast"></i>
+      <p class="weui-toast__content">服务器请求中</p>
+  </div>
+</div>
+<div id="dialogs">
+  <div class="js_dialog" id="iosDialog2" style="display: none;">
+      <div class="weui-mask"></div>
+      <div class="weui-dialog">
+          <div class="weui-dialog__bd">你已提交成功，请耐心等待<%= doctorName %>医生的确认</div>
+          <div class="weui-dialog__ft">
+              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+          </div>
+      </div>
+  </div>
+</div>
+</body>
+</html>
+<style>
+    #userIntroduce::-webkit-input-placeholder{
+      color: #ccc;
+    }
+    .weui-cell:before {
+        border-top: none;
+    }
+    .weui-cells:after, .weui-cells:before{
+      z-index: 0;
+    }
+    .weui-cell:before{
+      z-index: 0;
+    }
+    .message{
+        min-height: 0;
+        top: 50%;
+        width: 80%;
+        margin-left: -40%;
+    }
+    .message p{
+        margin:0;
+        font-size: 14px;
+        padding: 3px 0;
+    }
+
+    .dc-top {
+        font-size: 14px;
+        color: #35B2F2;
+        height: 30px;
+        margin: 10px 0 5px 0;
+        text-align: center;
+    }
+
+    .dc-middle {
+        width: 90%;
+        height: 100%;
+        margin: 0 auto;
+    }
+
+    .dc-num1 {
+        height: 20px;
+        width: 20px;
+        background-color: #35B2F2;
+        color: white;
+        border-radius: 20px;
+        border: 2px solid #35B2F2;
+        text-align: center;
+        float: left;
+    }
+
+    .dc-num2 {
+        height: 20px;
+        width: 20px;
+        background-color: white;
+        border-radius: 20px;
+        border: 2px solid #35B2F2;
+        text-align: center;
+        float: left;
+        margin-left: 4%;
+    }
+
+    .dc-top-title {
+        float: left;
+        margin-left: 2%;
+    }
+
+    .dc-top-img {
+        width: 13%;
+        float: left;
+        margin-left: 4%;
+        height: 12px;
+        margin-top: 5px;
+    }
+
+    .doc-intro {
+        background-color: white;
+        height: 175px;
+        padding: 10px 15px;
+    }
+
+    .doc-into {
+        height: 95px;
+        border-bottom: 1px dotted #dfdfdf;
+    }
+
+    .doc-img {
+        float: left;
+        width: 25%
+    }
+
+    .doc-pic {
+        width: 70px;
+        height: 70px;
+        border-radius: 35px;
+    }
+
+    .doc-content {
+        float: left;
+        width: 70%;
+    }
+
+    .doc-name {
+        font-size: 17px;
+        color: #333;
+    }
+
+    .doc-title {
+        font-size: 14px;
+        color: #999
+    }
+
+    .doc-hospital {
+        font-size: 14px;
+        color: #999
+    }
+
+    .doc-tipe {
+        height: 87px;
+        padding: 10px 0;
+        font-size: 14px;
+        color: #999;
+    }
+
+    .patient {
+        height: 90px;
+        margin-top: 10px;
+        background-color: white;
+        font-size: 16px;
+    }
+
+    .patient-introduce {
+        background-color: white;
+        margin-top: 10px;
+        padding: 10px 15px;
+    }
+
+    .patient-btn {
+        margin-top: 10px;
+        background-color: white;
+        color: #333;
+    }
+
+    .check-btn {
+        background-color: #35B2F2;
+    }
+    .weui-btn{
+      border-radius: 0;
+    }
+
+    .weui-uploader__bd {
+        overflow: inherit;
+    }
+    .navigation{
+      width: 100%;
+      margin: 10px auto 0;
+      color: #35b2f2;
+      font-size: 14px;
+      text-align: center;
+    }
+    .navigation span{
+      text-align: center;
+      width: 24px;
+      display: inline-block;
+      border: 1px solid #35b2f2;
+      border-radius: 12px;
+    }
+    .weui-uploader__file{
+      position: relative;
+      float: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      width: 79px;
+      height: 79px;
+      background: no-repeat 50%;
+      background-size: cover;
+    }
+    .weui-uploader__file i{
+      position: absolute;
+      right: -12px;
+      top: -10px;
+      z-index: 10;
+      width: 30px;
+      height: 30px;
+    }
+    .weui-btn_primary:not(.weui-btn_disabled):active{
+      background: #57bff4;
+    }
+</style>
+<script type="text/javascript">
+    var url = "<%= url %>"
+    var doctor = "<%=doctor%>"
+    var admissionTime = ""
+    var doctorId = '<%= doctorId %>'
+    var imgUrlList = []  // 七牛返回的图片地址列表
+    var count = 0; // 插入的li标签ID
+    var number = 0; // 图片的数量
+    var imglist = []; // 微信返回的图片的服务器端ID集合
+    var uploadCustomFileList = [];  // 选择的图片集合
+    var message = ""
+    var messageNum = 0
+    var realName = ""
+    var userId = '<%= userId %>'
+    var accessToken = '<%= accessToken %>'
+
+    if (doctor) {
+        $('.navigation').show();
+    } else {
+        $('.navigation').hide();
+    }
+    // placeholder换行
+    var placeholder = '请简单描述自己的就诊情况。\n例如：\n我是XXX，从2017年10月20日住进瑞金医院1508号床，10月25日进行了PCI手术。';
+    $('textarea').val(placeholder);
+    $('textarea').focus(function() {
+      if ($(this).val() == placeholder) {
+        $(this).val('');
+        $(this).css('color',"#333")
+      }
+    });
+
+    $('textarea').blur(function() {
+      if ($(this).val() == '') {
+        $(this).val(placeholder);
+        $(this).css('color',"#999")
+      }
+    });
+
+    ifValidate()
+
+    function ifValidate() {
+        $.ajax({
+            type: "get",
+            headers: {
+                'access-token': accessToken
+            },
+            data: {userId: userId},
+            url: url + "api/idCardValidates/getNameAndValidateIdx",
+            success: function (data) {
+                if (data.code === 0 && data.data && data.data.status === 1) {
+                    realName = data.data.name
+                    $('#userName').val(realName);
+                    $('#userName').attr('disabled',true);
+                    $('#userName').css({
+                        'color':'#333',
+                        'opacity': '1'
+                    })
+                } else if (data.code === 403) {
+                    weui.alert('请重新登录', reset())
+                } else {
+                   realName = "" 
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    };
+
+  function upload(imglist) {
+    $.ajax({
+      url: "<%=_src('/uploadimg')%>",
+      type: 'post',
+      data: JSON.stringify(imglist),
+      success: function (msg) {
+        if (msg.code === 0) {
+          imgUrlList = msg.imgurl
+          ajax()
+        } else {
+          toast('图片上传失败，请稍后重试~')
+        }
+      },
+      error: function (err) {
+        console.log(err)
+      }
+    })
+  }
+
+  $('.weui-uploader__input-box').on('click', function () {
+    wx.chooseImage({
+        count: 9, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+          var localIds = res.localIds;
+          for (var i = 0; i < localIds.length; i++) {
+            uploadCustomFileList.push({id: count + i, url: localIds[i]});
+            $("#uploaderFiles").append("<li class='weui-uploader__file image' id=" + (count+i) + "><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src=" + localIds[i] + "></li>")
+            number++;
+            if (number >= 9) {
+              $(".add").fadeOut(100)
+              break;
+            }
+          }
+          count = count + localIds.length;
+          
+          $("#number").text(number)
+        }
+    });
+  });
+
+  $("#uploaderFiles").on('click', '.delete', function(e){
+    var id = $(this).parent().attr('id')
+    weui.confirm('确定删除该图片？', function(){
+      --number;
+      $('#number').text(number);
+      if (number < 9) {
+        $(".add").fadeIn(100)
+      }
+      var index;
+      for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+        var file = uploadCustomFileList[i];
+        if(file.id == id){
+          index = i;
+          break;
+        }
+      }
+      if(index !== undefined) {
+        uploadCustomFileList.splice(index, 1);
+      }
+      e.target.parentNode.remove();
+    });
+  });
+
+  var syncUpload = function(localIds){
+      var localId = localIds.pop();
+      wx.uploadImage({
+
+          localId: localId,
+
+          isShowProgressTips: 1,
+
+          success: function (res) {
+
+              var serverId = res.serverId; // 返回图片的服务器端ID
+              imglist.push(serverId)
+              if (imglist.length === number) {
+                upload(imglist)
+              }
+              //其他对serverId做处理的代码
+
+              if(localIds.length > 0){
+                  syncUpload(localIds);
+              }
+          }
+      });
+  };
+
+    // token过期，重新登录
+    function reset() {
+       $.ajax({
+            type: "get",
+            url: "<%=_src('')%>/reset",
+            success: function(msg){
+              if (msg.code === 0) {
+                  window.location.href = "<%=_src('')%>/login?status=4"
+              }
+            },
+            error:function(err){
+              console.log(err);
+            }
+        });
+    }
+
+    //真实姓名
+    $('#userName').on("input", function () {
+      realName = this.value;
+    });
+
+    //就诊日期
+    $('#userDate').on("click", function () {
+      var Y = new Date().getFullYear();
+      var M = new Date().getMonth() + 1;
+      var D = new Date().getDate();
+      weui.datePicker({
+         start: 1949, // 从今天开始
+         end: new Date(),
+         depth: 2,
+         defaultValue: [Y,M,D],
+         onChange: function(result){
+             // console.log(result);
+         },
+         onConfirm: function(result){
+            $(".confirmDate").html(result[0].value + '-' + result[1].value)
+            admissionTime = result[0].value + '-' + result[1].value;
+            admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "-")));
+            admissionTime = admissionTime.getTime();
+         },
+         id: 'datePicker'
+      });
+    });
+
+    //申请描述
+    $('#userIntroduce').on("input", function () {
+        if (this.value.length) {
+            messageNum = this.value.length
+            message = this.value;
+            $(".weui-textarea-counter span").text(messageNum)
+        } else {
+            message = "";
+        }
+    })
+
+    $(function () {
+        $('.weui-switch-cp__box').on('click', function () {
+            var isCheck = $("#switchCP").prop("checked");
+            if (isCheck == false) {
+                $("#uploaderCustomBtn").removeAttr("disabled");
+                $(".weui-btn_primary").css('cssText', 'background-color:##35B2F2 !important; color:#fff !important');
+
+            } else {
+                $("#uploaderCustomBtn").attr({"disabled": "disabled"});
+                $(".weui-btn_primary").css('cssText', 'background-color:#ddd !important; color:#fff !important');
+            }
+        });
+    });
+
+    $('#uploaderCustomBtn').on('click', function () {
+        if (realName == "") {
+            toast('请填写真实姓名')
+        } else if (!admissionTime) {
+            toast('请选择就诊日期')
+        } else {
+            var urlList = [];
+            if (number === 0) {
+              ajax()
+            } else {
+              uploadCustomFileList.forEach(function(file){
+                urlList.push(file.url)
+                if (urlList.length === number) {
+                  syncUpload(urlList);
+                }
+              });
+            }
+        }
+    });
+
+    $('#dialogs').on('click', '.weui-dialog__btn', function(){
+        $(this).parents('.js_dialog').fadeOut(200);
+        wx.closeWindow();
+    });
+
+    //立即申请
+    function ajax() {
+        $("#audit_toast").fadeIn(0)
+        var dto = {
+            "admissionTime": admissionTime,
+            "doctorId": doctorId,
+            "imgUrlList": imgUrlList,
+            "message": message,
+            "realName": realName,
+            "userId": userId
+        };
+        $.ajax({
+            url: url + "api/doctorPatient/apply",
+            type: "POST",
+            headers: {
+                'access-token': accessToken,
+                'version': '1.3'
+            },
+            data: JSON.stringify(dto),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (data) {
+              $("#audit_toast").fadeOut()
+              if (data.code === 0) {
+                $('#iosDialog2').fadeIn(200);
+              } else if (data.code === 403) {
+                weui.alert('请重新登录',function(){
+                  reset()
+                })
+              } else {
+                 toast(data.msg)
+              }
+            },
+            error: function () {
+              $("#audit_toast").fadeOut()
+              toast('服务器请求出错了')
+            }
+        });
+    }
+
+    function toast(msg) {
+        var $toast = $('#toast');
+        $('#toast p').html(msg)
+        $toast.fadeIn(100);
+        setTimeout(function () {
+            $toast.fadeOut(100);
+        }, 1500);
+    }
+</script>

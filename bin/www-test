@@ -1,12 +1,12 @@
 'use strict';
 
 global.config = {
-  //server: 'http://pci.qcxin.com/pci-micro/',
-  server: 'http://172.18.27.62:8080/pci-micro/',
-  fatherServer: 'http://10.1.32.44/pci-operation/',
-  //domain: 'http://pci.qubaopen.cn',
-  domain: 'http://10.10.11.128:3000',
-  root: '/pci-wechat-test',
+  userServer: 'http://116.62.122.69/pci-user/',
+  healthServer: 'http://116.62.122.69/pro-health/',
+  server: 'http://116.62.122.69/pci-micro/',
+  domain: 'http://www.wangbing.ren',
+  root: '/pci-wechat',
+  filedir: '/home/admin/webapp/pci-wechat-h5',
   appId: 'wxee8d9fc7f496d8b1',
   secret:'4ee061a42331ea76af1430e02e4f6fbe'
 }
@@ -18,7 +18,7 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
 /**

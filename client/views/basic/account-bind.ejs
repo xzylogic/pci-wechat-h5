@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="<%=_src('/css/basic/account-bind.min.css')%>">
 </head>
 
-<body>
+<body ontouchstart>
   <div class="container">
     <%for(let i = 0; i < content.length; i++) {%>
       <div class="cell">
@@ -34,5 +34,7 @@
     </div>
   </div>
 </body>
-
+<script>
+  var share = new share("<%= _src('') %>") //jssdk分享页面
+</script>
 </html>

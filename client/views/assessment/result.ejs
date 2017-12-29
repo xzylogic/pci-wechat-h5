@@ -2,10 +2,11 @@
 <html lang="en">
 
 <head>
-  <title>全程心管家</title>
+  <title>风险评估结果</title>
   <% include ../layout/layout %>
   <link rel="stylesheet" href="<%=_src('/css/assessment/assessment.css')%>">
   <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="<%=_src('/lib/flexible/rem.min.js')%>"></script>
   <script type="text/javascript">
     function toRisk(){
       window.open("<%=_src('/assessment')%>?v=" + (new Date().getTime()), '_self');
@@ -40,7 +41,7 @@
     // 分享给朋友
       wx.onMenuShareAppMessage({
           title: '十年心脏病风险预测', // 分享标题
-          desc: `我的风险等级为${level}，你也赶紧来测一测吧！`, // 分享描述
+          desc: "我的风险等级为" + level+ "，你也赶紧来测一测吧！", // 分享描述
           link: 'http://pci.qcxin.com/pci-wechat-h5/assessment/risk', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
           imgUrl: 'http://pci.qcxin.com/pci-wechat-h5/image/assessment/331506325982_.pic_hd.jpg', // 分享图标
           success: function () { 
@@ -66,7 +67,7 @@
   </script>
 </head>
 
-<body style="background-color:#f6f6f6">
+<body ontouchstart style="background-color:#f6f6f6">
   <div class="result">
     <h3>您的十年心脏病风险等级为</h3>
     <%if(level == '低') {%>

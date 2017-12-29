@@ -2,6 +2,7 @@
 var superagent = require('superagent');
 
 var BASE_URL = global.config.server;
+var User_BASE_URL = global.config.userServer;
 var Father_BASE_URL = global.config.fatherServer;
 var api = require('./api-url.json');
 
@@ -30,6 +31,77 @@ requestTool.get = function(key, param, call, error) {
 }
 
 /**
+ * 使用superagent进行get添加请求头请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getHeader = function(key, accessToken, param, call, error) {
+  superagent
+    .get(User_BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .set('access-token', accessToken)
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+/**
+ * 使用superagent进行get拼接url添加请求头请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getHeaderUrl = function(key, accessToken, param, call, error) {
+  superagent
+    .get(User_BASE_URL + key)
+    .set('Content-Type', 'application/json')
+    .set('access-token', accessToken)
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+/**
+ * 使用superagent添加healthClient进行get请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getHealthClient = function(url, param, call, error) {
+  superagent
+    .get(url)
+    .set('Content-Type', 'application/json')
+    .set('healthClient', 'pci')
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+
+
+/**
  * 使用superagent进行get统计请求
  * @param  {} key    [api key]
  * @param  {} param  [query参数]
@@ -52,11 +124,10 @@ requestTool.getStatistics = function(key, param, call, error) {
 }
 
 //获取access_token
-requestTool.getAccessToken = function(param, call, error) {
+requestTool.getAccessToken = function(call, error) {
   superagent
-    .get('https://api.weixin.qq.com/cgi-bin/token')
+    .get(BASE_URL + 'api/micro/accessToken')
     .set('Content-Type', 'application/json')
-    .query(param)
     .end(function(err, sres) {
       if (err) {
         error(err);
@@ -170,6 +241,28 @@ requestTool.post = function(key, data, call, error) {
     });
 }
 
+/**
+ * 使用superagent添加请求头进行post请求
+ * @param  {} key    [api key]
+ * @param  {} data   [post data]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.postHeader = function(key, accessToken, data, call, error) {
+  superagent.post(User_BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .set('access-token', accessToken)
+    .send(data)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
 // 直接返回接口的data数据
 requestTool.postwithhandle = function(key, data, call, error) {
   superagent.post(BASE_URL + api[key])
@@ -225,7 +318,7 @@ requestTool.setAuthUrl = function(redirectUrl, state) {
  */
 requestTool.setAuthInfoUrl = function(redirectUrl) {
   let uri = encodeURIComponent(`${global.config.domain}${global.config.root}${redirectUrl}`);
-  let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${global.config.appId}&redirect_uri=${uri}&response_type=code&scope=snsapi_base&#wechat_redirect`;
+  let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${global.config.appId}&redirect_uri=${uri}&response_type=code&scope=snsapi_userinfo&#wechat_redirect`;
   return url;
 }
 

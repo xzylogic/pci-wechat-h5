@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>实名认证</title>
+  <% include ../layout/layout %>
+  <script type="text/javascript">
+   var share = new share("<%=_src('')%>") //jssdk分享页面
+   var auth = "<%=auth%>"
+  </script>
+  <style>
+    body{
+      background: #ebebeb;
+      color: #666;
+    }
+    .authlist_hot{
+      displaay: inline-block;
+      text-align: center;
+      margin-left: 10px;
+      background-size: cover;
+      color: #fff;
+      font-size: 14px;
+      padding: 0 8px;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div class="authlist">
+    <div class="weui-cells">
+        <% if (auth === 'false') { %>
+          <a class="weui-cell weui-cell_access" href="<%=_src('/authphone?auth=false')%>">
+              <div class="weui-cell__hd"><img src="<%=_src('/image/realNameAuth/手机@3x.png')%>" alt="" style="width:15px;margin-right:5px;display:block"></div>
+              <div class="weui-cell__bd">
+                  <p>手机号认证<span class="authlist_hot" style="background-image: url(<%=_src('/image/realNameAuth/推荐@3x.png')%>)">推荐</span></p>
+              </div>
+              <div class="weui-cell__ft"></div>
+          </a>
+        <% } else {%>
+          <a class="weui-cell weui-cell_access" href="<%=_src('/authphone')%>">
+              <div class="weui-cell__hd"><img src="<%=_src('/image/realNameAuth/手机@3x.png')%>" alt="" style="width:15px;margin-right:5px;display:block"></div>
+              <div class="weui-cell__bd">
+                  <p>手机号认证<span class="authlist_hot" style="background-image: url(<%=_src('/image/realNameAuth/推荐@3x.png')%>)">推荐</span></p>
+              </div>
+              <div class="weui-cell__ft"></div>
+          </a>
+        <% } %> 
+        <a class="weui-cell weui-cell_access" href="<%=_src('/authcard')%>">
+            <div class="weui-cell__hd"><img src="<%=_src('/image/realNameAuth/证件@3x.png')%>" alt="" style="width:20px;margin-right:5px;display:block"></div>
+            <div class="weui-cell__bd">
+                <p>手持照认证</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </a>
+    </div>
+  </div>
+</body>
+<script>
+$(document).ready(function(){
+
+})
+  
+</script>
+</html>
