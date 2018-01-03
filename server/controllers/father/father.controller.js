@@ -11,7 +11,7 @@ module.exports = {
     var share = req.query.share || '';
     // auth.setCookies(res, 'pci_secret', 'ovMkVwCVm__t7PODaLbA0r5ZkIAw');
     let url = requestTool.setAuthUrl('/father/father');// 重定向url
-    auth.getFatherOpenId(req, res, url, (openId) => {
+    auth.getOpenId(req, res, url, (openId) => {
       getHomePage(openId);
         if(qrCode){
           QRcode(openId);
@@ -104,7 +104,7 @@ module.exports = {
         img:img
       });
     }else{
-      auth.getFatherOpenId(req, res, url, (openId) => {
+      auth.getOpenId(req, res, url, (openId) => {
         res.render('father/Share-page', {
           appellation:appellation,
           content:content,

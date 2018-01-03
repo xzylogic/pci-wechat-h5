@@ -176,7 +176,6 @@
     var totalPages;
     var keywords = ''
     var hospitalId = 0
-    var doctorList;
     var doctorListCount = [];
     var active = 'active'
     var hospitalList
@@ -194,17 +193,17 @@
                 $('#loadingToast').fadeOut(100)
                 if (data.code === 0 && data.data && data.data.content.length !== 0) {
                     $('.error').css('display', 'none')
-                    doctorList = data.data.content;
                     totalPages = data.data.totalPages;
                     var $searchResult = $('#searchResult');
+                    var doctorList = [];
                     if (!status) {
                       $('#searchResult').html('');
                       count = 0;
                       doctorListCount = [];
                     }
-                    for (var j = 0; j < doctorList.length; j++){
-                      if (doctorList[j].doctorTitle.indexOf("助手") > 0) {
-                          doctorList.splice(i, 1)
+                    for (var j = 0; j < data.data.content.length; j++){
+                      if (data.data.content[j].doctorTitle.indexOf("助手") < 0) {
+                          doctorList.push(data.data.content[j])
                       }
                     }
                     for (var i = 0; i < doctorList.length; i++) {

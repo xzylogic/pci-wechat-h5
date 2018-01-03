@@ -15,7 +15,7 @@ module.exports = {
     let Dotel = req.query.tel || '';
     let url = requestTool.setAuthUrl('/find-doctor/check-in', Dotel);
     let urlQiniu = `${global.config.server}api/qiniu/auth`;
-    auth.getFatherOpenId(req, res, url, (state) => {
+    auth.getDoctorOpenId(req, res, url, (state) => {
       auth.isLogin(req, (data) =>{
         if (Dotel) {
            requestTool.getHeader('doctorInfo', data.access_token, `phone=${Dotel}`, (_res) => {

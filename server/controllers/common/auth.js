@@ -68,9 +68,9 @@ auth.getOpenId = (req, res, redirectUrl, call) => {
   } else if (code) {
     console.log(`[${new Date()}] Request Code: ${code}`);
     auth.getToken(res, code, (data) => {
-        console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
-        auth.setCookies(res, 'pci_secret', data.openid);
-        call(data.openid);
+      console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
+      auth.setCookies(res, 'pci_secret', data.openid);
+      call(data.openid);
     });
     // auth.getTokenCopy(res, code, (data) => {
     //   console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
@@ -109,14 +109,14 @@ auth.getUserAttention = (res, openId, call) => {
 }
 
 /**
- * 获取父亲节页面openId
+ * 返回向医生报到的state参数
  * @param  {[type]} req         [request]
  * @param  {[type]} res         [response]
  * @param  {[type]} redirectUrl [redirectUrl]
  * @param  {[type]} call        [callback函数]
  * @return {[type]}             []
  */
-auth.getFatherOpenId = (req, res, redirectUrl, call) => {
+auth.getDoctorOpenId = (req, res, redirectUrl, call) => {
   console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
   let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
   let code = req.query.code || ''; // 微信返回code
@@ -124,7 +124,7 @@ auth.getFatherOpenId = (req, res, redirectUrl, call) => {
   if (openId) {
     call(state);
   } else if (code) {
-    auth.getTokenCopy(res, code, (data) => {
+    auth.getToken(res, code, (data) => {
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
       call(state);

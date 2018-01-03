@@ -27,13 +27,14 @@ module.exports = {
                 })
                 res.render('healthRecords/electronicMedicalRecords', {
                   data: content,
-                  status: true,
+                  status: 'true',
                   medicareCard: _data.data.medicareCard,
-                  auth: false
+                  auth: 'true'
                 })
               } else if (_res.code === 0 && _res.data.content.length == 0) {
                 res.render('healthRecords/electronicMedicalRecords', {
-                  status: false
+                  status: 'false',
+                  auth: 'true'
                 })
               } else {
                 res.render('error', {
@@ -52,7 +53,7 @@ module.exports = {
             res.redirect(`${global.config.root}/login?status=2`);
           } else if (_data.code === 0 && _data.data && _data.data.status === 2) {
             res.render('healthRecords/electronicMedicalRecords', {
-              auth: true
+              auth: 'false'
             })
           } else {
             // 未认证跳转到实名认证页面
