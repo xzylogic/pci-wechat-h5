@@ -109,25 +109,24 @@ auth.getUserAttention = (res, openId, call) => {
 }
 
 /**
- * 返回向医生报到的state参数
+ * 返回父亲节的state参数
  * @param  {[type]} req         [request]
  * @param  {[type]} res         [response]
  * @param  {[type]} redirectUrl [redirectUrl]
  * @param  {[type]} call        [callback函数]
  * @return {[type]}             []
  */
-auth.getDoctorOpenId = (req, res, redirectUrl, call) => {
+auth.getFatherOpenId = (req, res, redirectUrl, call) => {
   console.log(`[${new Date()}] Cookies: ${JSON.stringify(req.signedCookies)}`);
   let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
   let code = req.query.code || ''; // 微信返回code
-  let state = req.query.state || '';
   if (openId) {
-    call(state);
+    call(openId);
   } else if (code) {
     auth.getToken(res, code, (data) => {
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
-      call(state);
+      call(openId);
     });
   } else {
     console.log(`[${new Date()}] Redirect Url: ${redirectUrl}`);

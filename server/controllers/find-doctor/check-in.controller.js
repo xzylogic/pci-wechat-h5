@@ -12,10 +12,11 @@ module.exports = {
     let department = req.query.department || '';
     let doctorTitle = req.query.doctorTitle || '';
     let hospitalName = req.query.hospitalName || '';
-    let Dotel = req.query.tel || '';
-    let url = requestTool.setAuthUrl('/find-doctor/check-in', Dotel);
+    let tel = req.query.tel || '';
+    let url = requestTool.setAuthUrl(`/find-doctor/check-in?Dotel=${tel}`);
+    let Dotel = req.query.Dotel || req.query.tel;
     let urlQiniu = `${global.config.server}api/qiniu/auth`;
-    auth.getDoctorOpenId(req, res, url, (state) => {
+    auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) =>{
         if (Dotel) {
            requestTool.getHeader('doctorInfo', data.access_token, `phone=${Dotel}`, (_res) => {
@@ -55,7 +56,7 @@ module.exports = {
           });
         }
       },() =>{
-        res.redirect(`${global.config.root}/login?status=8&&Dotel=${state}`);
+        res.redirect(`${global.config.root}/login?status=8&&Dotel=${Dotel}`);
       })
     })
   }}
