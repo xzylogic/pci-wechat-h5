@@ -124,10 +124,29 @@
       z-index: 0;
     }
     .message{
+<<<<<<< HEAD
         min-height: 0;
         top: 50%;
         width: 80%;
         margin-left: -40%;
+=======
+      position: fixed;
+      z-index: 5000;
+      min-width: 50px;
+      max-width: 300px;
+      min-height: 0;
+      margin-left: 0;
+      top: 50%;
+      left: 50%;
+      padding: 0px 10px;
+      width: auto;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      background-color: rgba(17, 17, 17, 0.7);
+      text-align: center;
+      border-radius: 3px;
+      overflow: hidden;
+>>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
     }
     .message p{
         margin:0;
@@ -491,10 +510,20 @@
              // console.log(result);
          },
          onConfirm: function(result){
+<<<<<<< HEAD
             $(".confirmDate").html(result[0].value + '-' + result[1].value)
             admissionTime = result[0].value + '-' + result[1].value;
             admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "-")));
             admissionTime = admissionTime.getTime();
+=======
+          $(".confirmDate").html(result[0].value + '-' + result[1].value)
+          if (result[1].value < '10') {
+            result[1].value = '0'+ result[1].value
+          }
+          admissionTime = result[0].value + '-' + result[1].value;
+          admissionTime = new Date(Date.parse(admissionTime.replace(/-/g, "-")));
+          admissionTime = admissionTime.getTime();
+>>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
          },
          id: 'datePicker'
       });

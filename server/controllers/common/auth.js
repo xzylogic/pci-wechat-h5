@@ -36,7 +36,7 @@ auth.setUserCookies = (res, key, value) => {
 auth.getToken = (res, code, call) => {
     requestTool.getwithhandle('getToken', `code=${code}`, call, (err) => {
       res.render('error', {
-        "message": '请求TOKEN错误'
+        "message": err
       });
     });
 }
@@ -109,7 +109,7 @@ auth.getUserAttention = (res, openId, call) => {
 }
 
 /**
- * 获取父亲节页面openId
+ * 返回父亲节的state参数
  * @param  {[type]} req         [request]
  * @param  {[type]} res         [response]
  * @param  {[type]} redirectUrl [redirectUrl]
@@ -124,10 +124,14 @@ auth.getFatherOpenId = (req, res, redirectUrl, call) => {
   if (openId) {
     call(state);
   } else if (code) {
-    auth.getTokenCopy(res, code, (data) => {
+    auth.getToken(res, code, (data) => {
       console.log(`[${new Date()}] GET OpenId: ${data.openid}`);
       auth.setCookies(res, 'pci_secret', data.openid);
+<<<<<<< HEAD
       call(state);
+=======
+      call(openId);
+>>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
     });
   } else {
     console.log(`[${new Date()}] Redirect Url: ${redirectUrl}`);
