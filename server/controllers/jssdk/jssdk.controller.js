@@ -80,35 +80,31 @@ module.exports = {
 
     req.addListener('end', () => {
       let data = JSON.parse(postData);
-      var imgUrl = [];
+      var imgUrl;
       requestTool.getAccessToken((_data) => {
         var access_token = _data.data
-        for (let i = 0; i < data.length; i++) {
-          let randomName = 'image'+Date.now()+ String(Math.random()).substring(3)+'.jpg';
-          let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${access_token}&media_id=${data[i]}`
-          bucketManager.fetch(url, 'fw-pci', randomName, function(err, respBody, respInfo) {
-            if (err) {
+        let randomName = 'image'+Date.now()+ String(Math.random()).substring(3)+'.jpg';
+        let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${access_token}&media_id=${data}`
+        bucketManager.fetch(url, 'fw-pci', randomName, function(err, respBody, respInfo) {
+          if (err) {
+            res.send({
+              code: -1,
+              err: err
+            })
+            //throw err;
+          } else {
+            if (respInfo.statusCode == 200) {
+              imgUrl = 'http://qn.qcxin.com/' + respBody.key //生成图片的可访问url
               res.send({
-                code: -1,
-                err: err
+                code: 0,
+                imgurl: imgUrl
               })
-              //throw err;
             } else {
-              if (respInfo.statusCode == 200) {
-                imgUrl.push('http://qn.qcxin.com/' + respBody.key); //生成图片的可访问url
-                if (imgUrl.length === data.length){
-                  res.send({
-                    code: 0,
-                    imgurl: imgUrl
-                  })
-                }
-              } else {
-                console.log(respInfo.statusCode);
-                console.log(respBody);
-              }
+              console.log(respInfo.statusCode);
+              console.log(respBody);
             }
-          });
-        }
+          }
+        });
       },err =>{
         console.log("请求access_token失败");
       })
