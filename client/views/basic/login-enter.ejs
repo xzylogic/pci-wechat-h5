@@ -11,10 +11,6 @@
     <link rel="stylesheet" href="<%=_src('/css/basic/basic.min.css')%>">
     <script src="<%=_src('/lib/validform/Validform_v5.3.2_min.js')%>"></script>
     <style>
-      .navigation{
-        padding: 15px 0 0;
-        overflow: hidden;
-      }
       ul{
         list-style: none;
         overflow: hidden;
@@ -35,18 +31,12 @@
         border: 1px solid #35b2f2;
         border-radius: 12px;
       }
-      .toast{
-        min-height: 0;
-        top: 50%;
-        width: 80%;
-        margin-left: -40%;
-    }
     .toast p{
         margin:0;
         font-size: 14px;
         padding: 3px 0;
     }
-    .weui-btn_primary:not(.weui-btn_disabled):active{
+    .toast{
         position: fixed;
         z-index: 5000;
         min-width: 50px;
@@ -63,11 +53,6 @@
         text-align: center;
         border-radius: 3px;
         overflow: hidden;
-      }
-      .toast p{
-        margin:0;
-        font-size: 14px;
-        padding: 3px 0;
       }
       .weui-btn_primary:not(.weui-btn_disabled):active{
         background-color: #ccc; 
