@@ -34,11 +34,11 @@ auth.setUserCookies = (res, key, value) => {
  * @return {[type]}      []
  */
 auth.getToken = (res, code, call) => {
-    requestTool.getwithhandle('getToken', `code=${code}`, call, (err) => {
-      res.render('error', {
-        "message": err
-      });
+  requestTool.getwithhandle('getToken', `code=${code}`, call, (err) => {
+    res.render('error', {
+      "message": err
     });
+  });
 }
 
   // 父亲节页面使用

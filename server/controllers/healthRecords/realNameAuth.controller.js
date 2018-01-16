@@ -33,7 +33,9 @@ module.exports = {
         res.render('healthRecords/authphone',{
           url: global.config.userServer,
           tel: tel,
-          auth: certification
+          auth: certification,
+          userId: data.userId,
+          access_token: data.access_token
         })
       },() =>{
         res.redirect(`${global.config.root}/login?status=5`);

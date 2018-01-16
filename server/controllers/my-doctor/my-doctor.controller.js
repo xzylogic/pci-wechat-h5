@@ -5,7 +5,6 @@ var auth = require('../common/auth');
 module.exports = {
 
     getIsMyDoc: (req, res) => {
-        // auth.setCookies(res, 'pci_secret', 'ovMkVwAqHDRVJ9cTDVAUDBmNjHYw');
         let url = requestTool.setAuthInfoUrl('/my-doctor', ''); // 重定向url
         let userId = req.signedCookies.userId || '';// 从cookie中找userId
         let accessToken = req.signedCookies.accessToken || ''; // 从cookie中找accessToken

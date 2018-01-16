@@ -7,6 +7,8 @@
     var url = "<%=url%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
     var auth = "<%=auth%>"
+    var userId = "<%=userId%>"
+    var access_token = "<%=access_token%>"
   </script>
   <style>
     body{
@@ -214,7 +216,7 @@ $(document).ready(function(){
       success: function (data) {
         $('#audit_toast').fadeOut(100);
         if (data && data.code === 0) {
-          certificationByToast()
+          updateCard(phone, name, card)
         } else if ( data && data.code === 1000) {
           authenticationFailedToast()
           $(".authphone_footer_error").css({
@@ -239,6 +241,32 @@ $(document).ready(function(){
       }
     })
  };
+
+ //更新用户实名认证信息
+ function updateCard(phone, name, card) {
+  $.ajax({
+      type: 'POST',
+      url: url + "api/user/updateValidateStatus",
+      data:JSON.stringify({validatePhone: phone, idCardName:name, idCardNumber:card, userId:userId}),
+      headers: {
+        'access-token': access_token
+      },
+      processData: false,
+      contentType: 'application/json',
+      success: function (data) {
+        $('#audit_toast').fadeOut(100);
+        if (data && data.code === 0) {
+          certificationByToast()
+        } else {
+          toast(data.msg)
+        }
+      },
+      error: function (err) {
+        toast('服务器请求出错了')
+        console.log(err)
+      }
+    })
+ }
 
  // 审核中
  function auditToast() {
@@ -270,13 +298,13 @@ $(document).ready(function(){
     }, 2000);
  }
 
- function toast(msg) {
-        var $toast = $('#toast');
-        $('#toast p').html(msg)
-        $toast.fadeIn(100);
-        setTimeout(function () {
-            $toast.fadeOut(100);
-        }, 1500);
+  function toast(msg) {
+    var $toast = $('#toast');
+    $('#toast p').html(msg)
+    $toast.fadeIn(100);
+    setTimeout(function () {
+      $toast.fadeOut(100);
+    }, 1500);
   }
 
   //底部提交按钮顶上去

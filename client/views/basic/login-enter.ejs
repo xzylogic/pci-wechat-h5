@@ -36,7 +36,6 @@
         border-radius: 12px;
       }
       .toast{
-<<<<<<< HEAD
         min-height: 0;
         top: 50%;
         width: 80%;
@@ -48,7 +47,6 @@
         padding: 3px 0;
     }
     .weui-btn_primary:not(.weui-btn_disabled):active{
-=======
         position: fixed;
         z-index: 5000;
         min-width: 50px;
@@ -72,7 +70,6 @@
         padding: 3px 0;
       }
       .weui-btn_primary:not(.weui-btn_disabled):active{
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
         background-color: #ccc; 
       }
     </style>
@@ -120,6 +117,13 @@
     <div class="weui-mask_transparent"></div>
     <div class="weui-toast toast">
         <p class="weui-toast__content"></p>
+    </div>
+  </div>
+  <div id="audit_toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">请求中</p>
     </div>
   </div>
 </body>
@@ -207,11 +211,13 @@ function timedCount() {
 }
 
 function validation(code){
+  auditToast()
   $.ajax({
     type: 'post',
     url: "<%=_src('/login/verify')%>?tel=" + tel + "&status=" + status + "&doctor=" + doctor,
     data: {code:code},
     success: function(res) {
+      $('#audit_toast').fadeOut(0)
       if (res.data && res.data.code === 0) {
         if (status == 0) {
           window.location = "<%=_src('/login/success')%>?name="+ res.data.name
@@ -238,10 +244,18 @@ function validation(code){
     },
     error:function (err) {
       console.log(err)
+      $('#audit_toast').fadeOut(0)
       toast("服务器请求出错")
     }
   })
 }
+
+  // 请求中
+ function auditToast() {
+    var $toast = $('#audit_toast');
+    if ($toast.css('display') != 'none') return;
+    $toast.fadeIn(0);
+ }
 
 
 function toast(msg) {

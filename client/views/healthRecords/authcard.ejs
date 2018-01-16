@@ -382,7 +382,7 @@ $(document).ready(function(){
       url: "<%=_src('')%>/reset",
       success: function(msg){
         if (msg.code === 0) {
-            window.location.href = `<%=_src('')%>/login?status=5`
+          window.location.href = `<%=_src('')%>/login?status=5`
         }
       },
       error:function(err){

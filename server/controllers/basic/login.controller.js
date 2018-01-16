@@ -11,7 +11,7 @@ module.exports = {
   // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5实名认证 6随访反馈 7家庭账号 8向医生报到
   getLogin: (req, res) => {
     // 测试写死cookie数据
-    auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
+    // auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
     // auth.setCookies(res, 'pci_secret', 'ox0ThwtVjZiQMWLCx3SwupAqG4zk');
     // res.clearCookie('pci_secret');
     let status = req.query.status || 0; // status状态数据

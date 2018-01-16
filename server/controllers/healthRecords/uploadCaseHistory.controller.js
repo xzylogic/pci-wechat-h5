@@ -7,7 +7,6 @@ var auth = require('../common/auth');
 module.exports = {
  //上传图片页面
 	getCaseHistory: (req, res) => {
-    // auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');
 		let url = requestTool.setAuthUrl('/uploadCaseHistory', '');
 		auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
