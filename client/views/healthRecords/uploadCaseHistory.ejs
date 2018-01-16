@@ -160,7 +160,10 @@
 var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
 var url = "<%=url%>" //获取接口
 var userId = "<%=userId%>"
+var qiniuUrl = "<%=qiniuUrl%>"
 var access_token = "<%=access_token%>" //获取access_token
+var domain;
+var token;
 $(document).ready(function(){
 
   $('.confirmDate').html(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate())
@@ -196,51 +199,80 @@ $(document).ready(function(){
   var imglist = [];
   var uploadCustomFileList = [];
 
-  // 上传图片
-  function upload(imgurl) {
-    $.ajax({
-      url: "<%=_src('/uploadimg')%>",
-      type: 'post',
-      data: JSON.stringify(imgurl),
-      success: function (msg) {
-        if (msg.code === 0) {
-          imglist.push(msg.imgurl)
-          if (imglist.length == uploadCustomFileList.length) {
-            ajax(imglist)
-          }
-        } else {
-          toast('图片上传失败，请稍后重试~')
-        }
-      },
-      error: function (err) {
-        console.log(err)
-      }
-    })
-  }
-
   $('.weui-uploader__input-box').on('click', function () {
     wx.chooseImage({
-        count: 9, // 默认9
-        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-        success: function (res) {
-          var localIds = res.localIds;
-          for (var i = 0; i < localIds.length; i++) {
-            uploadCustomFileList.push({id: count + i, url: localIds[i]});
-            $("#uploaderFiles").append("<li class='weui-uploader__file image' id='" + (count+i) + "'><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src='" + localIds[i] + "'></li>")
-            number++;
-            if (number >= 9) {
-              $(".add").fadeOut(100)
-              break;
-            }
+      count: 9, // 默认9
+      sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+      success: function (res) {
+        var localIds = res.localIds;
+        for (var i = 0; i < localIds.length; i++) {
+          uploadCustomFileList.push({id: count + i, url: localIds[i]});
+          $("#uploaderFiles").append("<li class='weui-uploader__file image' id='" + (count+i) + "'><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src='" + localIds[i] + "'></li>")
+          number++;
+          if (number >= 9) {
+            $(".add").fadeOut(100)
+            break;
           }
-          count = count + localIds.length;
-          
-          $("#number").text(number)
         }
+        count = count + localIds.length;
+        $("#number").text(number)
+      }
     });
   });
 
+  // 获取七牛token
+  function getqiniu(fn) {
+    $.ajax({
+      type: "get",
+      url: qiniuUrl + "api/qiniu/auth",
+      success: function (msg) {
+        if (msg.code == 0 && msg.data) {
+          domain = msg.data.domain
+          token = msg.data.token
+          fn(token)
+        }
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
+  }
+
+  // 上传图片到七牛
+  function uploadqiniu() {
+    getqiniu(
+      function(token){
+        for (var i = 0; i < uploadCustomFileList.length; i++) {
+          wx.getLocalImgData({
+            localId: uploadCustomFileList[i].url, // 图片的localID
+            success: function (res) {
+              var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+              $.ajax({
+                url: "http://upload.qiniu.com/putb64/-1",
+                type: 'post',
+                data: localData.split('base64,')[1],
+                headers: {
+                  'Content-Type': "application/octet-stream",
+                  "Authorization":'UpToken '+ token
+                },
+                success: function (msg) {
+                  var imgUrl = domain + msg.key
+                  imglist.push(imgUrl)
+                  if (imglist.length == uploadCustomFileList.length) {
+                    ajax(imglist)
+                  }
+                },
+                error: function (err) {
+                  console.log(err)
+                }
+              })
+            }
+          });
+        }
+      }
+    )
+  }
 
   $("#uploaderCustomBtn").on('click', function(){
     var urlList = [];
@@ -250,7 +282,8 @@ $(document).ready(function(){
       uploadCustomFileList.forEach(function(file){
         urlList.push(file.url)
         if (urlList.length === number) {
-          syncUpload(urlList);
+          uploadqiniu()
+          auditToast()
         }
       });
     }
@@ -278,27 +311,6 @@ $(document).ready(function(){
     });
   });
 
-var syncUpload = function(localIds){
-    var localId = localIds.pop();
-    wx.uploadImage({
-
-        localId: localId,
-
-        isShowProgressTips: 1,
-
-        success: function (res) {
-          var serverId = res.serverId; // 返回图片的服务器端ID
-          upload(serverId)
-          //其他对serverId做处理的代码
-          if(localIds.length > 0){
-            syncUpload(localIds);
-          }
-        }
-    });
-};
-
-
-
   $('#dialogs').on('click', '.weui-dialog__btn', function(){
     $(this).parents('.js_dialog').fadeOut(200);
     wx.closeWindow();
@@ -309,7 +321,6 @@ var syncUpload = function(localIds){
 
 // 提交数据
 function ajax(picUrlList) {
-  auditToast()
   var data = {
     imgUrlList: picUrlList,
     checkDate: $('.confirmDate').text(),
@@ -332,7 +343,6 @@ function ajax(picUrlList) {
         }
         $('#iosDialog2').fadeIn(200);
       } else {
-        alert(123)
         $(".error").css({'display': 'block'})
         $(".error").html(success.msg || '上传失败')
       }
@@ -342,29 +352,29 @@ function ajax(picUrlList) {
       console.log(error);
     }
   })
+}
 
-  function auditToast() {
-    var $toast = $('#audit_toast');
-    if ($toast.css('display') != 'none') return;
-    $toast.fadeIn(100);
-  }
+function auditToast() {
+  var $toast = $('#audit_toast');
+  if ($toast.css('display') != 'none') return;
+  $toast.fadeIn(100);
+}
 
-  //增加积分
-  function saveIntegral() {
-    $.ajax({
-      type: 'post',
-      url: url + "api/integralDetail/saveIntegral?userId=" + userId + "&type=2",
-      headers:{
-        'access-token': access_token
-      },
-      success: function (success) {
-        console.log(success);
-      },
-      error: function (error) {
-        console.log(error);
-      }
-    })
-  }
+//增加积分
+function saveIntegral() {
+  $.ajax({
+    type: 'post',
+    url: url + "api/integralDetail/saveIntegral?userId=" + userId + "&type=2",
+    headers:{
+      'access-token': access_token
+    },
+    success: function (success) {
+      console.log(success);
+    },
+    error: function (error) {
+      console.log(error);
+    }
+  })
 }
   
 </script>
