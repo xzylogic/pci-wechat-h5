@@ -207,14 +207,18 @@ $(document).ready(function(){
   var imglist = [];
   var uploadCustomFileList = [];
 
-  function upload(imglist) {
+  // 上传图片
+  function upload(imgurl) {
     $.ajax({
       url: "<%=_src('/uploadimg')%>",
       type: 'post',
-      data: JSON.stringify(imglist),
+      data: JSON.stringify(imgurl),
       success: function (msg) {
         if (msg.code === 0) {
-          ajax(msg.imgurl)
+          imglist.push(msg.imgurl)
+          if (imglist.length == uploadCustomFileList.length) {
+            ajax(imglist)
+          }
         } else {
           toast('图片上传失败，请稍后重试~')
         }
@@ -294,17 +298,12 @@ var syncUpload = function(localIds){
         isShowProgressTips: 1,
 
         success: function (res) {
-
-            var serverId = res.serverId; // 返回图片的服务器端ID
-            imglist.push(serverId)
-            if (imglist.length === number) {
-              upload(imglist)
-            }
-            //其他对serverId做处理的代码
-
-            if(localIds.length > 0){
-                syncUpload(localIds);
-            }
+          var serverId = res.serverId; // 返回图片的服务器端ID
+          upload(serverId)
+          //其他对serverId做处理的代码
+          if(localIds.length > 0){
+            syncUpload(localIds);
+          }
         }
     });
 };
@@ -350,6 +349,7 @@ function ajax(picUrlList) {
         }
         $('#iosDialog2').fadeIn(200);
       } else {
+        alert(123)
         $(".error").css({'display': 'block'})
         $(".error").html(success.msg || '上传失败')
       }

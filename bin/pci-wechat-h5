@@ -1,10 +1,10 @@
 'use strict';
 
 global.config = {
-    server: 'http://pci.qcxin.com/pci-micro/',
-    fatherServer: 'http://pci.qcxin.com/pci-operation/',
-    userServer: 'http://pci.qcxin.com/pci-user/',
-    healthServer: 'http://pci.qcxin.com/pro-health/',
+    server: 'http://www.qcxin.com/pci-micro/',
+    fatherServer: 'http://www.qcxin.com/pci-operation/',
+    userServer: 'http://www.qcxin.com/pci-user/',
+    healthServer: 'http://www.qcxin.com/pro-health/',
     domain: 'http://pci.qcxin.com',
     root: '/pci-wechat-h5',
     filedir: '/wdjky/fullway/nodejs/pci-wechat-h5',

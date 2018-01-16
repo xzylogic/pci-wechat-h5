@@ -322,7 +322,6 @@
     var doctor = "<%=doctor%>"
     var admissionTime = ""
     var doctorId = '<%= doctorId %>'
-    var imgUrlList = []  // 七牛返回的图片地址列表
     var count = 0; // 插入的li标签ID
     var number = 0; // 图片的数量
     var imglist = []; // 微信返回的图片的服务器端ID集合
@@ -386,15 +385,17 @@
         });
     };
 
-  function upload(imglist) {
+  function upload(imgurl) {
     $.ajax({
       url: "<%=_src('/uploadimg')%>",
       type: 'post',
-      data: JSON.stringify(imglist),
+      data: JSON.stringify(imgurl),
       success: function (msg) {
         if (msg.code === 0) {
-          imgUrlList = msg.imgurl
-          ajax()
+          imglist.push(msg.imgurl)
+          if (imglist.length == uploadCustomFileList.length) {
+            ajax()
+          }
         } else {
           toast('图片上传失败，请稍后重试~')
         }
@@ -462,12 +463,8 @@
           success: function (res) {
 
               var serverId = res.serverId; // 返回图片的服务器端ID
-              imglist.push(serverId)
-              if (imglist.length === number) {
-                upload(imglist)
-              }
+              upload(serverId)
               //其他对serverId做处理的代码
-
               if(localIds.length > 0){
                   syncUpload(localIds);
               }
@@ -556,21 +553,21 @@
 
     $('#uploaderCustomBtn').on('click', function () {
         if (realName == "") {
-            toast('请填写真实姓名')
+          toast('请填写真实姓名')
         } else if (!admissionTime) {
-            toast('请选择就诊日期')
+          toast('请选择就诊日期')
         } else {
-            var urlList = [];
-            if (number === 0) {
-              ajax()
-            } else {
-              uploadCustomFileList.forEach(function(file){
-                urlList.push(file.url)
-                if (urlList.length === number) {
-                  syncUpload(urlList);
-                }
-              });
-            }
+          var urlList = [];
+          if (number === 0) {
+            ajax()
+          } else {
+            uploadCustomFileList.forEach(function(file){
+              urlList.push(file.url)
+              if (urlList.length === number) {
+                syncUpload(urlList);
+              }
+            });
+          }
         }
     });
 
@@ -583,12 +580,12 @@
     function ajax() {
         $("#audit_toast").fadeIn(0)
         var dto = {
-            "admissionTime": admissionTime,
-            "doctorId": doctorId,
-            "imgUrlList": imgUrlList,
-            "message": message,
-            "realName": realName,
-            "userId": userId
+          "admissionTime": admissionTime,
+          "doctorId": doctorId,
+          "imgUrlList": imglist,
+          "message": message,
+          "realName": realName,
+          "userId": userId
         };
         $.ajax({
             url: url + "api/doctorPatient/apply",
