@@ -175,7 +175,6 @@ requestTool.getwithhandle = function(key, param, call, error) {
     .set('Content-Type', 'application/json')
     .query(param)
     .end(function(err, sres) {
-      console.log(err + '万达信息股份有限公司')
       if (err) {
         error(err);
       } else {

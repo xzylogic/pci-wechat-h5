@@ -7,9 +7,9 @@ var moment = require("moment");
 
 module.exports = {
   // 电子病历
-	getEMR: (req, res) => {
-		let url = requestTool.setAuthUrl('/EMR', '');
-		auth.getOpenId(req, res, url, (openId) => {
+  getEMR: (req, res) => {
+    let url = requestTool.setAuthUrl('/EMR', '');
+    auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) =>{
         // 已登录验证是否实名认证
         requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
@@ -27,15 +27,6 @@ module.exports = {
                 })
                 res.render('healthRecords/electronicMedicalRecords', {
                   data: content,
-<<<<<<< HEAD
-                  status: true,
-                  medicareCard: _data.data.medicareCard,
-                  auth: false
-                })
-              } else if (_res.code === 0 && _res.data.content.length == 0) {
-                res.render('healthRecords/electronicMedicalRecords', {
-                  status: false
-=======
                   status: 'true',
                   medicareCard: _data.data.medicareCard,
                   auth: 'true'
@@ -44,7 +35,6 @@ module.exports = {
                 res.render('healthRecords/electronicMedicalRecords', {
                   status: 'false',
                   auth: 'true'
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
                 })
               } else {
                 res.render('error', {
@@ -63,11 +53,7 @@ module.exports = {
             res.redirect(`${global.config.root}/login?status=2`);
           } else if (_data.code === 0 && _data.data && _data.data.status === 2) {
             res.render('healthRecords/electronicMedicalRecords', {
-<<<<<<< HEAD
-              auth: true
-=======
               auth: 'false'
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
             })
           } else {
             // 未认证跳转到实名认证页面
@@ -86,7 +72,7 @@ module.exports = {
         message: err
       });
     });
-	},
+  },
 
   // 绑定社保页面
   getSocialSecurity: (req, res) => {

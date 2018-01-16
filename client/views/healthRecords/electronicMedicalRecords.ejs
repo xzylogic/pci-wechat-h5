@@ -154,8 +154,6 @@
     .noEMR-content img{
       width: 200px;
     }
-<<<<<<< HEAD
-=======
     .toast{
       position: fixed;
       z-index: 5000;
@@ -179,17 +177,12 @@
       font-size: 14px;
       padding: 3px 0;
     }
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
   </style>
 </head>
 
 <body ontouchstart>
   <div class="EMR">
-<<<<<<< HEAD
-    <% if (auth) { %>
-=======
     <% if (auth == 'false') { %>
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
       <div class="js_dialog">
         <div class="weui-mask"></div>
         <div class="weui-dialog">
@@ -200,11 +193,7 @@
         </div>
       </div>
     <% } else {%>
-<<<<<<< HEAD
-      <% if (status === false) { %>
-=======
       <% if (status == 'false') { %>
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
         <div class="binding_security">
             <a href="<%=_src('/bindingSocialSecurity')%>">立即绑定医保/社保卡，获取完整的个人病史资料 >></a>
         </div>
@@ -718,15 +707,12 @@
       </div>
     </div>
   </div>
-<<<<<<< HEAD
-=======
   <div id="toast" style="display: none;">
     <div class="weui-mask_transparent"></div>
     <div class="weui-toast toast" >
         <p class="weui-toast__content"></p>
     </div>
   </div>
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
 </body>
 <script>
 $(document).ready(function(){
@@ -741,13 +727,8 @@ $(document).ready(function(){
       imgList.push($(this).children().attr('src'))
     })
     wx.previewImage({
-<<<<<<< HEAD
-        current: src, // 当前显示图片的http链接
-        urls: imgList // 需要预览的图片http链接列表
-=======
       current: src, // 当前显示图片的http链接
       urls: imgList // 需要预览的图片http链接列表
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
     });
   })
 
@@ -756,12 +737,6 @@ $(document).ready(function(){
     $(this).children('.weui-cell__bd').children('img').each(function(index){
       imgList.push($(this).attr('src'))
     })
-<<<<<<< HEAD
-    wx.previewImage({
-        current: '', // 当前显示图片的http链接
-        urls: imgList // 需要预览的图片http链接列表
-    });
-=======
     if (imgList.length != 0) {
       wx.previewImage({
         current: '', // 当前显示图片的http链接
@@ -770,7 +745,6 @@ $(document).ready(function(){
     } else {
       toast('没有照片');
     }
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
   })
 
   $("#know").on('click',function() {
@@ -801,10 +775,6 @@ $(document).ready(function(){
   $('#showIOSDialog1').on('click', function(){
       $iosDialog1.fadeIn(0);
   });
-<<<<<<< HEAD
-
-});  
-=======
 });
 function toast(msg) {
   var $toast = $('#toast');
@@ -814,6 +784,5 @@ function toast(msg) {
       $toast.fadeOut(100);
   }, 1500);
 }
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
 </script>
 </html>

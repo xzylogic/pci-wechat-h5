@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,12 +47,6 @@
       background-color: #6fc8f6;
     }
     .toast{
-<<<<<<< HEAD
-        min-height: 0;
-        top: 80%;
-        width: 80%;
-        margin-left: -40%;
-=======
       position: fixed;
       z-index: 5000;
       min-width: 50px;
@@ -70,7 +63,6 @@
       text-align: center;
       border-radius: 3px;
       overflow: hidden;
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
     }
     .toast p{
         margin:0;
@@ -155,8 +147,6 @@
           <p class="weui-toast__content"></p>
       </div>
     </div>
-<<<<<<< HEAD
-=======
     <div id="audit_toast" style="display: none;">
       <div class="weui-mask_transparent"></div>
       <div class="weui-toast">
@@ -164,7 +154,6 @@
           <p class="weui-toast__content">服务器请求中</p>
       </div>
     </div>
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
   </div>
 </body>
 <script>
@@ -320,10 +309,7 @@ var syncUpload = function(localIds){
 
 // 提交数据
 function ajax(picUrlList) {
-<<<<<<< HEAD
-=======
   auditToast()
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
   var data = {
     imgUrlList: picUrlList,
     checkDate: $('.confirmDate').text(),
@@ -339,10 +325,7 @@ function ajax(picUrlList) {
     processData: false,
     contentType: 'application/json;charset=UTF-8',
     success: function (success) {
-<<<<<<< HEAD
-=======
       $('#audit_toast').fadeOut(0)
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
       if ( success && success.code === 0) {
         if (success.data.isFirst == true) {
           saveIntegral()
@@ -355,23 +338,17 @@ function ajax(picUrlList) {
       }
     },
     error: function (error) {
-<<<<<<< HEAD
-=======
       $('#audit_toast').fadeOut(0)
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
       console.log(error);
     }
   })
 
-<<<<<<< HEAD
-=======
   function auditToast() {
     var $toast = $('#audit_toast');
     if ($toast.css('display') != 'none') return;
     $toast.fadeIn(100);
   }
 
->>>>>>> dbd91fbb0ce2e409fcdbb2dfaccc8c9c75be9b27
   //增加积分
   function saveIntegral() {
     $.ajax({
