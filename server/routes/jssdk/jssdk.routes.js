@@ -7,6 +7,5 @@ var JssdkController = require('../../controllers/jssdk/jssdk.controller');
 router.route('/signature').get(JssdkController.getSignature); // 获取config配置参数
 router.route('/reset').get(JssdkController.resetLogin); // 清除cookie
 router.route('/share').get(JssdkController.getShare); // 分享页面
-router.route('/uploadimg').post(JssdkController.uploadImg); // 上传图片
 
 module.exports = router;
