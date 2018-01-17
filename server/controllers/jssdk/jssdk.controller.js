@@ -5,10 +5,6 @@ var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
 var files = require('./files.js');
 
-const mac = new qiniu.auth.digest.Mac('0FXtIZmQY4LIOvxLEj3waLbNWhz9U66S-ahMnCfi', 'qPRpHcCr4MjykNJqXDo7cZXG_NGWCRkc00iifwRo');
-var config = new qiniu.conf.Config();
-var bucketManager = new qiniu.rs.BucketManager(mac, config);
-
 module.exports = {
   /*
   * 获取JSSDK配置信息
@@ -17,11 +13,7 @@ module.exports = {
   getSignature: (req,res) => {
     var url = req.query.url || '';
     var date = new Date().getTime();
-    // var accdata = {};
     var jsapidata = {};
-    // accdata.grant_type ="client_credential";
-    // accdata.appid = global.config.appId;
-    // accdata.secret = global.config.secret;
     jsapidata.type = "jsapi";
     jsapidata.access_token = "";
     files.readFile(req, res, 'jsapi_ticket', (ticket) => {
@@ -70,47 +62,6 @@ module.exports = {
       code: 0
     })
   },
-   // 上传图片
-  uploadImg: (req, res) => {
-    let postData = '';
-
-    req.addListener('data', (data) => {
-      postData += data;
-    });
-
-    req.addListener('end', () => {
-      let data = JSON.parse(postData);
-      var imgUrl;
-      requestTool.getAccessToken((_data) => {
-        var access_token = _data.data
-        let randomName = 'image'+Date.now()+ String(Math.random()).substring(3)+'.jpg';
-        let url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${access_token}&media_id=${data}`
-        bucketManager.fetch(url, 'fw-pci', randomName, function(err, respBody, respInfo) {
-          if (err) {
-            res.send({
-              code: -1,
-              err: err
-            })
-            //throw err;
-          } else {
-            if (respInfo.statusCode == 200) {
-              imgUrl = 'http://qn.qcxin.com/' + respBody.key //生成图片的可访问url
-              res.send({
-                code: 0,
-                imgurl: imgUrl
-              })
-            } else {
-              console.log(respInfo.statusCode);
-              console.log(respBody);
-            }
-          }
-        });
-      },err =>{
-        console.log("请求access_token失败");
-      })
-    })
-  },
-
 
   // 分享网页
   getShare: (req, res) => {
