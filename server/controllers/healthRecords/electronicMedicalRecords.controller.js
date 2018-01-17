@@ -34,7 +34,8 @@ module.exports = {
               } else if (_res.code === 0 && _res.data.content.length == 0) {
                 res.render('healthRecords/electronicMedicalRecords', {
                   status: 'false',
-                  auth: 'true'
+                  auth: 'true',
+                  medicareCard: _data.data.medicareCard
                 })
               } else {
                 res.render('error', {
