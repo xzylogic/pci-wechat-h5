@@ -170,6 +170,7 @@ requestTool.getApi = function(res, key, param, call) {
 // 直接返回接口的data数据
 requestTool.getwithhandle = function(key, param, call, error) {
   console.log(`[${new Date()}] GET URL: ${BASE_URL}${api[key]}`);
+  console.log(`[${new Date()}] GET URL: ${param}`);
   superagent
     .get(BASE_URL + api[key])
     .set('Content-Type', 'application/json')
