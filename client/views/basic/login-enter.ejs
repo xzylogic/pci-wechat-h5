@@ -122,6 +122,10 @@ var status = "<%=status%>";
 var doctor = "<%=doctor%>";
 var tel = "<%=tel%>";
 var Dotel = "<%=Dotel%>";
+var fbId = "<%=fbId%>";
+var otherRemind = "<%=otherRemind%>";
+var feedbackTimes = "<%=feedbackTimes%>";
+var dn = "<%=dn%>"
 
 $(document).ready(function() {
 
@@ -205,6 +209,7 @@ function validation(code){
     success: function(res) {
       $('#audit_toast').fadeOut(0)
       if (res.data && res.data.code === 0) {
+        console.log(res)
         if (status == 0) {
           window.location = "<%=_src('/login/success')%>?name="+ res.data.name
         } else if (status == 1) {
@@ -218,7 +223,7 @@ function validation(code){
         } else if (status == 5) {
           window.location = "<%=_src('/authlist')%>"
         } else if (status == 6) {
-          window.location = "<%=_src('/followfeedback')%>"
+          window.location = "<%=_src('/followfeedback')%>?fbId=" + fbId + "&otherRemind=" + otherRemind + '&feedbackTimes=' + feedbackTimes + '&dn=' + dn;
         } else if (status == 7) {
           window.location = "<%=_src('/family')%>"
         } else if (status == 8) {

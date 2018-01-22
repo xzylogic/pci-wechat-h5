@@ -21,17 +21,18 @@ module.exports = {
     let userId = req.signedCookies.userId || '';
     let accessToken = req.signedCookies.accessToken || '';
     let name = req.signedCookies.name || '';
+    /**
+     * 获取随访计划反馈参数，以便登录后跳转
+     * @param fbId  模板ID
+     * @param otherRemind 参数，提交的时候返回过去
+     * @param feedbackTimes 第几次推送
+     * @param dn      医生姓名
+     */
+    let fbId = req.query.fbId || '';
+    let otherRemind = req.query.otherRemind || '';
+    let feedbackTimes = req.query.feedbackTimes || '';
+    let dn = req.query.dn || ''; 
     auth.getOpenId(req, res, url, (openId) => {
-      // auth.isLogin(res, openId, (name) => {
-      //   // 已登录跳转已登录页面
-      //   res.redirect(`${global.config.root}/login/success?name=${name}`);
-      // }, () => {
-      //   // 未登录跳转登录页面
-      //   res.render('basic/login', {
-      //     status: status,
-      //     errorMessage: ''
-      //   });
-      // });
       if (userId && accessToken) {
         res.redirect(`${global.config.root}/login/success?name=${name}`);
       } else {
@@ -39,6 +40,10 @@ module.exports = {
           status: status,
           doctor: doctor,
           Dotel: Dotel,
+          fbId: fbId,
+          otherRemind: otherRemind,
+          feedbackTimes: feedbackTimes,
+          dn: dn,
           errorMessage: ''
         });
       }
@@ -53,7 +58,17 @@ module.exports = {
     let Dotel = req.query.Dotel || ''; //向医生报到
     let status = req.query.status || ''; // status状态数据
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
-
+    /**
+     * 获取随访计划反馈参数，以便登录后跳转
+     * @param fbId  模板ID
+     * @param otherRemind 参数，提交的时候返回过去
+     * @param feedbackTimes 第几次推送
+     * @param dn      医生姓名
+     */
+    let fbId = req.query.fbId || '';
+    let otherRemind = req.query.otherRemind || '';
+    let feedbackTimes = req.query.feedbackTimes || '';
+    let dn = req.query.dn || '';
     if (openId) {
       res.render('basic/login-enter', {
         postUrl: `/login/verify?tel=${tel}&status=${status}`,
@@ -61,7 +76,11 @@ module.exports = {
         tel: tel,
         Dotel: Dotel,
         status: status,
-        doctor:doctor
+        doctor:doctor,
+        fbId: fbId,
+        otherRemind: otherRemind,
+        feedbackTimes: feedbackTimes,
+        dn: dn
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);

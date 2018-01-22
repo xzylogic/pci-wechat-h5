@@ -100,6 +100,10 @@
   var status = "<%=status%>";
   var doctor = "<%=doctor%>";
   var Dotel = "<%=Dotel%>";
+  var fbId = "<%=fbId%>";
+  var otherRemind = "<%=otherRemind%>";
+  var feedbackTimes = "<%=feedbackTimes%>";
+  var dn = "<%=dn%>"
   $(".weui-btn").on('click',function() {
     var tel = $(".input-field input").val()
     if (tel) {
@@ -144,7 +148,11 @@
       data: tel,
       success: function(res) {
         if (res.result && res.result.code === 0 && res.result.data === false) {
-          window.location.href = "<%=_src('/login/enter')%>?tel=" + tel + "&status=" + status + "&doctor=" + doctor + "&Dotel=" + Dotel;
+          if (fbId || otherRemind || feedbackTimes || dn) {
+            window.location.href = "<%=_src('/login/enter')%>?tel=" + tel + "&status=" + status + "&fbId=" + fbId + "&otherRemind=" + otherRemind + '&feedbackTimes=' + feedbackTimes + '&dn=' + dn;
+          } else {
+            window.location.href = "<%=_src('/login/enter')%>?tel=" + tel + "&status=" + status + "&doctor=" + doctor + "&Dotel=" + Dotel;
+          }
         } else if(res.result && res.result.code === 0 && res.result.data === true) {
           window.location.href = "<%=_src('/register')%>?tel=" + tel + "&status=" + status + "&doctor=" + doctor + "&Dotel=" + Dotel;
         } else {
