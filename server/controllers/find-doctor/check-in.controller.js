@@ -5,6 +5,9 @@ var auth = require('../common/auth');
 module.exports = {
 
   checkIn: (req, res) => {
+    /**
+     * 向医生报到页面
+    */
     let doctorId = req.query.doctorId || '';
     let doctor = req.query.doctor || '';
     let doctorPic = req.query.doctorPic || '';

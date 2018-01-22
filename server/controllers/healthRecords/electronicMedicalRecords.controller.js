@@ -14,17 +14,20 @@ module.exports = {
         // 已登录验证是否实名认证
         requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
           if (_data.code === 0 && _data.data && _data.data.status === 1) {
+            // 已实名认证跳转到电子病历页面
             requestTool.getHealthClient(`${global.config.healthServer}record/history/list/${data.userId}?from=1`, '', (_res) => {
               if (_res.code === 0 && _res.data.content.length != 0) {
-                // 已实名认证跳转到电子病历页面
                 let content = _res.data.content
+                // 用moment将日期格式化
                 for (let i = 0; i < content.length; i++) {
                   let date = content[i].checkDate.substring(0,10).replace(/-/g,'/');
                   content[i].dateSize = new Date(date).getTime()
                 }
+                // 将数组进行排序
                 content.sort(function(a, b){
                   return b.dateSize - a.dateSize
                 })
+                // 渲染页面
                 res.render('healthRecords/electronicMedicalRecords', {
                   data: content,
                   status: 'true',
@@ -32,12 +35,14 @@ module.exports = {
                   auth: 'true'
                 })
               } else if (_res.code === 0 && _res.data.content.length == 0) {
+                // 没有电子病历时页面弹框
                 res.render('healthRecords/electronicMedicalRecords', {
                   status: 'false',
                   auth: 'true',
                   medicareCard: _data.data.medicareCard
                 })
               } else {
+                // 未知的一些错误
                 res.render('error', {
                   message: '未知错误'
                 });
@@ -53,6 +58,7 @@ module.exports = {
             res.clearCookie('userId');
             res.redirect(`${global.config.root}/login?status=2`);
           } else if (_data.code === 0 && _data.data && _data.data.status === 2) {
+            // 实名认证审核中的弹框通知
             res.render('healthRecords/electronicMedicalRecords', {
               auth: 'false'
             })
@@ -66,6 +72,7 @@ module.exports = {
           });
         })
       },() =>{
+        // 未登录重定向到登录页
         res.redirect(`${global.config.root}/login?status=2`);
       })
     }, (err) => {
@@ -84,6 +91,7 @@ module.exports = {
       auth.isLogin(req, (data) => {
         requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
           if (_data.code === 0 && _data.data && _data.data.status === 1) {
+            // 姓名和身份证以星号代替
             name = _data.data.name
             card = _data.data.idCard
             if (name && name.length === 2) {
