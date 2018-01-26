@@ -19,47 +19,67 @@ module.exports = {
     let url = requestTool.setAuthUrl(`/find-doctor/check-in?Dotel=${tel}`);
     let Dotel = req.query.Dotel || req.query.tel;
     let urlQiniu = `${global.config.server}api/qiniu/auth`;
+    // 获取openId
     auth.getOpenId(req, res, url, (openId) => {
+      // 判断是否登录
       auth.isLogin(req, (data) =>{
-        if (Dotel) {
-           requestTool.getHeader('doctorInfo', data.access_token, `phone=${Dotel}`, (_res) => {
-              if (_res.code === 0 && _res.data) {
-                res.render('doctor/check-in',{
-                    doctorId: _res.data.doctorId || '',
-                    doctor: doctor,
-                    doctorPic: _res.data.avatarUrl || '',
-                    doctorName: _res.data.name || '',
-                    department: _res.data.department || '',
-                    doctorTitle: _res.data.doctorTitle || '',
-                    hospitalName: _res.data.hospital || '',
-                    url: global.config.userServer,
-                    urlQiniu: urlQiniu,
-                    userId: data.userId,
-                    accessToken: data.access_token
+        // 判断是否实名认证
+        requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
+          if (Dotel) {
+             requestTool.getHeader('doctorInfo', data.access_token, `phone=${Dotel}`, (_res) => {
+                if (_res.code === 0 && _res.data) {
+                  res.render('doctor/check-in',{
+                      doctorId: _res.data.doctorId || '',
+                      doctor: doctor,
+                      doctorPic: _res.data.avatarUrl || '',
+                      doctorName: _res.data.name || '',
+                      department: _res.data.department || '',
+                      doctorTitle: _res.data.doctorTitle || '',
+                      hospitalName: _res.data.hospital || '',
+                      url: global.config.userServer,
+                      urlQiniu: urlQiniu,
+                      userId: data.userId,
+                      accessToken: data.access_token,
+                      status: _data.data.status || ''
+                  });
+                }
+              }, (err) => {
+                res.render('error', {
+                  message: '服务器请求错误，请返回页面重试~'
                 });
-              }
-            }, (err) => {
-              res.render('error', {
-                message: '服务器请求错误，请返回页面重试~'
-              });
-            }) 
-        } else {
-          res.render('doctor/check-in',{
-              doctorId: doctorId,
-              doctor: doctor,
-              doctorPic: doctorPic,
-              doctorName: doctorName,
-              department: department,
-              doctorTitle: doctorTitle,
-              hospitalName: hospitalName,
-              url: global.config.userServer,
-              urlQiniu: urlQiniu,
-              userId: data.userId,
-              accessToken: data.access_token
+              }) 
+          } else if (_data.code === 403) {
+            // Token过期或者错误跳转到登录页，并清除cookie
+            res.clearCookie('accessToken');
+            res.clearCookie('userId');
+            res.redirect(`${global.config.root}/login?status=2`);
+          } else {
+            res.render('doctor/check-in',{
+                doctorId: doctorId,
+                doctor: doctor,
+                doctorPic: doctorPic,
+                doctorName: doctorName,
+                department: department,
+                doctorTitle: doctorTitle,
+                hospitalName: hospitalName,
+                url: global.config.userServer,
+                urlQiniu: urlQiniu,
+                userId: data.userId,
+                accessToken: data.access_token,
+                status: _data.data.status || ''
+            });
+          }
+        }, (err) =>{
+          res.render('error', {
+            message: err
           });
-        }
+        });
       },() =>{
         res.redirect(`${global.config.root}/login?status=8&&Dotel=${Dotel}`);
       })
+    }, (err) => {
+      res.render('error', {
+        message: err
+      });
     })
   }}

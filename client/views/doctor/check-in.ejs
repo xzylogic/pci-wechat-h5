@@ -103,10 +103,18 @@
   <div class="js_dialog" id="iosDialog2" style="display: none;">
       <div class="weui-mask"></div>
       <div class="weui-dialog">
-          <div class="weui-dialog__bd">你已提交成功，请耐心等待<%= doctorName %>医生的确认</div>
+        <% if (status == 1) { %>
+          <div class="weui-dialog__bd">申请已提交，请耐心等待<%= doctorName %>医生的确认</div>
           <div class="weui-dialog__ft">
-              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">知道了</a>
           </div>
+        <% } else {%>
+          <div class="weui-dialog__bd">申请已提交，请尽快完成实名认证，方便医生确认您的身份。（平台不会泄露任何身份信息）</div>
+          <div class="weui-dialog__ft">
+              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">暂不认证</a>
+              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">去认证</a>
+          </div>
+        <% } %>
       </div>
   </div>
 </div>
@@ -574,9 +582,15 @@
         }
     });
 
-    $('#dialogs').on('click', '.weui-dialog__btn', function(){
+    // 暂不认证
+    $('#dialogs').on('click', '.weui-dialog__btn_default', function(){
         $(this).parents('.js_dialog').fadeOut(200);
         wx.closeWindow();
+    });
+    // 去认证
+    $('#dialogs').on('click', '.weui-dialog__btn_primary', function(){
+        $(this).parents('.js_dialog').fadeOut(200);
+        window.location.href = "<%= _src('/authlist') %>"
     });
 
     //立即申请
