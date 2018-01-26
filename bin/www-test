@@ -4,8 +4,8 @@ global.config = {
   userServer: 'http://116.62.122.69/pci-user/',
   healthServer: 'http://116.62.122.69/pro-health/',
   server: 'http://116.62.122.69/pci-micro/',
-  domain: 'http://www.wangbing.ren',
-  root: '/pci-wechat',
+  domain: 'http://test.wangbing.ren',
+  root: '/',
   filedir: '/home/admin/webapp/pci-wechat-h5',
   appId: 'wxee8d9fc7f496d8b1',
   secret:'4ee061a42331ea76af1430e02e4f6fbe'

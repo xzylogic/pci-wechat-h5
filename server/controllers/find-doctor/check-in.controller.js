@@ -48,6 +48,11 @@ module.exports = {
                   message: '服务器请求错误，请返回页面重试~'
                 });
               }) 
+          } else if (_data.code === 403) {
+            // Token过期或者错误跳转到登录页，并清除cookie
+            res.clearCookie('accessToken');
+            res.clearCookie('userId');
+            res.redirect(`${global.config.root}/login?status=2`);
           } else {
             res.render('doctor/check-in',{
                 doctorId: doctorId,
