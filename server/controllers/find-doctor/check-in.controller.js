@@ -63,6 +63,7 @@ module.exports = {
                 department: department,
                 doctorTitle: doctorTitle,
                 hospitalName: hospitalName,
+                applyStatus: '',
                 url: global.config.userServer,
                 urlQiniu: urlQiniu,
                 userId: data.userId,
