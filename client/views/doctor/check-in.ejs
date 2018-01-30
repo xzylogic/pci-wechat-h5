@@ -5,119 +5,138 @@
     <title>向医生报到</title>
     <% include ../layout/layout %>
     <script src="<%=_src('/lib/vconsole.min.js')%>"></script>
-    <link rel="stylesheet" href="<%= _src('/css/basic/basic.min.css') %>">
-<!--     <script src="<%= _src('/lib/validform/Validform_v5.3.2_min.js') %>"></script> -->
     <script type="text/javascript">
-      // var vConsole = new VConsole();
       var share = new share("<%=_src('')%>") //jssdk分享页面
     </script>
 </head>
 
 <body ontouchstart>
-<div class="dc-check-in">
-    <div class="weui-flex navigation">
-        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span>1</span> 注册登录</div></div>
-        <div style="text-align: center;"><div class="placeholder">-------></div></div>
-        <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span style="color: #fff;background: #35b2f2;">2</span> 向医生报到</div></div>
-    </div>
-    <div class="doc-intro">
-        <div class="doc-into">
-            <div class="doc-img">
-                <img class="doc-pic" src="<%= doctorPic %>"></div>
-            <div class="doc-content">
-                <p class="doc-name"><%= doctorName %></p>
-                <p class="doc-title"><%= department %> <%= doctorTitle %></p>
-                <p class="doc-hospital"><%= hospitalName %></p>
-            </div>
-        </div>
-        <div class="doc-tipe">
-            <p>患者你好！我是<%= doctorName %>医生，若您曾在我这就诊过，请完整填写个人信息。如有出院小结等资料，请一并拍照上传！</p>
-        </div>
-    </div>
-    <div class="patient">
-        <div class="weui-cell">
-            <div class="weui-cell__hd"><label class="weui-label" style="color: #333;">真实姓名</label></div>
-            <div class="weui-cell__bd">
-                <input class="weui-input" type="text" pattern="" maxlength="10" style="color: #666;text-align: right" id="userName"
-                       placeholder="请填写"/>
-            </div>
-        </div>
-        <div class="weui-cell weui-cell_access js_item" id="userDate" style="border-top: 1px solid #ececec;">
-            <div class="weui-cell__bd"><label for="" class="weui-label" style="color: #333;">就诊日期</label></div>
-            <div class="weui-cell__ft confirmDate">请选择</div>
-        </div>
-    </div>
-    <div class="patient-introduce">
-        <div class="weui-cells__title" style="font-size: 14px;color: #333;">申请描述</div>
-        <div class="weui-cells weui-cells_form"
-             style="border-radius: 4px;border-left: 1px solid #ececec;border-right: 1px solid #ececec;">
-            <div class="weui-cell">
-                <div class="weui-cell__bd">
-                    <textarea class="weui-textarea" style="font-size: 14px;color: #999;" id="userIntroduce"
-                              rows="4" maxlength="100"></textarea>
-                    <div class="weui-textarea-counter"><span>0</span>/100</div>
-                </div>
-            </div>
-        </div>
-        <div class="weui-cell" id="uploader">
-            <div class="weui-cell__bd">
-                <div class="weui-uploader">
-                    <div class="weui-uploader__hd">
-                        <p class="weui-uploader__title" style="font-size: 14px;color: #333;">添加病历出院小结等照片</p>
-                        <div class="weui-uploader__info"><span id="number">0</span>/9</div>
-                    </div>
-                    <div class="weui-uploader__bd">
-                        <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                        <div class="weui-uploader__input-box add">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="weui-cell weui-cell_switch patient-btn">
-        <div class="weui-cell__bd">允许医生查看我的全部病例</div>
-        <div class="weui-cell__ft">
-            <label for="switchCP" class="weui-switch-cp">
-                <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked"/>
-                <div class="weui-switch-cp__box"></div>
-            </label>
-        </div>
-    </div>
-    <button class="weui-btn weui-btn_primary check-btn " id="uploaderCustomBtn">立即申请</button>
-</div>
-<div id="toast" style="display: none;">
-  <div class="weui-mask_transparent"></div>
-  <div class="weui-toast message">
-      <p class="weui-toast__content"></p>
-  </div>
-</div>
-<div id="audit_toast" style="display: none;">
-  <div class="weui-mask_transparent"></div>
-  <div class="weui-toast">
-      <i class="weui-loading weui-icon_toast"></i>
-      <p class="weui-toast__content">服务器请求中</p>
-  </div>
-</div>
-<div id="dialogs">
-  <div class="js_dialog" id="iosDialog2" style="display: none;">
+  <% if (applyStatus == 1) { %>
+    <div id="dialogs2">
       <div class="weui-mask"></div>
       <div class="weui-dialog">
-        <% if (status == 1) { %>
-          <div class="weui-dialog__bd">申请已提交，请耐心等待<%= doctorName %>医生的确认</div>
-          <div class="weui-dialog__ft">
-              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">知道了</a>
-          </div>
-        <% } else {%>
-          <div class="weui-dialog__bd">申请已提交，请尽快完成实名认证，方便医生确认您的身份。（平台不会泄露任何身份信息）</div>
-          <div class="weui-dialog__ft">
-              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">暂不认证</a>
-              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">去认证</a>
-          </div>
-        <% } %>
+        <div class="weui-dialog__bd" style="text-align: left;">您给<%= doctorName %>医生的报到申请已发送，请耐心等待医生审核！</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" style="color: #0bb20c" class="weui-dialog__btn weui-dialog__btn_primary close">知道了</a>
+        </div>
       </div>
+    </div>
+  <% } else if (applyStatus == 2) {%>
+    <div id="dialogs3">
+      <div class="weui-mask"></div>
+      <div class="weui-dialog">
+        <div class="weui-dialog__bd" style="text-align: left;">您已经完成向<%= doctorName %>医生的报到，您可返回使用菜单中其他功能！</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" style="color: #0bb20c" class="weui-dialog__btn weui-dialog__btn_primary close">知道了</a>
+        </div>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="dc-check-in">
+      <div class="weui-flex navigation">
+          <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span>1</span> 注册登录</div></div>
+          <div style="text-align: center;"><div class="placeholder">-------></div></div>
+          <div class="weui-flex__item" style="text-align: center;"><div class="placeholder"><span style="color: #fff;background: #35b2f2;">2</span> 向医生报到</div></div>
+      </div>
+      <div class="doc-intro">
+          <div class="doc-into">
+              <div class="doc-img">
+                  <img class="doc-pic" src="<%= doctorPic %>"></div>
+              <div class="doc-content">
+                  <p class="doc-name"><%= doctorName %></p>
+                  <p class="doc-title"><%= department %> <%= doctorTitle %></p>
+                  <p class="doc-hospital"><%= hospitalName %></p>
+              </div>
+          </div>
+          <div class="doc-tipe">
+              <p>患者你好！我是<%= doctorName %>医生，若您曾在我这就诊过，请完整填写个人信息。如有出院小结等资料，请一并拍照上传！</p>
+          </div>
+      </div>
+      <div class="patient">
+          <div class="weui-cell">
+              <div class="weui-cell__hd"><label class="weui-label" style="color: #333;">真实姓名</label></div>
+              <div class="weui-cell__bd">
+                  <input class="weui-input" type="text" pattern="" maxlength="10" style="color: #666;text-align: right" id="userName"
+                         placeholder="请填写"/>
+              </div>
+          </div>
+          <div class="weui-cell weui-cell_access js_item" id="userDate" style="border-top: 1px solid #ececec;">
+              <div class="weui-cell__bd"><label for="" class="weui-label" style="color: #333;">就诊日期</label></div>
+              <div class="weui-cell__ft confirmDate">请选择</div>
+          </div>
+      </div>
+      <div class="patient-introduce">
+          <div class="weui-cells__title" style="font-size: 14px;color: #333;">申请描述</div>
+          <div class="weui-cells weui-cells_form"
+               style="border-radius: 4px;border-left: 1px solid #ececec;border-right: 1px solid #ececec;">
+              <div class="weui-cell">
+                  <div class="weui-cell__bd">
+                      <textarea class="weui-textarea" style="font-size: 14px;color: #999;" id="userIntroduce"
+                                rows="4" maxlength="100"></textarea>
+                      <div class="weui-textarea-counter"><span>0</span>/100</div>
+                  </div>
+              </div>
+          </div>
+          <div class="weui-cell" id="uploader">
+              <div class="weui-cell__bd">
+                  <div class="weui-uploader">
+                      <div class="weui-uploader__hd">
+                          <p class="weui-uploader__title" style="font-size: 14px;color: #333;">添加病历出院小结等照片</p>
+                          <div class="weui-uploader__info"><span id="number">0</span>/9</div>
+                      </div>
+                      <div class="weui-uploader__bd">
+                          <ul class="weui-uploader__files" id="uploaderFiles"></ul>
+                          <div class="weui-uploader__input-box add">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="weui-cell weui-cell_switch patient-btn">
+          <div class="weui-cell__bd">允许医生查看我的全部病例</div>
+          <div class="weui-cell__ft">
+              <label for="switchCP" class="weui-switch-cp">
+                  <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked"/>
+                  <div class="weui-switch-cp__box"></div>
+              </label>
+          </div>
+      </div>
+      <button class="weui-btn weui-btn_primary check-btn " id="uploaderCustomBtn">立即申请</button>
+    </div>
+  <% } %>
+  <div id="toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast message">
+        <p class="weui-toast__content"></p>
+    </div>
   </div>
-</div>
+  <div id="audit_toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">服务器请求中</p>
+    </div>
+  </div>
+  <div id="dialogs">
+    <div class="js_dialog" id="iosDialog2" style="display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+          <% if (status == 1) { %>
+            <div class="weui-dialog__bd" style="text-align: left;">申请已提交，请耐心等待<%= doctorName %>医生的确认</div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" style="color: #0bb20c" class="weui-dialog__btn weui-dialog__btn_default">知道了</a>
+            </div>
+          <% } else {%>
+            <div class="weui-dialog__bd" style="text-align: left;">申请已提交，请尽快完成实名认证，方便医生确认您的身份。（平台不会泄露任何身份信息）</div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">暂不认证</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">去认证</a>
+            </div>
+          <% } %>
+        </div>
+    </div>
+  </div>
 </body>
 </html>
 <style>
@@ -587,6 +606,12 @@
         $(this).parents('.js_dialog').fadeOut(200);
         wx.closeWindow();
     });
+
+    // 关闭页面
+    $('.close').on('click', function(){
+        wx.closeWindow();
+    });
+
     // 去认证
     $('#dialogs').on('click', '.weui-dialog__btn_primary', function(){
         $(this).parents('.js_dialog').fadeOut(200);

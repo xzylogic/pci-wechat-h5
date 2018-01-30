@@ -26,16 +26,17 @@ module.exports = {
         // 判断是否实名认证
         requestTool.getHeader('certificationStatus', data.access_token, `userId=${data.userId}`, (_data) => {
           if (Dotel) {
-             requestTool.getHeader('doctorInfo', data.access_token, `phone=${Dotel}`, (_res) => {
-                if (_res.code === 0 && _res.data) {
+             requestTool.get('doctorInfo',`tel=${Dotel}&userId=${data.userId}`, (_res) => {
+                if (_res.code == 0 && _res.data) {
                   res.render('doctor/check-in',{
                       doctorId: _res.data.doctorId || '',
                       doctor: doctor,
-                      doctorPic: _res.data.avatarUrl || '',
-                      doctorName: _res.data.name || '',
+                      doctorPic: _res.data.doctorPic || '',
+                      doctorName: _res.data.doctorName || '',
                       department: _res.data.department || '',
                       doctorTitle: _res.data.doctorTitle || '',
-                      hospitalName: _res.data.hospital || '',
+                      hospitalName: _res.data.hospitalName || '',
+                      applyStatus: _res.data.applyStatus || '',
                       url: global.config.userServer,
                       urlQiniu: urlQiniu,
                       userId: data.userId,
