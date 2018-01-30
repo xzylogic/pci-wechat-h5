@@ -25,7 +25,7 @@ requestTool.get = function(key, param, call, error) {
       if (err) {
         error(err);
       } else {
-        call(sres.text);
+        call(JSON.parse(sres.text));
       }
     });
 }
