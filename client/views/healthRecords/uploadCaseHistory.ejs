@@ -4,9 +4,9 @@
 <head>
   <title>上传病历</title>
   <% include ../layout/layout %>
-<!--   <script src="<%=_src('/lib/vconsole.min.js')%>"></script> -->
+  <script src="<%=_src('/lib/vconsole.min.js')%>"></script>
   <script type="text/javascript">
-    // var vConsole = new VConsole();
+    var vConsole = new VConsole();
     var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
   <style>
@@ -159,6 +159,7 @@
   </div>
 </body>
 <script>
+var u = navigator.userAgent;
 var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
 var url = "<%=url%>" //获取接口
 var userId = "<%=userId%>"
@@ -249,12 +250,12 @@ $(document).ready(function(){
           wx.getLocalImgData({
             localId: uploadCustomFileList[i].url, // 图片的localID
             success: function (res) {
-              var localData; // localData是图片的base64数据，可以用img标签显示
+              var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
               // 判断手机类型，iphone和android图片编码不一样
               if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-                localData = res.localData
+                localData = localData
               } else if (u.indexOf('iPhone') > -1) {
-                localData = (res.localData).split('base64,')[1];
+                localData = localData.split('base64,')[1];
               }
               $.ajax({
                 url: "http://upload.qiniu.com/putb64/-1",

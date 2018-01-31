@@ -195,13 +195,6 @@ $(document).ready(function(){
 
   // 判断手机类型
   var u = navigator.userAgent;
-  if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-    $("#uploaderInput").attr("capture","camera");
-  } else if (u.indexOf('iPhone') > -1) {
-    //苹果手机
-  } else if (u.indexOf('Windows Phone') > -1) {
-    //winphone手机
-  }
 
   /* 图片手动上传 */
   var uploadCustomFileList = [];
