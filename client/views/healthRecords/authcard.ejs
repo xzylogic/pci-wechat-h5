@@ -5,11 +5,13 @@
   <% include ../layout/layout %>
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script src="<%=_src('/lib/flexible/rem.min.js')%>"></script>
+<!--   <script src="<%=_src('/lib/vconsole.min.js')%>"></script> -->
   <script type="text/javascript">
     var url = "<%=url%>" //获取接口地址
     var access_token = "<%=access_token%>" //获取access_token
     var userId = "<%=userId%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
+    // var vConsole = new VConsole();
   </script>
   <style>
     body{
@@ -119,13 +121,13 @@
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" id="name" type="text" placeholder="请输入姓名"/>
+            <input class="weui-input" id="name" type="text" placeholder="请输入姓名" value="王兵"/>
         </div>
       </div>
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">身份证号</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input card_number" id="card" type="text" maxlength="18" placeholder="请输入身份证号"/>
+            <input class="weui-input card_number" id="card" type="text" maxlength="18" placeholder="请输入身份证号" value="42900119920108521X"/>
         </div>
       </div>
       <div class="weui-cells weui-cells_form" id="uploader">
@@ -137,8 +139,8 @@
                    </div>
                    <div class="weui-uploader__bd">
                        <ul class="weui-uploader__files" id="uploaderFiles"></ul>
-                       <div class="weui-uploader__input-box add">
-                         <input id="uploaderInput" class="weui-uploader__input"/>
+                       <div class="weui-uploader__input-box add" id="uploaderInput">
+                         <!-- <input id="uploaderInput" class="weui-uploader__input"/> -->
                       </div>                   
                    </div>
                </div>
@@ -262,7 +264,7 @@ $(document).ready(function(){
         var localIds = res.localIds;
         $(".add").fadeOut(0)
         $("#uploaderFiles").append("<li class='weui-uploader__file image'><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src='" + localIds + "'></li>")
-        uploadCustomFileList.push(localIds);
+        uploadCustomFileList.push(localIds[0]);
       }
     });
   });
@@ -349,10 +351,10 @@ $(document).ready(function(){
  function authcard(name, card) {
     auditToast() // 请求中
     wx.getLocalImgData({
-      localId: '' + uploadCustomFileList[0], // 图片的localID
+      localId: uploadCustomFileList[0], // 图片的localID
       success: function (res) {
         // localData是图片的base64数据，将base64格式图片转为FormData对象进行上传
-        var bytes = (res.localData).split(',')[1]; 
+        var bytes = (res.localData).split(',')[0];
         var ab = new ArrayBuffer(bytes.length);
         var ia = new Uint8Array(ab);
         for(var i = 0; i < bytes.length; i++){
