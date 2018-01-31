@@ -369,9 +369,9 @@ $(document).ready(function(){
         $.ajax({
           type: 'post',
           url: url + "api/idCardValidates/validate",
-          headers: {
-            'access-token': access_token
-          },
+          // headers: {
+          //   'access-token': access_token
+          // },
           data: formData,
           processData: false,
           contentType: false,
