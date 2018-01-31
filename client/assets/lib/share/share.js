@@ -18,7 +18,7 @@ function share(pathName){
         console.log(err);
       }
   });
-  wx.ready(function () {
+  wx.ready(function() {
     // 在这里调用 API
     // 分享给朋友
       wx.onMenuShareAppMessage({
