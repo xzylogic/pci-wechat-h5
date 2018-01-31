@@ -121,13 +121,13 @@
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" id="name" type="text" placeholder="请输入姓名" value="王兵"/>
+            <input class="weui-input" id="name" type="text" placeholder="请输入姓名"/>
         </div>
       </div>
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">身份证号</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input card_number" id="card" type="text" maxlength="18" placeholder="请输入身份证号" value="42900119920108521X"/>
+            <input class="weui-input card_number" id="card" type="text" maxlength="18" placeholder="请输入身份证号"/>
         </div>
       </div>
       <div class="weui-cells weui-cells_form" id="uploader">
@@ -354,7 +354,13 @@ $(document).ready(function(){
       localId: uploadCustomFileList[0], // 图片的localID
       success: function (res) {
         // localData是图片的base64数据，将base64格式图片转为FormData对象进行上传
-        var bytes = (res.localData).split(',')[0];
+        var bytes;
+        // 判断手机类型，iphone和android图片编码不一样
+        if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+          bytes = res.localData
+        } else if (u.indexOf('iPhone') > -1) {
+          bytes = (res.localData).split('base64,')[1];
+        }
         var ab = new ArrayBuffer(bytes.length);
         var ia = new Uint8Array(ab);
         for(var i = 0; i < bytes.length; i++){
@@ -376,6 +382,7 @@ $(document).ready(function(){
           data: formData,
           processData: false,
           contentType: false,
+          cache: false,
           success: function (res) {
             $('#audit_toast').fadeOut(100);
             if (res && res.code === 0) {
