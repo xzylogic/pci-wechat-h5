@@ -210,7 +210,6 @@ function validation(code){
     success: function(res) {
       $('#audit_toast').fadeOut(0)
       if (res.data && res.data.code === 0) {
-        console.log(res)
         if (status == 0) {
           window.location = "<%=_src('/login/success')%>?name="+ res.data.name
         } else if (status == 1) {

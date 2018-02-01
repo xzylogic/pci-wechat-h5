@@ -5,7 +5,7 @@
   <% include ../layout/layout %>
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script src="<%=_src('/lib/flexible/rem.min.js')%>"></script>
-<!--   <script src="<%=_src('/lib/vconsole.min.js')%>"></script> -->
+  <!-- <script src="<%=_src('/lib/vconsole.min.js')%>"></script> -->
   <script type="text/javascript">
     var url = "<%=url%>" //获取接口地址
     var access_token = "<%=access_token%>" //获取access_token
@@ -191,246 +191,254 @@
   </div>
 </body>
 <script>
-$(document).ready(function(){
+if (typeof window.WeixinJSBridge == "undefined") {
+  $(document).on('WeixinJSBridgeReady', function() {
+    $(document).ready(function(){
 
-  // 判断手机类型
-  var u = navigator.userAgent;
+      // 判断手机类型
+      var u = navigator.userAgent;
 
-  /* 图片手动上传 */
-  var uploadCustomFileList = [];
-   // 申请认证
-  $("#authphone_btn").on('click',function() {
-    var name = $("#name").val(),
-        card = $("#card").val();
-    if (testName(name) === true && testCard(card) === true && testiamge()) {
-      authcard(name, card);
-    }   
-  });
-
-  // 验证姓名
-  function testName(name) {
-    if (name) {
-      if ((/^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/).test(name)) {
-        return true;
-      } else {
-        $(".authphone_footer_error").css('text-align','center')
-        $(".authphone_footer_error").html('*请填写正确的姓名');
-      }
-    } else {
-      $(".authphone_footer_error").css('text-align','center')
-      $(".authphone_footer_error").html('*请输入姓名');
-    }
-  };
-
-  //验证身份证
-  function testCard(card) {
-    if (card) {
-      if ((/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/).test(card)) {
-        return true;
-      } else {
-        $(".authphone_footer_error").css('text-align','center')
-        $(".authphone_footer_error").html('*请输入正确的身份证号码');
-      }
-    } else {
-      $(".authphone_footer_error").css('text-align','center')
-      $(".authphone_footer_error").html('*请输入身份证号码');
-    }
-  };
-
-  // 验证图片是否选择
-  function testiamge() {
-    if (uploadCustomFileList.length !== 0) {
-      return true
-    } else {
-      $(".authphone_footer_error").css('text-align','center')
-      $(".authphone_footer_error").html('*请选择上传图片');
-    }
-  }
-
-  var uploadCount = 0;
-  $('#uploaderInput').on('click', function () {
-    wx.chooseImage({
-      count: 1, // 默认9
-      sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-      success: function (res) {
-        var localIds = res.localIds;
-        $(".add").fadeOut(0)
-        $("#uploaderFiles").append("<li class='weui-uploader__file image'><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src='" + localIds + "'></li>")
-        uploadCustomFileList.push(localIds[0]);
-      }
-    });
-  });
-
-  // 缩略图预览
-  $('#uploaderFiles').on('click', '.weui-uploader__file', function(e){
-      var target = e.target;
-
-      while(!target.classList.contains('weui-uploader__file') && target){
-          target = target.parentNode;
-      }
-      if(!target) return;
-
-      var url = target.getAttribute('style') || '';
-      var id = target.getAttribute('data-id');
-
-      if(url){
-          url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '');
-      }
-      var gallery = weui.gallery(url, {
-          onDelete: function(){
-              weui.confirm('确定删除该图片？', function(){
-                  --uploadCount;
-                  $(".add").fadeIn(0)
-                  var index;
-                  for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
-                      var file = uploadCustomFileList[i];
-                      if(file.id == id){
-                          index = i;
-                          break;
-                      }
-                  }
-                  if(index !== undefined) uploadCustomFileList.splice(index, 1);
-
-                  target.parentNode.remove();
-                  gallery.hide();
-              });
-          }
+      /* 图片手动上传 */
+      var uploadCustomFileList = [];
+       // 申请认证
+      $("#authphone_btn").on('click',function() {
+        var name = $("#name").val(),
+            card = $("#card").val();
+        if (testName(name) === true && testCard(card) === true && testiamge()) {
+          authcard(name, card);
+        }   
       });
-  });
 
-  $("#uploaderFiles").on('click', '.delete', function(e){
-    var event = e || window.event;
-    if(event.stopPropagation){
-      event.stopPropagation();
-    } else {
-      e.cancelBubble = true;
-    }
-    var id = e.target.getAttribute('delete-id');
-    weui.confirm('确定删除该图片？', function(){
-      --uploadCount;
-      $(".add").fadeIn(0)
-        var index;
-        for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
-            var file = uploadCustomFileList[i];
-            if(file.id == id){
-                index = i;
-                break;
-            }
+      // 验证姓名
+      function testName(name) {
+        if (name) {
+          if ((/^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/).test(name)) {
+            return true;
+          } else {
+            $(".authphone_footer_error").css('text-align','center')
+            $(".authphone_footer_error").html('*请填写正确的姓名');
+          }
+        } else {
+          $(".authphone_footer_error").css('text-align','center')
+          $(".authphone_footer_error").html('*请输入姓名');
         }
-        if(index !== undefined) uploadCustomFileList.splice(index, 1);
+      };
 
-        e.target.parentNode.remove();
-    });
-  });
-
-  // token过期，重新登录
-  function reset() {
-    $.ajax({
-      type: "get",
-      url: "<%=_src('')%>/reset",
-      success: function(msg){
-        if (msg.code === 0) {
-          window.location.href = `<%=_src('')%>/login?status=5`
+      //验证身份证
+      function testCard(card) {
+        if (card) {
+          if ((/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/).test(card)) {
+            return true;
+          } else {
+            $(".authphone_footer_error").css('text-align','center')
+            $(".authphone_footer_error").html('*请输入正确的身份证号码');
+          }
+        } else {
+          $(".authphone_footer_error").css('text-align','center')
+          $(".authphone_footer_error").html('*请输入身份证号码');
         }
-      },
-      error:function(err){
-        console.log(err);
+      };
+
+      // 验证图片是否选择
+      function testiamge() {
+        if (uploadCustomFileList.length !== 0) {
+          return true
+        } else {
+          $(".authphone_footer_error").css('text-align','center')
+          $(".authphone_footer_error").html('*请选择上传图片');
+        }
       }
-    });
-  }
 
-   //提交请求
- function authcard(name, card) {
-    auditToast() // 请求中
-    wx.getLocalImgData({
-      localId: uploadCustomFileList[0], // 图片的localID
-      success: function (res) {
-        // localData是图片的base64数据，将base64格式图片转为FormData对象进行上传
-        var bytes;
-        // 判断手机类型，iphone和android图片编码不一样
-        if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-          bytes = res.localData
-        } else if (u.indexOf('iPhone') > -1) {
-          bytes = (res.localData).split('base64,')[1];
-        }
-        var ab = new ArrayBuffer(bytes.length);
-        var ia = new Uint8Array(ab);
-        for(var i = 0; i < bytes.length; i++){
-          ia[i] = bytes.charCodeAt(i);
-        }
-        //Blob对象
-        var blob = new Blob([ab], {type: 'image/jpeg'}); //type为图片的格式
-        var formData = new FormData();
-        formData.append('name', name);
-        formData.append('card', card);
-        formData.append('userId', userId);
-        formData.append('file', blob, Date.now() + '.jpg');
-        $.ajax({
-          type: 'post',
-          url: url + "api/idCardValidates/validate",
-          // headers: {
-          //   'access-token': access_token
-          // },
-          data: formData,
-          processData: false,
-          contentType: false,
-          cache: false,
+      var uploadCount = 0;
+      $('#uploaderInput').on('click', function () {
+        wx.chooseImage({
+          count: 1, // 默认9
+          sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
-            $('#audit_toast').fadeOut(100);
-            if (res && res.code === 0) {
-              $('#iosDialog2').fadeIn(200);
-            } else if (res && res.code === 403) {
-              weui.alert('请重新登录', function(){
-                reset();
-              })
-            } else {
-              $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
+            var localIds = res.localIds;
+            $(".add").fadeOut(0)
+            $("#uploaderFiles").append("<li class='weui-uploader__file image'><i class='weui-icon-cancel delete'></i><img class='img-responsive' style='width:79px;height:79px;' src='" + localIds + "'></li>")
+            uploadCustomFileList.push(localIds[0]);
+          }
+        });
+      });
+
+      // 缩略图预览
+      $('#uploaderFiles').on('click', '.weui-uploader__file', function(e){
+          var target = e.target;
+
+          while(!target.classList.contains('weui-uploader__file') && target){
+              target = target.parentNode;
+          }
+          if(!target) return;
+
+          var url = target.getAttribute('style') || '';
+          var id = target.getAttribute('data-id');
+
+          if(url){
+              url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '');
+          }
+          var gallery = weui.gallery(url, {
+              onDelete: function(){
+                  weui.confirm('确定删除该图片？', function(){
+                      --uploadCount;
+                      $(".add").fadeIn(0)
+                      var index;
+                      for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+                          var file = uploadCustomFileList[i];
+                          if(file.id == id){
+                              index = i;
+                              break;
+                          }
+                      }
+                      if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+                      target.parentNode.remove();
+                      gallery.hide();
+                  });
+              }
+          });
+      });
+
+      $("#uploaderFiles").on('click', '.delete', function(e){
+        var event = e || window.event;
+        if(event.stopPropagation){
+          event.stopPropagation();
+        } else {
+          e.cancelBubble = true;
+        }
+        var id = e.target.getAttribute('delete-id');
+        weui.confirm('确定删除该图片？', function(){
+          --uploadCount;
+          $(".add").fadeIn(0)
+            var index;
+            for (var i = 0, len = uploadCustomFileList.length; i < len; ++i) {
+                var file = uploadCustomFileList[i];
+                if(file.id == id){
+                    index = i;
+                    break;
+                }
+            }
+            if(index !== undefined) uploadCustomFileList.splice(index, 1);
+
+            e.target.parentNode.remove();
+        });
+      });
+
+      // token过期，重新登录
+      function reset() {
+        $.ajax({
+          type: "get",
+          url: "<%=_src('')%>/reset",
+          success: function(msg){
+            if (msg.code === 0) {
+              window.location.href = `<%=_src('')%>/login?status=5`
             }
           },
-          error: function (error) {
-            console.log(error)
-            $('#audit_toast').fadeOut(100);
-            $(".authphone_footer_error").css('text-align','center')
-            $(".authphone_footer_error").html('服务器请求出错~请稍后再试');
+          error:function(err){
+            console.log(err);
           }
-        })
+        });
       }
-    });
-  };
 
-   function auditToast() {
-      var $toast = $('#audit_toast');
-      if ($toast.css('display') != 'none') return;
-      $toast.fadeIn(100);
-   }
+       //提交请求
+     function authcard(name, card) {
+        auditToast() // 请求中
+        wx.getLocalImgData({
+          localId: uploadCustomFileList[0], // 图片的localID
+          success: function (res) {
+            // localData是图片的base64数据，将base64格式图片转为FormData对象进行上传
+            var bytes;
+            // 判断手机类型，iphone和android图片编码不一样
+            if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+              bytes = res.localData
+            } else if (u.indexOf('iPhone') > -1) {
+              bytes = (res.localData).split('base64,')[1];
+            }
+            var ab = new ArrayBuffer(bytes.length);
+            var ia = new Uint8Array(ab);
+            for(var i = 0; i < bytes.length; i++){
+              ia[i] = bytes.charCodeAt(i);
+            }
+            //Blob对象
+            var blob = new Blob([ab], {type: 'image/jpeg'}); //type为图片的格式
+            var formData = new FormData();
+            formData.append('name', name);
+            formData.append('idCardNum', card);
+            formData.append('userId', userId);
+            formData.append('file', blob, Date.now() + '.jpg');
+            setTimeout(function(){
+              $.ajax({
+                type: 'post',
+                url: url + "api/idCardValidates/validate",
+                headers: {
+                  'access-token': access_token
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                  console.log('success: ' + JSON.stringify(res));
+                  $('#audit_toast').fadeOut(100);
+                  if (res && res.code === 0) {
+                    $('#iosDialog2').fadeIn(200);
+                  } else if (res && res.code === 403) {
+                    weui.alert('请重新登录', function(){
+                      reset();
+                    })
+                  } else {
+                    $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
+                  }
+                },
+                error: function (error) {
+                  console.log(error)
+                  $('#audit_toast').fadeOut(100);
+                  $(".authphone_footer_error").css('text-align','center')
+                  $(".authphone_footer_error").html('服务器请求出错~请稍后再试');
+                }
+              })
+            }, 100);
+          }
+        });
+      };
 
-  $('#dialogs').on('click', '.weui-dialog__btn', function(){
-    $(this).parents('.js_dialog').fadeOut(200);
-    wx.closeWindow();
+       function auditToast() {
+          var $toast = $('#audit_toast');
+          if ($toast.css('display') != 'none') return;
+          $toast.fadeIn(100);
+       }
+
+      $('#dialogs').on('click', '.weui-dialog__btn', function(){
+        $(this).parents('.js_dialog').fadeOut(200);
+        wx.closeWindow();
+      });
+
+      $(document).on('click', '.click_img', function() {
+        $(".image_close").slideDown(600).delay(3000).slideUp(600)
+        $(".weui-gallery__opr").slideDown(600).delay(3000).slideUp(600)
+      })
+
+      //底部提交按钮顶上去
+      var oHeight = $(document).height(); //浏览器当前的高度
+
+       $(window).resize(function(){
+     
+            if($(document).height() < oHeight){
+             
+            $(".authphone_footer").css("display","none");
+        }else{
+             
+            $(".authphone_footer").css("display","block");
+        }
+            
+       });
+    })
   });
+} else {
+   console.log('you')
+}
 
-  $(document).on('click', '.click_img', function() {
-    $(".image_close").slideDown(600).delay(3000).slideUp(600)
-    $(".weui-gallery__opr").slideDown(600).delay(3000).slideUp(600)
-  })
-
-  //底部提交按钮顶上去
-  var oHeight = $(document).height(); //浏览器当前的高度
-
-   $(window).resize(function(){
- 
-        if($(document).height() < oHeight){
-         
-        $(".authphone_footer").css("display","none");
-    }else{
-         
-        $(".authphone_footer").css("display","block");
-    }
-        
-   });
-
-
-}) 
 </script>
 </html>

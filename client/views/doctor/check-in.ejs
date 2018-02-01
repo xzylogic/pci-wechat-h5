@@ -434,37 +434,40 @@
     getqiniu(
       function(token){
         for (var i = 0; i < uploadCustomFileList.length; i++) {
-          wx.getLocalImgData({
-            localId: uploadCustomFileList[i].url, // 图片的localID
-            success: function (res) {
-              var localData; // localData是图片的base64数据，可以用img标签显示
-              // 判断手机类型，iphone和android图片编码不一样
-              if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-                localData = res.localData
-              } else if (u.indexOf('iPhone') > -1) {
-                localData = (res.localData).split('base64,')[1];
-              }
-              $.ajax({
-                url: "http://upload.qiniu.com/putb64/-1",
-                type: 'post',
-                data: localData,
-                headers: {
-                  'Content-Type': "application/octet-stream",
-                  "Authorization":'UpToken '+ token
-                },
-                success: function (msg) {
-                  var imgUrl = domain + msg.key
-                  imglist.push(imgUrl)
-                  if (imglist.length == uploadCustomFileList.length) {
-                    ajax()
-                  }
-                },
-                error: function (err) {
-                  console.log(err)
+          // 闭包请求接口，防止循环完成，而请求没完成
+          (function(i){
+            wx.getLocalImgData({
+              localId: uploadCustomFileList[i].url, // 图片的localID
+              success: function (res) {
+                var localData; // localData是图片的base64数据，可以用img标签显示
+                // 判断手机类型，iphone和android图片编码不一样
+                if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+                  localData = res.localData
+                } else if (u.indexOf('iPhone') > -1) {
+                  localData = (res.localData).split('base64,')[1];
                 }
-              })
-            }
-          });
+                $.ajax({
+                  url: "http://upload.qiniu.com/putb64/-1",
+                  type: 'post',
+                  data: localData,
+                  headers: {
+                    'Content-Type': "application/octet-stream",
+                    "Authorization":'UpToken '+ token
+                  },
+                  success: function (msg) {
+                    var imgUrl = domain + msg.key
+                    imglist.push(imgUrl)
+                    if (imglist.length == uploadCustomFileList.length) {
+                      ajax()
+                    }
+                  },
+                  error: function (err) {
+                    console.log(err)
+                  }
+                })
+              }
+            });
+          }(i));
         }
       }
     )
