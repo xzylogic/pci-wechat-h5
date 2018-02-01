@@ -350,7 +350,6 @@ function ajax(picUrlList) {
     success: function (success) {
       $('#audit_toast').fadeOut(0)
       if (success && success.code === 0) {
-        console.log('上传图片成功' + json.stringify(success))
         if (success.data.isFirst == true) {
           saveIntegral()
         }
