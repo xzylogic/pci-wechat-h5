@@ -5,13 +5,13 @@
   <% include ../layout/layout %>
   <script src="<%=_src('/lib/weui/weui.min.js')%>"></script>
   <script src="<%=_src('/lib/flexible/rem.min.js')%>"></script>
-  <!-- <script src="<%=_src('/lib/vconsole.min.js')%>"></script> -->
+  <script src="<%=_src('/lib/vconsole.min.js')%>"></script>
   <script type="text/javascript">
     var url = "<%=url%>" //获取接口地址
     var access_token = "<%=access_token%>" //获取access_token
     var userId = "<%=userId%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
-    // var vConsole = new VConsole();
+    var vConsole = new VConsole();
   </script>
   <style>
     body{
