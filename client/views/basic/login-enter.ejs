@@ -130,14 +130,6 @@ var dn = "<%=dn%>"
 
 $(document).ready(function() {
 
-  $(".form-container").Validform({
-    tiptype: 3,
-    postonce: true,
-    datatype: {
-      "phone": /^1[3|4|5|7|8][0-9]\d{8}$/
-    }
-  });
-
   $(".weui-btn").on('click',function() {
     var code = $(".input-field input").val()
     if (code) {
@@ -230,7 +222,7 @@ function validation(code){
           window.location = "<%=_src('/find-doctor/check-in')%>?tel=" + Dotel
         }
       } else {
-        toast(res.err)
+        toast(res.err || '请求出错')
       } 
     },
     error:function (err) {
