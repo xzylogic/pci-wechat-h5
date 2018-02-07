@@ -11,7 +11,6 @@
     var url = "<%=url%>" //获取接口地址
     var access_token = "<%=access_token%>" //获取access_token
     var userId = "<%=userId%>"
-    var qiniuUrl = "<%=qiniuUrl%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
   <style>
@@ -192,8 +191,6 @@
   </div>
 </body>
 <script>
-var domain;
-var token;
 $(document).ready(function(){
   var name,card;
   
@@ -207,7 +204,7 @@ $(document).ready(function(){
     name = $("#name").val(),
     card = $("#card").val();
     if (testName(name) === true && testCard(card) === true && testiamge()) {
-      uploadQiniu()
+      authcard()
     }   
   });
 
@@ -344,118 +341,58 @@ $(document).ready(function(){
     });
   }
 
-  // 获取七牛token
-  function getqiniu(fn) {
-    $.ajax({
-      type: "get",
-      url: qiniuUrl + "api/qiniu/auth",
-      success: function (msg) {
-        console.log(msg)
-        if (msg.code == 0 && msg.data) {
-          domain = msg.data.domain
-          token = msg.data.token
-          fn(token)
-        }
-      },
-      error: function (err) {
-        console.log(err);
-      }
-    });
-  }
-
-  // 上传图片到七牛
-  function uploadQiniu() {
-    getqiniu(
-      function (token) {
-        wx.getLocalImgData({
-          localId: uploadCustomFileList[0], // 图片的localID
-          success: function (res) {
-            // localData是图片的base64数据，将base64格式图片转为FormData对象进行上传
-            var bytes;
-            // 判断手机类型，iphone和android图片编码不一样
-            if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-              bytes = res.localData
-            } else if (u.indexOf('iPhone') > -1) {
-              bytes = (res.localData).split('base64,')[1];
-            }
-            var ab = new ArrayBuffer(bytes.length);
-            var ia = new Uint8Array(ab);
-            for(var i = 0; i < bytes.length; i++){
-              ia[i] = bytes.charCodeAt(i);
-            }
-            //Blob对象
-            var blob = new Blob([ab], {type: 'image/jpeg'}); //type为图片的格式
-
-            $.ajax({
-              url: "http://upload.qiniu.com/putb64/-1",
-              type: 'post',
-              data: bytes,
-              headers: {
-                'Content-Type': "application/octet-stream",
-                "Authorization":'UpToken '+ token
-              },
-              success: function (msg) {
-                console.log(msg)
-                var imgUrl = domain + msg.key
-                authcard(imgUrl, blob)
-              },
-              error: function (err) {
-                console.log(err)
-              }
-            })
-          }
-        });
-      }
-    )
-  }
-
    //提交请求
-  function authcard(imgUrl, blob) {
+  function authcard() {
     auditToast() // 请求中
-    var formData = new FormData();
-    formData.append('name', name);
-    formData.append('idCardNum', card);
-    formData.append('userId', userId);
-    formData.append('file', blob, Date.now() + '.jpg');
-    formData.append('imageUrl', imgUrl)
-    setTimeout(function(){
-      $.ajax({
-        type: 'post',
-        url: url + "api/idCardValidates/validateForWeb",
-        headers: {
-          'access-token': access_token
-        },
-        data: formData,
-        timeout: 5000,
-        processData: false,
-        contentType: false,
-        cache: false,
-        success: function (res) {
-          console.log('success: ' + JSON.stringify(res));
-          $('#audit_toast').fadeOut(100);
-          if (res && res.code === 0) {
-            $('#iosDialog2').fadeIn(200);
-          } else if (res && res.code === 403) {
-            weui.alert('请重新登录', function(){
-              reset();
-            })
-          } else {
-            $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
-          }
-        },
-        error: function (error) {
-          console.log(error)
-          $('#audit_toast').fadeOut(100);
-          $(".authphone_footer_error").css('text-align','center')
-          $(".authphone_footer_error").html('服务器请求出错~请稍后再试');
-        },
-        complete: function (XMLHttpRequest,status) {
-          if(status == 'timeout') {
-            $(".authphone_footer_error").html('请求超时~请重试');
-          }
-        }
-      })
-    }, 100);
+    wx.getLocalImgData({
+      localId: uploadCustomFileList[0], // 图片的localID
+      success: function (res) {
+        var localData = res.localData  // localData是图片的base64数据，将base64格式图片转为FormData对象进行上传
+        var formData = new FormData();
+        formData.append('name', name);
+        formData.append('idCardNum', card);
+        formData.append('userId', userId);
+        formData.append('file', convertBase64UrlToBlob(localData));
+        setTimeout(function(){
+          $.ajax({
+            type: 'post',
+            url: url + "api/idCardValidates/validate",
+            headers: {
+              'access-token': access_token
+            },
+            data: formData,
+            timeout: 5000,
+            processData: false,
+            contentType: false,
+            async: false,
+            success: function (res) {
+              console.log('success: ' + JSON.stringify(res));
+              $('#audit_toast').fadeOut(100);
+              if (res && res.code === 0) {
+                $('#iosDialog2').fadeIn(200);
+              } else if (res && res.code === 403) {
+                weui.alert('请重新登录', function(){
+                  reset();
+                })
+              } else {
+                $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
+              }
+            },
+            error: function (error) {
+              console.log(error)
+              $('#audit_toast').fadeOut(100);
+              $(".authphone_footer_error").css('text-align','center')
+              $(".authphone_footer_error").html('服务器请求出错~请稍后再试');
+            },
+            complete: function (XMLHttpRequest,status) {
+              if(status == 'timeout') {
+                $(".authphone_footer_error").html('请求超时~请重试');
+              }
+            }
+          })
+        }, 100);
+      }
+    }); 
   };
 
    function auditToast() {
@@ -488,6 +425,24 @@ $(document).ready(function(){
     }
         
    });
+
+  // 将以base64的图片url数据转换为Blob
+  function convertBase64UrlToBlob(urlData){
+      var bytes;
+      if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+        bytes = window.atob(urlData);
+      } else if (u.indexOf('iPhone') > -1) {
+        bytes = window.atob(urlData.split(',')[1]);
+      }
+      //处理异常,将ascii码小于0的转换为大于0
+      var ab = new ArrayBuffer(bytes.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < bytes.length; i++) {
+          ia[i] = bytes.charCodeAt(i);
+      }
+
+      return new Blob( [ab] , {type : 'image/png'});
+  }
 })
 
 
