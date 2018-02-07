@@ -361,10 +361,8 @@ $(document).ready(function(){
               'access-token': access_token
             },
             data: formData,
-            timeout: 5000,
             processData: false,
             contentType: false,
-            async: false,
             success: function (res) {
               console.log('success: ' + JSON.stringify(res));
               $('#audit_toast').fadeOut(100);
@@ -383,11 +381,6 @@ $(document).ready(function(){
               $('#audit_toast').fadeOut(100);
               $(".authphone_footer_error").css('text-align','center')
               $(".authphone_footer_error").html('服务器请求出错~请稍后再试');
-            },
-            complete: function (XMLHttpRequest,status) {
-              if(status == 'timeout') {
-                $(".authphone_footer_error").html('请求超时~请重试');
-              }
             }
           })
         }, 100);
