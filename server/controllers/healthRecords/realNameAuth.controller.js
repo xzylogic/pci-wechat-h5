@@ -62,8 +62,7 @@ module.exports = {
         res.render('healthRecords/authcard',{
           access_token: data.access_token,
           userId: data.userId,
-          url: global.config.userServer,
-          qiniuUrl: global.config.server
+          url: global.config.userServer
         })
       },() =>{
         res.redirect(`${global.config.root}/login?status=5`);
