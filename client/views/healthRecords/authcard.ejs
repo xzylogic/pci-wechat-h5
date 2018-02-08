@@ -372,6 +372,9 @@ $(document).ready(function(){
                 weui.alert('请重新登录', function(){
                   reset();
                 })
+              } else if (res && res.code == 1002) {
+                $(".authphone_footer_error").css('text-align','center')
+                $(".authphone_footer_error").html('网络连接出错了~请再试一次');
               } else {
                 $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
               }
