@@ -372,7 +372,7 @@ $(document).ready(function(){
                 weui.alert('请重新登录', function(){
                   reset();
                 })
-              } else if (res && res.code == 1002) {
+              } else if (res && res.code == 1001) {
                 $(".authphone_footer_error").css('text-align','center')
                 $(".authphone_footer_error").html('网络连接出错了~请再试一次');
               } else {
