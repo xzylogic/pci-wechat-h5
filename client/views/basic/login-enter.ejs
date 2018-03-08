@@ -202,9 +202,7 @@ function validation(code){
     success: function(res) {
       $('#audit_toast').fadeOut(0)
       if (res.data && res.data.code === 0) {
-        if (status == 0) {
-          window.location = "<%=_src('/login/success')%>?name="+ res.data.name
-        } else if (status == 1) {
+        if (status == 1) {
           window.location = "<%=_src('/uploadCaseHistory')%>"
         } else if (status == 2) {
           window.location = "<%=_src('/EMR')%>"
@@ -220,6 +218,8 @@ function validation(code){
           window.location = "<%=_src('/family')%>"
         } else if (status == 8) {
           window.location = "<%=_src('/find-doctor/check-in')%>?tel=" + Dotel
+        } else {
+          window.location = "<%=_src('/login/success')%>?name="+ res.data.name
         }
       } else {
         toast(res.err || '请求出错')
