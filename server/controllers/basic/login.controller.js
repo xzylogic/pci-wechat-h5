@@ -189,7 +189,7 @@ module.exports = {
         })
       }, (err) => {
         res.send({
-          err: {code: 500, msg: '网络连接出错了~'}
+          err: err
         })
       })
     });
@@ -224,9 +224,8 @@ module.exports = {
           })
         }
       }, (err) => {
-        console.log(err)
         res.send({
-          err: {code: 500, msg: '网络连接出错了~'}
+          err: err
         })
       });
     });

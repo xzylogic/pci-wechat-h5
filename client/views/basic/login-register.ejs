@@ -292,7 +292,7 @@
         if (res.data && res.data.code === 0) {
           window.location = "<%=_src('/login/success')%>?name=" + res.data.name + "&status=" + status + "&doctor=" + doctor + "&tel=" + Dotel;
         } else {
-          toast(res.err.msg)
+          toast(res.err || '网络出错了')
         } 
       },
       error:function (err) {
