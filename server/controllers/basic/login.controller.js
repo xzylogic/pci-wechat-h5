@@ -112,12 +112,18 @@ module.exports = {
   // 登录成功页面
   getLoginSuccess: (req, res) => {
     let name = req.query.name || '';
+    let status = req.query.status || '';
+    let doctor = req.query.doctor || '';
+    let Dotel = req.query.Dotel || '';
     let openId = req.signedCookies.pci_secret || ''; // 从cookie中找openId
     console.log(`[${new Date()}] Login UesrName: ${name}`);
 
     if (openId) {
       res.render('basic/login-success', {
-        username: name
+        username: name,
+        status: status,
+        doctor: doctor,
+        Dotel: Dotel
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);
@@ -183,7 +189,7 @@ module.exports = {
         })
       }, (err) => {
         res.send({
-          err: err
+          err: {code: 500, msg: '网络连接出错了~'}
         })
       })
     });
@@ -218,8 +224,9 @@ module.exports = {
           })
         }
       }, (err) => {
+        console.log(err)
         res.send({
-          err: err
+          err: {code: 500, msg: '网络连接出错了~'}
         })
       });
     });
