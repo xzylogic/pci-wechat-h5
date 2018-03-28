@@ -11,10 +11,12 @@ module.exports = {
 	getAuthList: (req, res) => {
 		let url = requestTool.setAuthUrl('/authlist', '');
     let authList = req.query.auth || '';
+    let userName = req.query.userName || '';
 		auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) =>{
         res.render('healthRecords/authlist',{
-          auth: authList
+          auth: authList,
+          userName: userName
         })
       },() =>{
         res.redirect(`${global.config.root}/login?status=5`);
@@ -34,15 +36,15 @@ module.exports = {
   getAuthPhone: (req, res) => {
     let url = requestTool.setAuthUrl('/authphone', '');
     let tel = req.signedCookies.phone || '';
-    let certification = req.query.auth || '';
+    let userName = req.query.userName || '';
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) =>{
         res.render('healthRecords/authphone',{
           url: global.config.userServer,
           tel: tel,
-          auth: certification,
           userId: data.userId,
-          access_token: data.access_token
+          access_token: data.access_token,
+          userName: userName
         })
       },() =>{
         res.redirect(`${global.config.root}/login?status=5`);

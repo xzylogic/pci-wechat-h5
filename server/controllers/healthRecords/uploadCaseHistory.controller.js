@@ -14,8 +14,7 @@ module.exports = {
         res.render('healthRecords/uploadCaseHistory',{
           access_token: data.access_token,
           healthUrl: global.config.healthServer,
-          url: global.config.userServer,
-          qiniuUrl: global.config.server,
+          server: global.config.server,
           userId: data.userId
         })
       }, () => {
