@@ -289,9 +289,28 @@
       url: "<%=_src('/register')%>?tel=" + tel + "&status=" + status+ "&doctor=" + doctor,
       data: {code:code,password:password},
       success: function(res) {
+        console.log(res)
         $('#audit_toast').fadeOut(0)
         if (res.data && res.data.code === 0) {
-          window.location = "<%=_src('/login/success')%>?name=" + res.data.name + "&status=" + status + "&doctor=" + doctor + "&tel=" + Dotel;
+          if (status == 0) {
+            window.location = "<%=_src('/login/success')%>?name="+ res.data.name
+          } else if (status == 1) {
+            window.location = "<%=_src('/uploadCaseHistory')%>"
+          } else if (status == 2) {
+            window.location = "<%=_src('/EMR')%>"
+          } else if (status == 3) {
+            window.location = "<%=_src('/followUp')%>"
+          } else if (status == 4) {
+            window.location = "<%=_src('/find-doctor')%>?doctor=" + doctor
+          } else if (status == 5) {
+            window.location = "<%=_src('/authlist')%>"
+          } else if (status == 6) {
+            window.location = "<%=_src('/followfeedback')%>?fbId=" + fbId + "&otherRemind=" + otherRemind + '&feedbackTimes=' + feedbackTimes + '&dn=' + dn;
+          } else if (status == 7) {
+            window.location = "<%=_src('/family')%>"
+          } else if (status == 8) {
+            window.location = "<%=_src('/find-doctor/check-in')%>?tel=" + Dotel
+          }
         } else {
           toast(res.err || '网络出错了')
         } 

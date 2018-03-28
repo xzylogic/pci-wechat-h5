@@ -4,7 +4,6 @@
 <head>
     <title>向医生报到</title>
     <% include ../layout/layout %>
-    <script src="<%=_src('/lib/vconsole.min.js')%>"></script>
     <script type="text/javascript">
       var share = new share("<%=_src('')%>") //jssdk分享页面
     </script>
@@ -340,7 +339,6 @@
     }
 </style>
 <script type="text/javascript">
-    var vConsole = new VConsole();
     var url = "<%= url %>"
     var server = "<%= server %>"
     var doctor = "<%=doctor%>"

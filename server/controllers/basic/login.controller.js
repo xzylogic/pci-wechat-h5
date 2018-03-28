@@ -121,10 +121,7 @@ module.exports = {
 
     if (openId) {
       res.render('basic/login-success', {
-        username: name,
-        status: status,
-        doctor: doctor,
-        Dotel: Dotel
+        username: name
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);
@@ -186,7 +183,7 @@ module.exports = {
         auth.setUserCookies(res, 'name', _data.name)
         auth.setUserCookies(res, 'phone', tel)
         res.send({
-          data:{code:0,name: _data.name}
+          code: 0, data: _data
         })
       }, (err) => {
         res.send({
@@ -220,9 +217,9 @@ module.exports = {
           auth.setUserCookies(res, 'accessToken', _data.accessToken)
           auth.setUserCookies(res, 'name', _data.name)
           auth.setUserCookies(res, 'phone', tel)
-          res.send({
-            data:{code:0,name: _data.name}
-          })
+          res.send(
+            {code: 0, data: _data}
+          )
         }
       }, (err) => {
         res.send({

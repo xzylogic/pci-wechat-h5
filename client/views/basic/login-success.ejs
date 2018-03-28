@@ -9,61 +9,19 @@
 <body ontouchstart style="color: #666">
   <article class="weui-article">
     <h1 style="color: #333">登录成功通知</h1>
-    <% if (status && status != 0) { %>
-      <section>
-        <span style="position: relative;bottom: 7px;font-size: 14px;color: #999" class="date"></span>
-        <p>
-          亲爱的<%=username%>，您已成功注册并登录全程心管家。页面将在<span id="seconds">3</span>秒后跳转。
-        </p>
-      </section>
-    <% } else { %>
       <section>
         <span style="position: relative;bottom: 7px;font-size: 14px;color: #999" class="date"></span>
         <p>
           亲爱的<%=username%>，您已成功登录全程心管家。您可以在“找医生”、“健康档案”、“健康管理”体验我们的服务。
         </p>
       </section>
-    <% } %>
   </article>
 </body>
 <script>
   var share = new share("<%= _src('') %>") //jssdk分享页面
-  var status = "<%=status%>";
-  var doctor = "<%=doctor%>";
-  var Dotel = "<%=Dotel%>";
-  var count = 3;
   var myDate = new Date();
   var $date = $(".date");
-  var t;
-  timedCount();
   getDate();
-
-  function timedCount() {
-    $('#seconds').text(count);
-    count--;
-    t = setTimeout("timedCount()", 1000);
-    if (count < 0) {
-      count = 60;
-      clearTimeout(t);
-      if (status == 1) {
-        window.location = "<%=_src('/uploadCaseHistory')%>"
-      } else if (status == 2) {
-        window.location = "<%=_src('/EMR')%>"
-      } else if (status == 3) {
-        window.location = "<%=_src('/followUp')%>"
-      } else if (status == 4) {
-        window.location = "<%=_src('/find-doctor')%>?doctor=" + doctor
-      } else if (status == 5) {
-        window.location = "<%=_src('/authlist')%>"
-      } else if (status == 6) {
-        window.location = "<%=_src('/followfeedback')%>"
-      } else if (status == 7) {
-        window.location = "<%=_src('/family')%>"
-      } else if (status == 8) {
-        window.location = "<%=_src('/find-doctor/check-in')%>?tel=" + Dotel
-      }
-    }
-  }
 
   function getDate() {
     var Y = myDate.getFullYear(),
