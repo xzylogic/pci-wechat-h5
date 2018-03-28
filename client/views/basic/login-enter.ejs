@@ -201,7 +201,7 @@ function validation(code){
     data: {code:code},
     success: function(res) {
       $('#audit_toast').fadeOut(0)
-      if (res.data && res.data.code === 0) {
+      if (res.data && res.code === 0) {
         if (status == 1) {
           window.location = "<%=_src('/uploadCaseHistory')%>"
         } else if (status == 2) {

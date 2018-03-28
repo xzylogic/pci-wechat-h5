@@ -76,7 +76,7 @@ module.exports = {
           });
         });
       },() =>{
-        res.redirect(`${global.config.root}/login?status=8&&Dotel=${Dotel}`);
+        res.redirect(`${global.config.root}/login?status=8&&Dotel=${Dotel}&&doctor=doctor`);
       })
     }, (err) => {
       res.render('error', {
