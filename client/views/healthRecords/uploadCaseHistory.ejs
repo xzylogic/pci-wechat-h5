@@ -151,20 +151,17 @@
       <div class="weui-mask_transparent"></div>
       <div class="weui-toast">
           <i class="weui-loading weui-icon_toast"></i>
-          <p class="weui-toast__content">服务器请求中</p>
+          <p class="weui-toast__content">上传中...</p>
       </div>
     </div>
   </div>
 </body>
 <script>
-var u = navigator.userAgent;
 var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
-var url = "<%=url%>" //获取接口
+var server = "<%=server%>" //获取接口
 var userId = "<%=userId%>"
-var qiniuUrl = "<%=qiniuUrl%>"
 var access_token = "<%=access_token%>" //获取access_token
-var domain;
-var token;
+
 $(document).ready(function(){
 
   $('.confirmDate').html(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate())
@@ -222,70 +219,6 @@ $(document).ready(function(){
     });
   });
 
-  // 获取七牛token
-  function getqiniu(fn) {
-    $.ajax({
-      type: "get",
-      url: qiniuUrl + "api/qiniu/auth",
-      success: function (msg) {
-        console.log(msg)
-        if (msg.code == 0 && msg.data) {
-          domain = msg.data.domain
-          token = msg.data.token
-          fn(token)
-        }
-      },
-      error: function (err) {
-        console.log(err);
-      }
-    });
-  }
-
-  // 上传图片到七牛
-  function uploadqiniu() {
-    getqiniu(
-      function(token){
-        for (var i = 0; i < uploadCustomFileList.length; i++) {
-          // 闭包请求接口，防止循环完成，而请求没完成
-          (function(i){
-            wx.getLocalImgData({
-              localId: uploadCustomFileList[i].url, // 图片的localID
-              success: function (res) {
-                var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-                // 判断手机类型，iphone和android图片编码不一样
-                if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-                  localData = localData
-                } else if (u.indexOf('iPhone') > -1) {
-                  localData = localData.split('base64,')[1];
-                }
-                $.ajax({
-                  url: "http://upload.qiniu.com/putb64/-1",
-                  type: 'post',
-                  data: localData,
-                  headers: {
-                    'Content-Type': "application/octet-stream",
-                    "Authorization":'UpToken '+ token
-                  },
-                  success: function (msg) {
-                    console.log(msg)
-                    var imgUrl = domain + msg.key
-                    imglist.push(imgUrl)
-                    if (imglist.length == uploadCustomFileList.length) {
-                      ajax(imglist)
-                    }
-                  },
-                  error: function (err) {
-                    console.log(err)
-                  }
-                })
-              }
-            });
-          }(i));
-        }
-      }
-    )
-  }
-
   $("#uploaderCustomBtn").on('click', function(){
     var urlList = [];
     if (number === 0) {
@@ -294,12 +227,56 @@ $(document).ready(function(){
       uploadCustomFileList.forEach(function(file){
         urlList.push(file.url)
         if (urlList.length === number) {
-          uploadqiniu()
-          auditToast()
+          $("#audit_toast").fadeIn(0) // 调用模态框显示
+          var i = 0,length = uploadCustomFileList.length;
+          function upload() {
+            wx.uploadImage({
+              localId: uploadCustomFileList[i].url, // 需要上传的图片的本地ID，由chooseImage接口获得
+              isShowProgressTips: 0, // 默认为1，显示进度提示
+              success: function (res) {
+                i ++
+                var serverId = res.serverId; // 返回图片的服务器端ID
+                imglist.push(serverId);
+                if (i < length) { // 递归处理上传
+                  upload()
+                }
+                if (imglist.length == length) {
+                  getQiniu() // 获取七牛的图片列表
+                }
+              },
+              fail: function (err) {
+                console.log(err)
+              }
+            });
+          }
+          upload() // 调用递归函数
         }
       });
     }
   })
+
+  // 获取上传的图片地址列表
+  function getQiniu() {
+    $.ajax({
+      url: server + "api/qiniu/upload",
+      type: 'post',
+      data: JSON.stringify({mediaIds:imglist}),
+      processData: false,
+      contentType: 'application/json;charset=UTF-8',
+      success: function (msg) {
+        console.log(msg)
+        if (msg.code == 0 && msg.data && msg.data.length !== 0) {
+          ajax(msg.data) // 调用上传病历接口
+        }
+      },
+      error: function (err) {
+        $('#audit_toast').fadeOut(0)
+        console.log(err)
+      }
+    })
+  }
+
+  // 删除图片
 
   $("#uploaderFiles").on('click', '.delete', function(e){
     var id = $(this).parent().attr('id')
@@ -366,6 +343,7 @@ function ajax(picUrlList) {
   })
 }
 
+// 显示toast模态框
 function auditToast() {
   var $toast = $('#audit_toast');
   if ($toast.css('display') != 'none') return;

@@ -18,7 +18,6 @@ module.exports = {
     let tel = req.query.tel || '';
     let url = requestTool.setAuthUrl(`/find-doctor/check-in?Dotel=${tel}`);
     let Dotel = req.query.Dotel || req.query.tel;
-    let urlQiniu = `${global.config.server}api/qiniu/auth`;
     // 获取openId
     auth.getOpenId(req, res, url, (openId) => {
       // 判断是否登录
@@ -38,7 +37,7 @@ module.exports = {
                       hospitalName: _res.data.hospitalName || '',
                       applyStatus: _res.data.applyStatus || '',
                       url: global.config.userServer,
-                      urlQiniu: urlQiniu,
+                      server: global.config.server,
                       userId: data.userId,
                       accessToken: data.access_token,
                       status: _data.data.status || ''
@@ -62,10 +61,10 @@ module.exports = {
                 doctorName: doctorName,
                 department: department,
                 doctorTitle: doctorTitle,
+                server: global.config.server,
                 hospitalName: hospitalName,
                 applyStatus: '',
                 url: global.config.userServer,
-                urlQiniu: urlQiniu,
                 userId: data.userId,
                 accessToken: data.access_token,
                 status: _data.data.status || ''

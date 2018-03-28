@@ -102,7 +102,7 @@
               </label>
           </div>
       </div>
-      <button class="weui-btn weui-btn_primary check-btn " id="uploaderCustomBtn">立即申请</button>
+      <button class="weui-btn weui-btn_primary check-btn " id="uploaderCustomBtn" type="button">立即申请</button>
     </div>
   <% } %>
   <div id="toast" style="display: none;">
@@ -340,8 +340,9 @@
     }
 </style>
 <script type="text/javascript">
-    var u = navigator.userAgent;// 判断手机类型
+    var vConsole = new VConsole();
     var url = "<%= url %>"
+    var server = "<%= server %>"
     var doctor = "<%=doctor%>"
     var admissionTime = ""
     var doctorId = '<%= doctorId %>'
@@ -354,9 +355,6 @@
     var realName = ""
     var userId = '<%= userId %>'
     var accessToken = '<%= accessToken %>'
-    var urlQiniu = '<%= urlQiniu %>'
-    var domain;
-    var token;
 
     if (doctor) {
         $('.navigation').show();
@@ -410,69 +408,70 @@
           }
       });
     };
-  // 获取七牛配置信息
-  function getqiniu(fn) {
-    $.ajax({
-      type: "get",
-      url: urlQiniu,
-      success: function (msg) {
-        if (msg.code == 0 && msg.data) {
-          domain = msg.data.domain
-          token = msg.data.token
-          fn(token)
-        }
-      },
-      error: function (err) {
-        console.log(err);
-      }
-    });
-  }
+  // // 获取七牛配置信息
+  // function getqiniu(fn) {
+  //   $.ajax({
+  //     type: "get",
+  //     url: urlQiniu,
+  //     success: function (msg) {
+  //       if (msg.code == 0 && msg.data) {
+  //         domain = msg.data.domain
+  //         token = msg.data.token
+  //         fn(token)
+  //       }
+  //     },
+  //     error: function (err) {
+  //       console.log(err);
+  //     }
+  //   });
+  // }
 
-  // 上传图片到七牛
-  function uploadqiniu() {
-    $("#audit_toast").fadeIn(0)
-    getqiniu(
-      function(token){
-        for (var i = 0; i < uploadCustomFileList.length; i++) {
-          // 闭包请求接口，防止循环完成，而请求没完成
-          (function(i){
-            wx.getLocalImgData({
-              localId: uploadCustomFileList[i].url, // 图片的localID
-              success: function (res) {
-                var localData; // localData是图片的base64数据，可以用img标签显示
-                // 判断手机类型，iphone和android图片编码不一样
-                if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
-                  localData = res.localData
-                } else if (u.indexOf('iPhone') > -1) {
-                  localData = (res.localData).split('base64,')[1];
-                }
-                $.ajax({
-                  url: "http://upload.qiniu.com/putb64/-1",
-                  type: 'post',
-                  data: localData,
-                  headers: {
-                    'Content-Type': "application/octet-stream",
-                    "Authorization":'UpToken '+ token
-                  },
-                  success: function (msg) {
-                    var imgUrl = domain + msg.key
-                    imglist.push(imgUrl)
-                    if (imglist.length == uploadCustomFileList.length) {
-                      ajax()
-                    }
-                  },
-                  error: function (err) {
-                    console.log(err)
-                  }
-                })
-              }
-            });
-          }(i));
-        }
-      }
-    )
-  }
+  // // 上传图片到七牛
+  // function upload() {
+  //   $("#audit_toast").fadeIn(0)
+  //   getqiniu(
+  //     function(token){
+  //       for (var i = 0; i < uploadCustomFileList.length; i++) {
+  //         // 闭包请求接口，防止循环完成，而请求没完成
+  //         (function(i){
+  //           wx.getLocalImgData({
+  //             localId: uploadCustomFileList[i].url, // 图片的localID
+  //             success: function (res) {
+  //               var localData; // localData是图片的base64数据，可以用img标签显示
+  //               // 判断手机类型，iphone和android图片编码不一样
+  //               if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+  //                 localData = res.localData
+  //               } else if (u.indexOf('iPhone') > -1) {
+  //                 localData = (res.localData).split('base64,')[1];
+  //               }
+  //               $.ajax({
+  //                 url: "http://upload.qiniu.com/putb64/-1",
+  //                 type: 'post',
+  //                 data: localData,
+  //                 headers: {
+  //                   'Content-Type': "application/octet-stream",
+  //                   "Authorization":'UpToken '+ token
+  //                 },
+  //                 success: function (msg) {
+  //                   var imgUrl = domain + msg.key
+  //                   imglist.push(imgUrl)
+  //                   if (imglist.length == uploadCustomFileList.length) {
+  //                     ajax()
+  //                   }
+  //                 },
+  //                 error: function (err) {
+  //                   console.log(err)
+  //                 }
+  //               })
+  //             }
+  //           });
+  //         }(i));
+  //       }
+  //     }
+  //   )
+  // }
 
+  // 选择本地图片
   $('.weui-uploader__input-box').on('click', function () {
     wx.chooseImage({
         count: 9, // 默认9
@@ -495,7 +494,7 @@
         }
     });
   });
-
+  // 删除选择的图片
   $("#uploaderFiles").on('click', '.delete', function(e){
     var id = $(this).parent().attr('id')
     weui.confirm('确定删除该图片？', function(){
@@ -604,12 +603,54 @@
             uploadCustomFileList.forEach(function(file){
               urlList.push(file.url)
               if (urlList.length === number) {
-                uploadqiniu();
+                $("#audit_toast").fadeIn(0) // 调用模态框显示
+                var i = 0,length = uploadCustomFileList.length;
+                function upload() {
+                  wx.uploadImage({
+                    localId: uploadCustomFileList[i].url, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    isShowProgressTips: 0, // 默认为1，显示进度提示
+                    success: function (res) {
+                      i ++
+                      var serverId = res.serverId; // 返回图片的服务器端ID
+                      imglist.push(serverId);
+                      if (i < length) { // 递归处理上传
+                        upload()
+                      }
+                      if (imglist.length == length) {
+                        getQiniu() // 获取七牛的图片列表
+                      }
+                    },
+                    fail: function (err) {
+                      console.log(err)
+                    }
+                  });
+                }
+                upload() // 调用递归函数
               }
             });
           }
         }
     });
+
+  // 获取上传的图片地址列表
+  function getQiniu() {
+    $.ajax({
+      url: server + "api/qiniu/upload",
+      type: 'post',
+      data: JSON.stringify({mediaIds:imglist}),
+      processData: false,
+      contentType: 'application/json;charset=UTF-8',
+      success: function (msg) {
+        if (msg.code == 0 && msg.data && msg.data.length !== 0) {
+          ajax(msg.data) // 调用上传病历接口
+        }
+      },
+      error: function (err) {
+        $('#audit_toast').fadeOut(0)
+        console.log(err)
+      }
+    })
+  }
 
     // 暂不认证
     $('#dialogs').on('click', '.weui-dialog__btn_default', function(){
@@ -623,18 +664,19 @@
     });
 
     // 去认证
+    // 将用户填写的姓名带过去
     $('#dialogs').on('click', '.weui-dialog__btn_primary', function(){
         $(this).parents('.js_dialog').fadeOut(200);
-        window.location.href = "<%= _src('/authlist') %>"
+        window.location.href = "<%= _src('/authlist') %>?userName=" + realName
     });
 
     //立即申请
-    function ajax() {
+    function ajax(picUrlList) {
       $("#audit_toast").fadeIn(0)
       var dto = {
         "admissionTime": admissionTime,
         "doctorId": doctorId,
-        "imgUrlList": imglist,
+        "imgUrlList": picUrlList,
         "message": message,
         "realName": realName,
         "userId": userId,

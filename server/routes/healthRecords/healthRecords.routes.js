@@ -22,4 +22,5 @@ router.route('/followfailure').get(followupPlan.getFollowFailure); // 随访计�
 router.route('/authlist').get(realNameAuth.getAuthList); // 实名认证列表页面
 router.route('/authphone').get(realNameAuth.getAuthPhone); // 手机号认证页面
 router.route('/authcard').get(realNameAuth.getAuthCard); // 身份证认证页面
+
 module.exports = router;

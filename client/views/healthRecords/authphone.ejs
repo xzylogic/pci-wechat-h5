@@ -6,7 +6,6 @@
   <script type="text/javascript">
     var url = "<%=url%>"
     var share = new share("<%=_src('')%>") //jssdk分享页面
-    var auth = "<%=auth%>"
     var userId = "<%=userId%>"
     var access_token = "<%=access_token%>"
   </script>
@@ -97,7 +96,7 @@
       <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" id="name" type="text" placeholder="请输入姓名"/>
+            <input class="weui-input" id="name" type="text" placeholder="请输入姓名" value="<%=userName%>"/>
         </div>
       </div>
       <div class="weui-cell">
@@ -110,7 +109,7 @@
     <p class="authphone_prompting">全程心管家将对您的个人信息严格保密，请放心填写。</p>
     <div class="authphone_footer">
       <div class="authphone_footer_error" style="display: none;">
-        *请重新填写您的个人信息并认真核对，以免再次认证失败。
+        *认证失败，请检查身份信息是否与手机运营商预留信息一致。
       </div>
       <div class="page__bd page__bd_spacing authphone_btn">
         <a href="javascript:;" class="weui-btn weui-btn_primary" id="authphone_btn">申请实名认证</a>
@@ -282,9 +281,7 @@ $(document).ready(function(){
     $toast.fadeIn(100);
     setTimeout(function () {
       $toast.fadeOut(100);
-      if (auth == 'false') {
-        window.location.href = "<%=_src('/EMR')%>"
-      }
+      window.location.href = "<%=_src('/EMR')%>"
     }, 2000);
  }
 

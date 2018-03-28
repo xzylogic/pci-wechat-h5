@@ -102,7 +102,8 @@ module.exports = {
         errorMessage: errorMessage,
         tel: tel,
         Dotel: Dotel,
-        doctor:doctor
+        doctor:doctor,
+        serevr: global.config.server
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);
