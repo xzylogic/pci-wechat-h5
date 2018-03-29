@@ -12,7 +12,7 @@ var auth = {};
  * @return {[type]}             []
  */
 auth.setCookies = (res, key, value) => {
-  res.cookie(key, value, { maxAge: 7200000, httpOnly: true, signed: true });
+  res.cookie(key, value, { maxAge: 72000000, httpOnly: true, signed: true });
 }
 
 /**
