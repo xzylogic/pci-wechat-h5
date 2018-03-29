@@ -214,7 +214,6 @@ $(document).ready(function(){
       processData: false,
       contentType: 'application/json',
       success: function (data) {
-        $('#audit_toast').fadeOut(100);
         if (data && data.code === 0) {
           updateCard(phone, name, card)
         } else if ( data && data.code === 1000) {
