@@ -31,7 +31,6 @@
     }
     .authphone_footer_error{
       padding:10px 15px;
-      text-align: center;
       font-size: 14px;
       color: #DA322E;
     }
@@ -146,6 +145,8 @@
 </body>
 <script>
 $(document).ready(function(){
+  var $auditToast = $('#audit_toast');
+  var $certification = $('#certification_by');
    // 申请认证
   $("#authphone_btn").on('click',function() {
     var phone = $("#phone").val(),
@@ -221,13 +222,13 @@ $(document).ready(function(){
           $(".authphone_footer_error").css({
             'display': 'block'
           })
-          $(".authphone_footer_error").html('*请重新填写您的个人信息并认真核对，以免再次认证失败');
+          $(".authphone_footer_error").html('*认证失败，请检查身份信息是否与手机运营商预留信息一致');
         } else {
           authenticationFailedToast()
           $(".authphone_footer_error").css({
             'display': 'block'
           })
-          $(".authphone_footer_error").html("*请重新填写您的个人信息并认真核对，以免再次认证失败")
+          $(".authphone_footer_error").html("*认证失败，请检查身份信息是否与手机运营商预留信息一致")
         }
       },
       error: function (err) {
@@ -236,7 +237,7 @@ $(document).ready(function(){
         $(".authphone_footer_error").css({
             'display': 'block'
         })
-        $(".authphone_footer_error").html("*请重新填写您的个人信息并认真核对，以免再次认证失败");
+        $(".authphone_footer_error").html("*认证失败，请检查身份信息是否与手机运营商预留信息一致");
       }
     })
  };
@@ -253,7 +254,7 @@ $(document).ready(function(){
       processData: false,
       contentType: 'application/json',
       success: function (data) {
-        $('#audit_toast').fadeOut(100);
+        $auditToast.fadeOut(0);
         if (data && data.code === 0) {
           certificationByToast()
         } else {
@@ -269,18 +270,16 @@ $(document).ready(function(){
 
  // 审核中
  function auditToast() {
-    var $toast = $('#audit_toast');
-    if ($toast.css('display') != 'none') return;
-    $toast.fadeIn(100);
+    if ($auditToast.css('display') != 'none') return;
+    $auditToast.fadeIn(100);
  }
 
   // 认证通过
  function certificationByToast() {
-    var $toast = $('#certification_by');
-    if ($toast.css('display') != 'none') return;
-    $toast.fadeIn(100);
+    if ($certification.css('display') != 'none') return;
+    $certification.fadeIn(0);
     setTimeout(function () {
-      $toast.fadeOut(100);
+      $certification.fadeOut(100);
       window.location.href = "<%=_src('/EMR')%>"
     }, 2000);
  }
