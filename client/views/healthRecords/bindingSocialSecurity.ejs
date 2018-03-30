@@ -200,8 +200,11 @@ $(document).ready(function(){
       url: "<%=_src('')%>/bindingSocialSecuritySuccess",
       data:{cardNumber: card_number},
       success: function (data) {
+        console.log(data)
         $('#audit_toast').fadeOut(100);
         if (data && data.code === 0) {
+          certificationByToast()
+        } else if (data && data.code === 1) {
           certificationByToast()
         } else {
           authenticationFailedToast()
