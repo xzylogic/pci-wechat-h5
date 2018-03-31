@@ -4,6 +4,7 @@
 <head>
   <title>上传病历</title>
   <% include ../layout/layout %>
+  <script src="<%=_src('/lib/vconsole.min.js')%>"></script>
   <script type="text/javascript">
     var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
@@ -53,7 +54,7 @@
       max-width: 300px;
       min-height: 0;
       margin-left: 0;
-      top: 50%;
+      top: 80%;
       left: 50%;
       padding: 0px 10px;
       width: auto;
@@ -157,6 +158,7 @@
   </div>
 </body>
 <script>
+  var vConsole = new VConsole();
 var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
 var server = "<%=server%>" //获取接口
 var userId = "<%=userId%>"
@@ -245,6 +247,7 @@ $(document).ready(function(){
                 }
               },
               fail: function (err) {
+                $('#audit_toast').fadeOut(0)
                 console.log(err)
               }
             });
@@ -260,17 +263,20 @@ $(document).ready(function(){
     $.ajax({
       url: server + "api/qiniu/upload",
       type: 'post',
-      data: JSON.stringify({mediaIds:imglist}),
+      data: JSON.stringify({mediaIds:['123']}),
       processData: false,
       contentType: 'application/json;charset=UTF-8',
       success: function (msg) {
-        console.log(msg)
         if (msg.code == 0 && msg.data && msg.data.length !== 0) {
           ajax(msg.data) // 调用上传病历接口
+        } else {
+          $('#audit_toast').fadeOut(0)
+          toast(msg)
         }
       },
       error: function (err) {
         $('#audit_toast').fadeOut(0)
+        toast('网络请求出错了')
         console.log(err)
       }
     })
@@ -338,6 +344,7 @@ function ajax(picUrlList) {
     },
     error: function (error) {
       $('#audit_toast').fadeOut(0)
+      toast('网络请求出错了')
       console.log(error);
     }
   })

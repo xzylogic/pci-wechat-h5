@@ -641,10 +641,14 @@
       success: function (msg) {
         if (msg.code == 0 && msg.data && msg.data.length !== 0) {
           ajax(msg.data) // 调用上传病历接口
+        } else {
+          $('#audit_toast').fadeOut(0)
+          toast(msg)
         }
       },
       error: function (err) {
         $('#audit_toast').fadeOut(0)
+        toast('网络请求出错了')
         console.log(err)
       }
     })
@@ -704,7 +708,7 @@
           },
           error: function () {
             $("#audit_toast").fadeOut()
-            toast('服务器请求出错了')
+            toast('网络请求出错了')
           }
       });
     }
