@@ -4,7 +4,7 @@
 <head>
   <title>上传病历</title>
   <% include ../layout/layout %>
-  <script src="<%=_src('/lib/vconsole.min.js')%>"></script>
+<!--   <script src="<%=_src('/lib/vconsole.min.js')%>"></script> -->
   <script type="text/javascript">
     var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
@@ -158,7 +158,7 @@
   </div>
 </body>
 <script>
-  var vConsole = new VConsole();
+  // var vConsole = new VConsole();
 var healthUrl = "<%=healthUrl%>" // 获取上传图片接口
 var server = "<%=server%>" //获取接口
 var userId = "<%=userId%>"
@@ -263,7 +263,7 @@ $(document).ready(function(){
     $.ajax({
       url: server + "api/qiniu/upload",
       type: 'post',
-      data: JSON.stringify({mediaIds:['123']}),
+      data: JSON.stringify({mediaIds:imglist}),
       processData: false,
       contentType: 'application/json;charset=UTF-8',
       success: function (msg) {
