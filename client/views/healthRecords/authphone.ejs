@@ -285,6 +285,7 @@ $(document).ready(function(){
 
   // 认证失败
  function authenticationFailedToast() {
+    $auditToast.fadeOut(0);
     var $toast = $('#authentication_failed');
     if ($toast.css('display') != 'none') return;
     $toast.fadeIn(100);
