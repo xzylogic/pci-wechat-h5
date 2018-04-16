@@ -8,7 +8,7 @@ module.exports = {
 
   // 登录入口页面
   // 登录4种status状态
-  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5实名认证 6随访反馈 7家庭账号 8向医生报到
+  // 0 登录 1 上传病历 2 电子病历 3 随访计划  4 找医生  5实名认证 6随访反馈 7家庭账号 8向医生报到 9上传记录
   getLogin: (req, res) => {
     // 测试写死cookie数据
     // auth.setCookies(res, 'pci_secret', 'ovMkVwH6ldi-JOG4tdiVqcLJmR5s');

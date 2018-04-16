@@ -8,6 +8,7 @@ var followupPlan = require('../../controllers/healthRecords/followupPlan.control
 var realNameAuth = require('../../controllers/healthRecords/realNameAuth.controller'); // 实名认证
 
 router.route('/uploadCaseHistory').get(uploadCaseHistory.getCaseHistory); // 上传病历页面
+router.route('/uploadrecord').get(uploadCaseHistory.getUploadRecord); // 上传记录页面
 
 router.route('/EMR').get(electronicMedicalRecords.getEMR); // 电子病历页面
 router.route('/bindingSocialSecurity').get(electronicMedicalRecords.getSocialSecurity); // 绑定医保卡页面

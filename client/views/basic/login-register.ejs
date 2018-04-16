@@ -310,6 +310,8 @@
             window.location = "<%=_src('/family')%>"
           } else if (status == 8) {
             window.location = "<%=_src('/find-doctor/check-in')%>?tel=" + Dotel
+          } else if (status == 9) {
+            window.location = "<%=_src('/uploadrecord')%>"
           }
         } else {
           toast(res.err || '网络出错了')
