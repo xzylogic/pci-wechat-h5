@@ -333,9 +333,6 @@ function ajax(picUrlList) {
     success: function (success) {
       $('#audit_toast').fadeOut(0)
       if (success && success.code === 0) {
-        if (success.data.isFirst == true) {
-          saveIntegral()
-        }
         $('#iosDialog2').fadeIn(200);
       } else {
         $(".error").css({'display': 'block'})
@@ -356,23 +353,5 @@ function auditToast() {
   if ($toast.css('display') != 'none') return;
   $toast.fadeIn(100);
 }
-
-//增加积分
-function saveIntegral() {
-  $.ajax({
-    type: 'post',
-    url: url + "api/integralDetail/saveIntegral?userId=" + userId + "&type=2",
-    headers:{
-      'access-token': access_token
-    },
-    success: function (success) {
-      console.log(success);
-    },
-    error: function (error) {
-      console.log(error);
-    }
-  })
-}
-  
 </script>
 </html>

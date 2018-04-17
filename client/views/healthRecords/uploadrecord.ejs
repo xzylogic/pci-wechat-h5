@@ -4,7 +4,6 @@
 <head>
   <title>上传记录</title>
   <% include ../layout/layout %>
-<!--   <script src="<%=_src('/lib/vconsole.min.js')%>"></script> -->
   <script type="text/javascript">
     var share = new share("<%=_src('')%>") //jssdk分享页面
   </script>
@@ -28,10 +27,20 @@
     .status{
       color: #f90;
     }
+    ul{
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .uploaderFiles {
+      padding:0;
+      margin:0;
+    }
   </style>
 </head>
 
-<body ontouchstart>
+<body>
   <% if (content.length == 0) { %>
     <div style="text-align: center;">
       没有数据
@@ -68,18 +77,15 @@
   <% } %>
 </body>
 <script>
-  // var vConsole = new VConsole();
 
 $(document).ready(function(){
-  $(".uploaderFiles").on('click','li', function() {
+  $(".uploaderFiles").on('click', 'li' ,function() {
     var imgList = [];
-    var src = $(this).css('background-image').split("\"")[1];
+    var src = $(this).css('background-image').replace("url(","").replace(")","");
     imgList.push(src)
     $(this).siblings().each(function(index){
-      imgList.push($(this).css('background-image').split("\"")[1])
+      imgList.push($(this).css('background-image').replace("url(","").replace(")",""))
     })
-    console.log(imgList)
-    console.log(src)
     if (imgList.length != 0) {
       wx.previewImage({
         current: src, // 当前显示图片的http链接
