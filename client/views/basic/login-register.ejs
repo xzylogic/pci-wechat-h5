@@ -233,7 +233,7 @@
 
   function getCode(tel) {
     timedCount();
-    $.get(window.location.pathname + "/getVerifyCode?tel=" + tel, function(result) {
+    $.post(window.location.pathname + "/getVerifyCode", {mobile: tel}, function(result) {
       if (result.code === 0) {
         toast(result.data)
       } else {

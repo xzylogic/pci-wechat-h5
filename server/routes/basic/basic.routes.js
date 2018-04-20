@@ -23,9 +23,9 @@ router.route('/family/add').post(AccountBindController.bindAccount); // 添加�
 
 // 接口请求
 router.route('/login/enter/getVerifyCode')
-  .get(LoginController.getLoginVerifyCode); // 获取登录时验证码
+  .post(LoginController.getLoginVerifyCode); // 获取登录时验证码
 router.route('/register/getVerifyCode')
-  .get(LoginController.getRegisterVerifyCode); // 获取注册时验证码
+  .post(LoginController.getRegisterVerifyCode); // 获取注册时验证码
 router.route('/family/add/search')
   .get(AccountBindController.getAccountSearch); // 搜索家庭账号绑定的用户信息
 
