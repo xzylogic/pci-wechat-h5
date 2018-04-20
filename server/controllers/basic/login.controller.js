@@ -231,18 +231,33 @@ module.exports = {
 
   // 获取登录验证码接口
   getLoginVerifyCode: (req, res) => {
-    let tel = req.query.tel || '';
-    requestTool.getApi(res, 'getLoginCode', `tel=${tel}`, (data) => {
-      res.send(data);
+    let postData = '';
+    req.addListener('data', (data) => {
+      postData += data;
+    });
+    req.addListener('end', () => {
+      let data = querystring.parse(postData);
+      requestTool.post('getLoginCode', data, (data) => {
+        res.send(data);
+      }, (err) => {
+        res.send(JSON.stringify({code: -1, msg: '网络请求出错了，请稍后再试'}))
+      });
     });
   },
 
   // 获取注册验证码接口
   getRegisterVerifyCode: (req, res) => {
-    let tel = req.query.tel || '';
-    requestTool.getApi(res, 'getRegisterCode', `tel=${tel}`, (data) => {
-      res.send(data);
+    let postData = '';
+    req.addListener('data', (data) => {
+      postData += data;
     });
-  },
-
+    req.addListener('end', () => {
+      let data = querystring.parse(postData);
+      requestTool.post('getRegisterCod', data, (data) => {
+        res.send(data);
+      }, (err) => {
+        res.send(JSON.stringify({code: -1, msg: '网络请求出错了，请稍后再试'}))
+      });
+    });
+  }
 }
