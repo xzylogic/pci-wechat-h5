@@ -253,7 +253,7 @@ module.exports = {
     });
     req.addListener('end', () => {
       let data = querystring.parse(postData);
-      requestTool.post('getRegisterCod', data, (data) => {
+      requestTool.post('getRegisterCode', data, (data) => {
         res.send(data);
       }, (err) => {
         res.send(JSON.stringify({code: -1, msg: '网络请求出错了，请稍后再试'}))
