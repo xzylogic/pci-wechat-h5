@@ -59,12 +59,14 @@ module.exports = {
   // 身份证认证页面
   getAuthCard: (req, res) => {
     let url = requestTool.setAuthUrl('/authcard', '');
+    let userName = req.query.userName || '';
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) =>{
         res.render('healthRecords/authcard',{
           access_token: data.access_token,
           userId: data.userId,
-          url: global.config.userServer
+          url: global.config.userServer,
+          userName: userName
         })
       },() =>{
         res.redirect(`${global.config.root}/login?status=5`);

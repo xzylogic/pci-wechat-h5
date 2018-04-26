@@ -27,6 +27,10 @@
     .status{
       color: #f90;
     }
+    .defeated{
+      color: red;
+      font-size: 14px;
+    }
     ul{
       -webkit-tap-highlight-color: transparent;
       -webkit-touch-callout: none;
@@ -72,6 +76,13 @@
                </div>
            </div>
         </div>
+        <% if (content[i].failedReason) { %>
+          <div class="weui-cells">
+            <div class="weui-cell defeated">
+              失败原因：<%=content[i].failedReason%>
+            </div>
+          </div>
+        <% } %>
       </div>
     <% } %>
   <% } %>
