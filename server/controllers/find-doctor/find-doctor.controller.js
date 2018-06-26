@@ -11,7 +11,7 @@ module.exports = {
       auth.isLogin(req, (data) =>{
         res.render('doctor/find-doctor', {
             url: `${global.config.server}`,
-            url2: `${global.config.userServer}`,
+            url2: `${global.config.server}`,
             doctor: doctor,
             userId: data.userId,
             accessToken: data.access_token

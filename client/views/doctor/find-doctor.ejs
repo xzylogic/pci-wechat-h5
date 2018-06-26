@@ -250,7 +250,7 @@
             headers: {
                 'access-token': '<%= accessToken %>'
             },
-            url: url2 + "api/user/option",
+            url: url2 + "api/relation/option",
             success: function (res) {
                 if (res.code === 0 && res.data && res.data.hospitalList.length !== 0) {
                     hospitalList = res.data.hospitalList;
