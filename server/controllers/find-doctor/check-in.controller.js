@@ -52,7 +52,7 @@ module.exports = {
             // Token过期或者错误跳转到登录页，并清除cookie
             res.clearCookie('accessToken');
             res.clearCookie('userId');
-            res.redirect(`${global.config.root}/login?status=2`);
+            res.redirect(`${global.config.domain}${global.config.root}/login?status=2`);
           } else {
             res.render('doctor/check-in',{
                 doctorId: doctorId,
@@ -76,7 +76,7 @@ module.exports = {
           });
         });
       },() =>{
-        res.redirect(`${global.config.root}/login?status=8&&Dotel=${Dotel}&&doctor=doctor`);
+        res.redirect(`${global.config.domain}${global.config.root}/login?status=8&&Dotel=${Dotel}&&doctor=doctor`);
       })
     }, (err) => {
       res.render('error', {
