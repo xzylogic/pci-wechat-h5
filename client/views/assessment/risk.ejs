@@ -5,7 +5,7 @@
   <title>弗明汉心脏风险评估</title>
   <% include ../layout/layout %>
     <link rel="stylesheet" href="<%=_src('/css/assessment/assessment.min.css')%>">
-    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <script>
     var url = '<%-url%>';
     var pathName = "<%=_src('')%>"//获取当前Url
@@ -38,8 +38,8 @@
       wx.onMenuShareAppMessage({
           title: '十年心脏病风险预测', // 分享标题
           desc: "我正在做心脏风险自测，你也赶紧来测一测吧！", // 分享描述
-          link: 'http://pci.qcxin.com/pci-wechat-h5/assessment/risk', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: 'http://pci.qcxin.com/pci-wechat-h5/image/assessment/331506325982_.pic_hd.jpg', // 分享图标
+          link: 'https://www.qcxin.com/pci-wechat-h5/assessment/risk', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: 'https://www.qcxin.com/pci-wechat-h5/image/assessment/331506325982_.pic_hd.jpg', // 分享图标
           success: function () { 
               // 用户确认分享后执行的回调函数
           },
@@ -50,8 +50,8 @@
       // 分享到朋友圈
       wx.onMenuShareTimeline({
           title: '十年心脏病风险预测', // 分享标题
-          link: 'http://pci.qcxin.com/pci-wechat-h5/assessment/risk', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: 'http://pci.qcxin.com/pci-wechat-h5/image/assessment/331506325982_.pic_hd.jpg', // 分享图
+          link: 'https://www.qcxin.com/pci-wechat-h5/assessment/risk', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: 'https://www.qcxin.com/pci-wechat-h5/image/assessment/331506325982_.pic_hd.jpg', // 分享图
           success: function () {
               // 用户确认分享后执行的回调函数
           },
