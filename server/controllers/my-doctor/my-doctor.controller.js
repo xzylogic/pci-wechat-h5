@@ -21,7 +21,7 @@ module.exports = {
                   });
               } else {
                   res.render('error', {
-                      message: err
+                      message: '请求错误'
                   })
               }
           }, (err) => {

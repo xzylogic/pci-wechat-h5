@@ -67,7 +67,7 @@ module.exports = {
                 url: global.config.userServer,
                 userId: data.userId,
                 accessToken: data.access_token,
-                status: _data.data.status || ''
+                status: _data && _data.data && _data.data.status || ''
             });
           }
         }, (err) =>{
