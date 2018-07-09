@@ -80,7 +80,8 @@ module.exports = {
         fbId: fbId,
         otherRemind: otherRemind,
         feedbackTimes: feedbackTimes,
-        dn: dn
+        dn: dn,
+        apiUrl: global.config.server
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);
@@ -103,7 +104,8 @@ module.exports = {
         tel: tel,
         Dotel: Dotel,
         doctor:doctor,
-        serevr: global.config.server
+        serevr: global.config.server,
+        apiUrl: global.config.server
       });
     } else {
       res.redirect(`${global.config.root}/login?status=${status}`);

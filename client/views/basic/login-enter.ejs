@@ -127,6 +127,7 @@ var fbId = "<%=fbId%>";
 var otherRemind = "<%=otherRemind%>";
 var feedbackTimes = "<%=feedbackTimes%>";
 var dn = "<%=dn%>"
+var apiUrl = "<%=apiUrl%>"
 
 $(document).ready(function() {
   getCode('<%=tel%>'); // 自动获取验证码
@@ -168,14 +169,29 @@ var t;
 
 function getCode(tel) {
   timedCount();
-  $.post(window.location.pathname + "/getVerifyCode", {mobile: tel}, function(result) {
-    if (result.code === 0) {
-      toast(result.data)
-    } else {
-      var errormsg = JSON.parse(result) && JSON.parse(result).msg || '获取验证码失败';
-      toast(errormsg)
+  $.ajax({
+    type: 'post',
+    url: apiUrl + 'api/user/login/code',
+    contentType: "application/json",
+    data: JSON.stringify({"mobile": tel}),
+    success: function(result) {
+      console.log(result)
+      if (result.code === 0) {
+        toast(result.msg)
+      } else {
+        var errormsg = result.msg || '获取验证码失败';
+        toast(errormsg)
+      }
     }
   });
+  // $.post(apiUrl + 'api/user/login/code', {mobile: tel}, function(result) {
+  //   if (result.code === 0) {
+  //     toast(result.data)
+  //   } else {
+  //     var errormsg = JSON.parse(result) && JSON.parse(result).msg || '获取验证码失败';
+  //     toast(errormsg)
+  //   }
+  // });
 }
 
 function timedCount() {

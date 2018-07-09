@@ -142,6 +142,7 @@
   var tel = "<%=tel%>";
   var Dotel = "<%=Dotel%>";
   var server = "<%=serevr%>";
+  var apiUrl = "<%=apiUrl%>";
 
   $(document).ready(function() {
     getCode('<%=tel%>') // 自动获取验证码
@@ -233,14 +234,29 @@
 
   function getCode(tel) {
     timedCount();
-    $.post(window.location.pathname + "/getVerifyCode", {mobile: tel}, function(result) {
-      if (result.code === 0) {
-        toast(result.data)
-      } else {
-        var errormsg = JSON.parse(result) && JSON.parse(result).msg || '获取验证码失败';
-        toast(errormsg)
+    $.ajax({
+      type: 'post',
+      url: apiUrl + 'api/user/register/code',
+      contentType: "application/json",
+      data: JSON.stringify({"mobile": tel}),
+      success: function(result) {
+        console.log(result)
+        if (result.code === 0) {
+          toast(result.msg)
+        } else {
+          var errormsg = result.msg || '获取验证码失败';
+          toast(errormsg)
+        }
       }
     });
+    // $.post(apiUrl + 'api/user/register/code', {mobile: tel}, function(result) {
+    //   if (result.code === 0) {
+    //     toast(result.data)
+    //   } else {
+    //     var errormsg = JSON.parse(result) && JSON.parse(result).msg || '获取验证码失败';
+    //     toast(errormsg)
+    //   }
+    // });
   }
 
   function timedCount() {
