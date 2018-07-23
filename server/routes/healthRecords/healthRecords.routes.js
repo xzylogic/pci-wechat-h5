@@ -19,7 +19,6 @@ router.route('/followUpDetail').get(followupPlan.getfollowupPlanDetail); // 随�
 router.route('/followfeedback').get(followupPlan.getFollowFeedback); // 随访计划反馈页面
 router.route('/followfailure').get(followupPlan.getFollowFailure); // 随访计划链接失效
 
-
 router.route('/authlist').get(realNameAuth.getAuthList); // 实名认证列表页面
 router.route('/authphone').get(realNameAuth.getAuthPhone); // 手机号认证页面
 router.route('/authcard').get(realNameAuth.getAuthCard); // 身份证认证页面

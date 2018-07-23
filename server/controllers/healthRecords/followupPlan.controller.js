@@ -2,25 +2,29 @@
 
 var requestTool = require('../common/request-tool');
 var auth = require('../common/auth');
-var moment = require("moment"); 
+var moment = require("moment");
 
 module.exports = {
   // 随访计划列表
-	getfollowupPlan: (req, res) => {
-		let url = requestTool.setAuthUrl('/followUp', '');
-		auth.getOpenId(req, res, url, (openId) => {
+  getfollowupPlan: (req, res) => {
+    auth.setCookies(res, 'pci_secret', 'ozg0N1DbAu6Nymg2L0l6XQ6Exqw8');
+    auth.setCookies(res, 'userId', '123');
+    auth.setCookies(res, 'accessToken', 'ozg0N1DbAu6Nymg2L0l6XQ6Exqw8');
+    let url = requestTool.setAuthUrl('/followUp', '');
+    auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
-        requestTool.getHeader('flupList', data.access_token, `userId=${data.userId}`, (_data) =>{
+        requestTool.getUser('flupList', `userId=0&openId=${openId}`, (_data) => {
           if (_data && _data.code === 0 && _data.data.myFlupList.length === 0) {
             // 没有随访计划时的页面弹窗
-            res.render('healthRecords/followupPlan',{
+            res.render('healthRecords/followupPlan', {
               myFlupList: [],
               "json": [],
               status: false
             })
           } else if (_data && _data.code === 0 && _data.data.myFlupList.length !== 0 && _data.data.myFlupList.length !== 1) {
+            // } else if (_data && _data.code === 0 && _data.data.myFlupList.length !== 0) {
             // 已登录跳转随访计划列表页面
-            res.render('healthRecords/followupPlan',{
+            res.render('healthRecords/followupPlan', {
               myFlupList: _data.data.myFlupList,
               "json": _data.data.myFlupList,
               status: true
@@ -54,7 +58,7 @@ module.exports = {
         message: err
       });
     });
-	},
+  },
   // 随访计划详情
   getfollowupPlanDetail: (req, res) => {
 
@@ -66,41 +70,17 @@ module.exports = {
         if (doctorId) {
           let postData = {
             doctorId: doctorId,
-            userId: data.userId
+            userId: 0,
+            openId: openId
           }
-          requestTool.postHeader('flupDetail', data.access_token, postData, (_data) =>{
-            let date = _data.data.planDate.split('-');
-            let feedbacks;
-            // 判断token是否过期
+          console.log(postData)
+          requestTool.postHeader('flupDetail', '', postData, (_data) => {
+            // let date = _data.data.planDate.split('-');
+            // let feedbacks;
             if (_data && _data.code === 0 && _data.data) {
-              if (_data.data.feedbacks && _data.data.feedbacks.length !== 0) {
-                feedbacks = _data.data.feedbacks
-                // 循环并格式化日期
-                for (let i = 0; i < feedbacks.length; i++) {
-                  let a = new Set(feedbacks[i].plan);
-                  let b = new Set(feedbacks[i].item);
-                  let intersectionSet = new Set([...a].filter(x => b.has(x))); // ES6求交集a>b
-                  let differenceABSet = new Set([...a].filter(x => !b.has(x))); // ES6求差集a>b
-                  feedbacks[i].plan = []
-                  intersectionSet.forEach(function(obj){
-                    feedbacks[i].plan.push({name:obj, status:true})
-                  })
-                  differenceABSet.forEach(function(obj){
-                    feedbacks[i].plan.push({name:obj, status:false})
-                  })
-                }
-                res.render('healthRecords/followupPlanDetail',{
-                  flupDetail: _data.data,
-                  Y: Number(date[0]),
-                  M: Number(date[1]),
-                  D: Number(date[2])
-                })
-              } else {
-                // 请求接口产生的其他错误
-                res.render('error', {
-                  message: '请求错误'
-                });
-              }
+              res.render('healthRecords/followupPlanDetail', {
+                flupDetail: _data.data.fuItemDtoList
+              })
             } else if (_data && _data.code === 403) {
               // token过期，重新登录
               res.clearCookie('accessToken');
@@ -115,7 +95,7 @@ module.exports = {
           }, (error) => {
             // 接口请求产生的错误
             res.render('error', {
-                message: '接口请求错误'
+              message: '接口请求错误'
             });
           })
         } else {
@@ -152,13 +132,13 @@ module.exports = {
       auth.isLogin(req, (data) => {
         // 第一次推送
         if (feedbackTimes == 0) {
-          requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
+          requestTool.getHeaderUrl(`api/follow-up/feedback/find/${fbId}`, data.access_token, '', (_data) => {
             // 判断返回的参数firstPushStatus是否存在，存在的话表示患者做过随访，链接失效
             if (_data.code === 0 && _data.data && _data.data.firstPushStatus == true || _data.data.firstPushStatus == false) {
-                res.redirect(`${global.config.root}/followfailure`);
+              res.redirect(`${global.config.root}/followfailure`);
             } else if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item) {
               let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
-              res.render('healthRecords/followfeedback',{
+              res.render('healthRecords/followfeedback', {
                 plan: _data.data.plan,
                 item: _data.data.item,
                 otherRemind: otherRemind,
@@ -185,10 +165,10 @@ module.exports = {
           })
         } else if (feedbackTimes == 1) {
           // 第二次推送
-          requestTool.getHeaderUrl(`api/doctorPatient/flup/feedback/find/${fbId}`, data.access_token, '', (_data) =>{
+          requestTool.getHeaderUrl(`api/follow-up/feedback/find/${fbId}`, data.access_token, '', (_data) => {
             // 判断返回的参数secondPushStatus是否存在，存在的话表示患者做过随访，链接失效
             if (_data.code === 0 && _data.data && _data.data.secondPushStatus == true || _data.data.secondPushStatus == false) {
-                res.redirect(`${global.config.root}/followfailure`);
+              res.redirect(`${global.config.root}/followfailure`);
             } else if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item) {
               // 日期格式化，并求出做过列表和没做过随访的列表交集，渲染没有做过的随访
               let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
@@ -196,10 +176,10 @@ module.exports = {
               let b = new Set(_data.data.item);
               let differenceABSet = new Set([...a].filter(x => !b.has(x)));
               let plan = [];
-              differenceABSet.forEach(function(obj){
+              differenceABSet.forEach(function (obj) {
                 plan.push(obj)
               })
-              res.render('healthRecords/followfeedback',{
+              res.render('healthRecords/followfeedback', {
                 plan: plan,
                 item: _data.data.item,
                 otherRemind: otherRemind,
@@ -245,7 +225,7 @@ module.exports = {
   getFollowFailure: (req, res) => {
     let url = requestTool.setAuthUrl('/followfailure', '');
     auth.getOpenId(req, res, url, (openId) => {
-      res.render('healthRecords/followfailure',{
+      res.render('healthRecords/followfailure', {
 
       })
     }, (err) => {

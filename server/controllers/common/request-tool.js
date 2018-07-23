@@ -31,6 +31,30 @@ requestTool.get = function(key, param, call, error) {
 }
 
 /**
+ * 使用superagent进行get请求
+ * @param  {} key    [api key]
+ * @param  {} param  [query参数]
+ * @param  {} call   [callback函数]
+ * @param  {} error  [error函数]
+ * @return {}        []
+ */
+requestTool.getUser = function(key, param, call, error) {
+  console.log(User_BASE_URL + api[key])
+  console.log(param)
+  superagent
+    .get(User_BASE_URL + api[key])
+    .set('Content-Type', 'application/json')
+    .query(param)
+    .end(function(err, sres) {
+      if (err) {
+        error(err);
+      } else {
+        call(JSON.parse(sres.text));
+      }
+    });
+}
+
+/**
  * 使用superagent进行get添加请求头请求
  * @param  {} key    [api key]
  * @param  {} param  [query参数]
