@@ -21,5 +21,6 @@
   "certificationStatus":"api/idCardValidates/getNameAndValidateIdx",
   "flupList":"api/follow-up/list",
   "flupDetail":"api/follow-up/detail",
+  "flupFind":"api/follow-up/feedback/find",
   "doctorInfo":"api/relation/check"
 }

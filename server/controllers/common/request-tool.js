@@ -86,6 +86,8 @@ requestTool.getHeader = function(key, accessToken, param, call, error) {
  * @return {}        []
  */
 requestTool.getHeaderUrl = function(key, accessToken, param, call, error) {
+  console.log(User_BASE_URL + key)
+  console.log(param)
   superagent
     .get(User_BASE_URL + key)
     .set('Content-Type', 'application/json')

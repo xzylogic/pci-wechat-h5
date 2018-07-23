@@ -69,18 +69,13 @@
       <% for (var i = 0; i < plan.length; i++) { %>
         <label class="weui-cell weui-check__label">
             <div class="weui-cell__hd">
-                <input type="checkbox" class="weui-check" name="checkbox" value="<%=plan[i]%>"/>
+                <input type="checkbox" class="weui-check" name="checkbox" value="<%=plan[i].itemId%>"/>
                 <i class="weui-icon-checked"></i>
             </div>
             <div class="weui-cell__bd">
-                <p><%=plan[i]%></p>
+                <p><%=plan[i].name%></p>
             </div>
         </label>
-      <% } %>
-      <% if (item.length !== 0) { %>
-        <% for (var i = 0; i < item.length; i++) { %>
-          <p style="display: none;" class="review"><%=item[i]%></p>
-        <% } %>
       <% } %>
       </div>
     </div>
@@ -106,7 +101,7 @@
 var items = [];
 var url = "<%=url%>";
 var accessToken = "<%=access_token%>";
-var item = "<%=item%>";
+var item = [];
 var otherRemind = "<%=otherRemind%>";
 var feedbackTimes = "<%=feedbackTimes%>";
 var flupFeedbackId = "<%=flupFeedbackId%>";
@@ -137,8 +132,8 @@ $(document).ready(function(){
     var data = {
       feedbackStatus: true,
       feedbackTimes: feedbackTimes,
-      flupFeedbackId:flupFeedbackId,
-      items:items,
+      fuId:flupFeedbackId,
+      itemIds:items,
       otherRemindId: otherRemind
     }
     $.ajax({

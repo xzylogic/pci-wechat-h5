@@ -7,9 +7,9 @@ var moment = require("moment");
 module.exports = {
   // 随访计划列表
   getfollowupPlan: (req, res) => {
-    auth.setCookies(res, 'pci_secret', 'ozg0N1DbAu6Nymg2L0l6XQ6Exqw8');
-    auth.setCookies(res, 'userId', '123');
-    auth.setCookies(res, 'accessToken', 'ozg0N1DbAu6Nymg2L0l6XQ6Exqw8');
+    // auth.setCookies(res, 'pci_secret', 'ozg0N1DbAu6Nymg2L0l6XQ6Exqw8');
+    // auth.setCookies(res, 'userId', '2430');
+    // auth.setCookies(res, 'accessToken', 'ozg0N1DbAu6Nymg2L0l6XQ6Exqw8');
     let url = requestTool.setAuthUrl('/followUp', '');
     auth.getOpenId(req, res, url, (openId) => {
       auth.isLogin(req, (data) => {
@@ -73,7 +73,7 @@ module.exports = {
             userId: 0,
             openId: openId
           }
-          console.log(postData)
+          // console.log(postData)
           requestTool.postHeader('flupDetail', '', postData, (_data) => {
             // let date = _data.data.planDate.split('-');
             // let feedbacks;
@@ -123,6 +123,7 @@ module.exports = {
    * @param dn      医生姓名
    */
   getFollowFeedback: (req, res) => {
+    // console.log(req.query)
     let fbId = req.query.fbId || '';
     let otherRemind = req.query.otherRemind || '';
     let feedbackTimes = req.query.feedbackTimes || '';
@@ -132,15 +133,16 @@ module.exports = {
       auth.isLogin(req, (data) => {
         // 第一次推送
         if (feedbackTimes == 0) {
-          requestTool.getHeaderUrl(`api/follow-up/feedback/find/${fbId}`, data.access_token, '', (_data) => {
+          requestTool.getUser('flupFind', `fuId=${fbId}`, (_data) => {
+            // console.log(_data)
             // 判断返回的参数firstPushStatus是否存在，存在的话表示患者做过随访，链接失效
             if (_data.code === 0 && _data.data && _data.data.firstPushStatus == true || _data.data.firstPushStatus == false) {
               res.redirect(`${global.config.root}/followfailure`);
-            } else if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item) {
+            } else if (_data.code === 0 && _data.data && _data.data.items && _data.data.items.length !== 0) {
               let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
               res.render('healthRecords/followfeedback', {
-                plan: _data.data.plan,
-                item: _data.data.item,
+                plan: _data.data.items,
+                // item: _data.data.item,
                 otherRemind: otherRemind,
                 feedbackTimes: feedbackTimes,
                 flupFeedbackId: fbId,
@@ -165,23 +167,24 @@ module.exports = {
           })
         } else if (feedbackTimes == 1) {
           // 第二次推送
-          requestTool.getHeaderUrl(`api/follow-up/feedback/find/${fbId}`, data.access_token, '', (_data) => {
+          requestTool.getUser('flupFind', `fuId=${fbId}`, (_data) => {
+            // requestTool.getHeaderUrl(`api/follow-up/feedback/find?fbId=${fbId}`, data.access_token, '', (_data) => {
             // 判断返回的参数secondPushStatus是否存在，存在的话表示患者做过随访，链接失效
             if (_data.code === 0 && _data.data && _data.data.secondPushStatus == true || _data.data.secondPushStatus == false) {
               res.redirect(`${global.config.root}/followfailure`);
-            } else if (_data.code === 0 && _data.data && _data.data.plan && _data.data.plan.length !== 0 && _data.data.item) {
+            } else if (_data.code === 0 && _data.data && _data.data.items && _data.data.items.length !== 0) {
               // 日期格式化，并求出做过列表和没做过随访的列表交集，渲染没有做过的随访
               let firstPushTime = moment(_data.data.firstPushTime).format('YYYY-MM-DD');
-              let a = new Set(_data.data.plan);
-              let b = new Set(_data.data.item);
-              let differenceABSet = new Set([...a].filter(x => !b.has(x)));
-              let plan = [];
-              differenceABSet.forEach(function (obj) {
-                plan.push(obj)
-              })
+              // let a = new Set(_data.data.plan);
+              // let b = new Set(_data.data.item);
+              // let differenceABSet = new Set([...a].filter(x => !b.has(x)));
+              // let plan = [];
+              // differenceABSet.forEach(function (obj) {
+              //   plan.push(obj)
+              // })
               res.render('healthRecords/followfeedback', {
-                plan: plan,
-                item: _data.data.item,
+                plan: _data.data.items,
+                // item: _data.data.item,
                 otherRemind: otherRemind,
                 feedbackTimes: feedbackTimes,
                 firstPushTime: firstPushTime,
