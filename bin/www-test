@@ -1,14 +1,14 @@
 'use strict';
 
 global.config = {
-  userServer: 'http://www.wangbing.ren/pci-user/',
-  healthServer: 'http://www.wangbing.ren/pro-health/',
-  server: 'http://www.wangbing.ren/pci-micro/',
-  domain: 'http://www.wangbing.ren',
+  userServer: 'http://pci.violetqqy.com/pci-user/',
+  healthServer: 'http://pci.violetqqy.com/pro-health/',
+  server: 'http://pci.violetqqy.com/pci-micro/',
+  domain: 'http://pci.violetqqy.com',
   root: '/pci-wechat',
   filedir: '/home/admin/webapp/pci-wechat-h5',
-  appId: 'wxee8d9fc7f496d8b1',
-  secret:'4ee061a42331ea76af1430e02e4f6fbe'
+  appId: 'wx6737d318e27dab75',
+  secret:'51b60cb4c922f5eef335f3b2d3e19c5e'
 }
 
 var app = require('../app');
