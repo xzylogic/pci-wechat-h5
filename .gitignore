@@ -1,6 +1,8 @@
 # dependencies
 /node_modules
 /dist
+server/controllers/jssdk/access_token.json
+server/controllers/jssdk/jsapi_ticket.json
 
 # IDEs and editors
 /.idea
