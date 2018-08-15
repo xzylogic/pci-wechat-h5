@@ -1,10 +1,10 @@
 'use strict';
 
 global.config = {
-  userServer: 'http://pci.violetqqy.com/pci-user/',
-  healthServer: 'http://pci.violetqqy.com/pro-health/',
-  server: 'http://pci.violetqqy.com/pci-micro/',
-  domain: 'http://pci.violetqqy.com',
+  userServer: 'https://pci.violetqqy.com/pci-user/',
+  healthServer: 'https://pci.violetqqy.com/pro-health/',
+  server: 'https://pci.violetqqy.com/pci-micro/',
+  domain: 'https://pci.violetqqy.com',
   root: '/pci-wechat',
   filedir: '/home/admin/webapp/pci-wechat-h5',
   appId: 'wx6737d318e27dab75',
